@@ -27,7 +27,7 @@ const censusQuery = `${apiPath}?${Object.entries(query)
   .map((param) => param.join('='))
   .join('&')}`;
 
-const currentYear = new Date().getFullYear().toString();
+const currentYear = new Date().getUTCFullYear().toString();
 const censusData = ref<QueryEntry[]>([]);
 const requestFailed = ref(false);
 const tries = ref(getLocalStorageAmount());
