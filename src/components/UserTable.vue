@@ -18,7 +18,6 @@ const query = {
   limit: '500',
   tables: 'Bases',
   fields: ['Name', 'CensusPlayer', 'CensusRenewal'],
-  civilized,
   where: `CensusShow IS NOT NULL AND Civilized="${civilized}"`,
   orderBy: 'CensusRenewal',
 };
@@ -75,27 +74,32 @@ function incrementData(userName: string) {
   localStorage.setItem(currentYear, localStorageDataString);
 }
 
+const maximumAllowedTries = 3;
 watchEffect(() => {
-  if (tries.value >= 3) emit('exceeded');
+  if (tries.value >= maximumAllowedTries) emit('exceeded');
 });
 </script>
 
 <template>
-  <div
-    v-if="censusData.length"
-    class="table"
-  >
-    <UserRow
-      v-for="dataObj in filteredCensusData"
-      :already-requested="getLocalStorageSet().has(dataObj.title.CensusPlayer)"
-      :current-year="currentYear"
-      :key="dataObj.title.CensusPlayer"
-      :tries="tries"
-      :user-object="dataObj"
-      @renew="incrementData"
-    />
-  </div>
-
+  <template v-if="censusData.length">
+    <div class="table">
+      <UserRow
+        v-for="dataObj in filteredCensusData"
+        :already-requested="getLocalStorageSet().has(dataObj.title.CensusPlayer)"
+        :current-year="currentYear"
+        :key="dataObj.title.CensusPlayer"
+        :tries="tries"
+        :user-object="dataObj"
+        @renew="incrementData"
+      />
+    </div>
+    <div
+      v-if="!filteredCensusData.length"
+      class="register-cta"
+    >
+      Not on the census?<br /><a href="https://forms.gle/A85N3NkYXkM5XXjx5">Register now!</a>
+    </div>
+  </template>
   <div
     v-else-if="!requestFailed"
     aria-busy="true"
@@ -109,5 +113,10 @@ watchEffect(() => {
   display: grid;
   grid-template-columns: repeat(2, auto);
   align-items: center;
+}
+
+.register-cta {
+  text-align: center;
+  font-size: 1.5rem;
 }
 </style>
