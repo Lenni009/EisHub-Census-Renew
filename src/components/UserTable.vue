@@ -39,7 +39,9 @@ onMounted(async () => {
     const res = await fetch(censusQuery);
     const data = await res.json();
     const groupedEntries: {
-      [key: string]: CensusEntry[];
+      notRequested: CensusEntry[];
+      requested: CensusEntry[];
+      renewed: CensusEntry[];
     } = {
       notRequested: [],
       requested: [],
