@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import ConfirmDialog from './ConfirmDialog.vue';
-import { type QueryEntry } from '@/types/query';
+import { type CensusEntry } from '@/types/query';
 
 const props = defineProps<{
-  userObject: QueryEntry;
+  userObject: CensusEntry;
   tries: number;
   currentYear: string;
   alreadyRequested: boolean;
@@ -14,11 +14,11 @@ const emit = defineEmits(['renew']);
 
 const webhook = atob(import.meta.env.VITE_DISCORD_WEBHOOK ?? '');
 const wikiLink = 'https://nomanssky.fandom.com/wiki/Special:EditPage/';
-const userName = computed(() => props.userObject.title.CensusPlayer);
+const userName = computed(() => props.userObject.CensusPlayer);
 
 const confirmDialog = ref<InstanceType<typeof ConfirmDialog> | null>(null);
 
-const renewed = computed(() => props.userObject.title.CensusRenewal === props.currentYear);
+const renewed = computed(() => props.userObject.CensusRenewal === props.currentYear);
 const renewRequested = ref(props.alreadyRequested);
 
 const renewText = computed(() => {
@@ -35,10 +35,9 @@ async function requestRenewal() {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      content: `${userName.value} requested renewal.\n<${new URL(wikiLink + props.userObject.title.Name)}>`,
+      content: `${userName.value} requested renewal.\n<${new URL(wikiLink + props.userObject.Name)}>`,
     }),
   });
-  console.log('renewed', userName.value);
   renewRequested.value = true;
   emit('renew', userName.value);
 }

@@ -1,7 +1,8 @@
+export interface CensusEntry {
+  Name: string;
+  CensusPlayer: string;
+  CensusRenewal: string;
+}
 export interface QueryEntry {
-  title: {
-    Name: string;
-    CensusPlayer: string;
-    CensusRenewal: string;
-  };
+  title: CensusEntry;
 }

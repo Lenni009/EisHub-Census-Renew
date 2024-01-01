@@ -34,7 +34,12 @@ const tooManyTries = ref(false);
         @exceeded="tooManyTries = true"
       />
     </template>
-    <p v-else>You have requested too many renewals. Please contact Lenni on Discord for help.</p>
+    <p
+      v-else
+      class="tries-exceeded-error"
+    >
+      You have requested too many renewals. Please contact Lenni on Discord for help.
+    </p>
   </main>
 </template>
 
@@ -49,5 +54,9 @@ const tooManyTries = ref(false);
   color: white;
   border-radius: var(--border-radius);
   padding: 0.5rem;
+}
+
+.tries-exceeded-error {
+  text-align: center;
 }
 </style>
