@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watchEffect } from 'vue';
 import UserRow from './UserRow.vue';
-import { type QueryEntry } from '@/types/query';
+import type { CensusEntry, QueryEntry } from '@/types/query';
 
 const props = defineProps<{
   filter: string;
@@ -27,23 +27,45 @@ const censusQuery = `${apiPath}?${Object.entries(query)
   .join('&')}`;
 
 const currentYear = new Date().getUTCFullYear().toString();
-const censusData = ref<QueryEntry[]>([]);
+const censusData = ref<CensusEntry[]>([]);
 const requestFailed = ref(false);
+const maximumAllowedTries = 3;
 const tries = ref(getLocalStorageAmount());
+const triesExceeded = computed(() => tries.value >= maximumAllowedTries);
 
 onMounted(async () => {
+  if (triesExceeded.value) return;
   try {
     const res = await fetch(censusQuery);
     const data = await res.json();
-    censusData.value = data.cargoquery;
+    const groupedEntries: {
+      [key: string]: CensusEntry[];
+    } = {
+      notRequested: [],
+      requested: [],
+      renewed: [],
+    };
+    data.cargoquery.forEach(({ title: item }: QueryEntry) => {
+      if (item.CensusRenewal === currentYear) {
+        groupedEntries.renewed.push(item);
+      } else if (isRequested(item)) {
+        groupedEntries.requested.push(item);
+      } else {
+        groupedEntries.notRequested.push(item);
+      }
+    });
+
+    censusData.value = Object.values(groupedEntries).flat();
   } catch (e) {
     console.warn(e);
     requestFailed.value = true;
   }
 });
 
+const isRequested = (dataObj: CensusEntry) => getLocalStorageSet().has(dataObj.CensusPlayer);
+
 const filteredCensusData = computed(() =>
-  censusData.value.filter((item) => item.title.CensusPlayer.toLowerCase().includes(props.filter.toLowerCase()))
+  censusData.value.filter((item) => item.CensusPlayer.toLowerCase().includes(props.filter.toLowerCase()))
 );
 
 function getLocalStorageData(): { requested: string[]; amount: number } {
@@ -74,9 +96,8 @@ function incrementData(userName: string) {
   localStorage.setItem(currentYear, localStorageDataString);
 }
 
-const maximumAllowedTries = 3;
 watchEffect(() => {
-  if (tries.value >= maximumAllowedTries) emit('exceeded');
+  if (triesExceeded.value) emit('exceeded');
 });
 </script>
 
@@ -85,9 +106,9 @@ watchEffect(() => {
     <div class="table">
       <UserRow
         v-for="dataObj in filteredCensusData"
-        :already-requested="getLocalStorageSet().has(dataObj.title.CensusPlayer)"
+        :already-requested="isRequested(dataObj)"
         :current-year="currentYear"
-        :key="dataObj.title.CensusPlayer"
+        :key="dataObj.CensusPlayer"
         :tries="tries"
         :user-object="dataObj"
         @renew="incrementData"
