@@ -19,7 +19,7 @@ const query = {
   tables: 'Bases',
   fields: ['Name', 'CensusPlayer', 'CensusRenewal'],
   where: `CensusShow IS NOT NULL AND Civilized="${civilized}"`,
-  orderBy: 'CensusRenewal',
+  order_by: 'CensusRenewal',
 };
 
 const censusQuery = `${apiPath}?${Object.entries(query)
@@ -38,24 +38,7 @@ onMounted(async () => {
   try {
     const res = await fetch(censusQuery);
     const data = await res.json();
-    const groupedEntries: {
-      [key: string]: CensusEntry[];
-    } = {
-      notRequested: [],
-      requested: [],
-      renewed: [],
-    };
-    data.cargoquery.forEach(({ title: item }: QueryEntry) => {
-      if (item.CensusRenewal === currentYear) {
-        groupedEntries.renewed.push(item);
-      } else if (isRequested(item)) {
-        groupedEntries.requested.push(item);
-      } else {
-        groupedEntries.notRequested.push(item);
-      }
-    });
-
-    censusData.value = Object.values(groupedEntries).flat();
+    censusData.value = data.cargoquery.map((item: QueryEntry) => item.title);
   } catch (e) {
     console.warn(e);
     requestFailed.value = true;
