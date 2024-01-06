@@ -6,7 +6,7 @@ import { type CensusEntry } from '@/types/query';
 const props = defineProps<{
   userObject: CensusEntry;
   tries: number;
-  currentYear: string;
+  renewalRevision: string;
   alreadyRequested: boolean;
 }>();
 
@@ -20,7 +20,7 @@ const isFailed = ref(false);
 
 const confirmDialog = ref<InstanceType<typeof ConfirmDialog> | null>(null);
 
-const renewed = computed(() => props.userObject.CensusRenewal === props.currentYear);
+const renewed = computed(() => props.userObject.CensusRenewal.includes(props.renewalRevision));
 const renewRequested = ref(props.alreadyRequested);
 
 const renewText = computed(() => {
