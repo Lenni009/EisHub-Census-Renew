@@ -26,7 +26,7 @@ const censusQuery = `${apiPath}?${Object.entries(query)
   .map((param) => param.join('='))
   .join('&')}`;
 
-const currentYear = new Date().getUTCFullYear().toString();
+const renewalRevision = new Date().getUTCFullYear().toString();
 const censusData = ref<CensusEntry[]>([]);
 const requestFailed = ref(false);
 const maximumAllowedTries = 3;
@@ -38,8 +38,11 @@ onMounted(async () => {
   try {
     const res = await fetch(censusQuery);
     const data = await res.json();
-    censusData.value = data.cargoquery.map((item: QueryEntry) => item.title);
-    censusData.value.forEach((item) => (item.CensusRenewal = item.CensusRenewal.split(',')?.at(-1)?.trim() ?? ''));
+    censusData.value = data.cargoquery.map(({ title: item }: QueryEntry) => ({
+      Name: item.Name,
+      CensusPlayer: item.CensusPlayer,
+      CensusRenewal: item.CensusRenewal.split(',')?.map((item) => item.trim()) ?? [],
+    }));
   } catch (e) {
     console.warn(e);
     requestFailed.value = true;
@@ -53,7 +56,7 @@ const filteredCensusData = computed(() =>
 );
 
 function getLocalStorageData(): { requested: string[]; amount: number } {
-  const localStorageDataString = localStorage.getItem(currentYear) ?? '{"requested": [], "amount": 0}';
+  const localStorageDataString = localStorage.getItem(renewalRevision) ?? '{"requested": [], "amount": 0}';
   return JSON.parse(localStorageDataString);
 }
 
@@ -77,7 +80,7 @@ function incrementData(userName: string) {
   localStorageData.requested = localStorageArray;
   localStorageData.amount = tries.value;
   const localStorageDataString = JSON.stringify(localStorageData);
-  localStorage.setItem(currentYear, localStorageDataString);
+  localStorage.setItem(renewalRevision, localStorageDataString);
 }
 
 watchEffect(() => {
@@ -91,7 +94,7 @@ watchEffect(() => {
       <UserRow
         v-for="dataObj in filteredCensusData"
         :already-requested="isRequested(dataObj)"
-        :current-year="currentYear"
+        :renewal-revision="renewalRevision"
         :key="dataObj.CensusPlayer"
         :tries="tries"
         :user-object="dataObj"
