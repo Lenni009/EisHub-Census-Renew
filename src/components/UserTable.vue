@@ -39,7 +39,7 @@ onMounted(async () => {
     const res = await fetch(censusQuery);
     const data = await res.json();
     censusData.value = data.cargoquery.map((item: QueryEntry) => item.title);
-    censusData.value.forEach((item) => (item.CensusRenewal = item.CensusRenewal.split(', ')?.at(-1) ?? ''));
+    censusData.value.forEach((item) => (item.CensusRenewal = item.CensusRenewal.split(',')?.at(-1)?.trim() ?? ''));
   } catch (e) {
     console.warn(e);
     requestFailed.value = true;
