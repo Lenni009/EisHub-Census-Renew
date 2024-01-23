@@ -10,7 +10,10 @@ const tooManyTries = ref(false);
 </script>
 
 <template>
-  <header>
+  <header class="header">
+    <nav>
+      <a href="..">&larr; View other pages</a>
+    </nav>
     <h1 class="title">Eisvana Census Renewal</h1>
   </header>
 
@@ -44,6 +47,10 @@ const tooManyTries = ref(false);
 </template>
 
 <style scoped lang="scss">
+.header {
+  margin-block-start: 2rem;
+}
+
 .title {
   margin-block-end: 2rem;
   text-align: center;
