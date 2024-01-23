@@ -45,13 +45,13 @@ jobs:
         run: |
           if [ "${{github.event.schedule}}" == '20 0 1 1 *' ]
           then
-            message='The Census has reset! Renew your citizen status now: https://lenni009.github.io/Eisvana-Census-Renew/'
+            message='The Census has reset! Renew your citizen status now: https://eisvana.github.io/Eisvana-Census-Renew/'
           elif [ "${{github.event.schedule}}" == '43 4 1 2 *' ]
           then
             message='The Census Renewal Website has closed! It will reopen next year on the 1st of January. Contact Lenni if you want to renew your entry.'
           elif [ "${{github.event.schedule}}" == '20 0 29 1 *' ]
           then
-            message='Non-renewed citizens will lose the citizen role in 3 days. Renew your status now: https://lenni009.github.io/Eisvana-Census-Renew/'
+            message='Non-renewed citizens will lose the citizen role in 3 days. Renew your status now: https://eisvana.github.io/Eisvana-Census-Renew/'
           fi
 
           if [ -n "$message" ]
