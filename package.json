@@ -12,7 +12,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
-    "@picocss/pico": "^1.5.11",
+    "@picocss/pico": "^2.0.0",
     "sass": "^1.69.7",
     "vue": "^3.4.18"
   },
