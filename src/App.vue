@@ -59,7 +59,7 @@ const tooManyTries = ref(false);
 .warning {
   background-color: red;
   color: white;
-  border-radius: var(--border-radius);
+  border-radius: var(--pico-border-radius);
   padding: 0.5rem;
 }
 
