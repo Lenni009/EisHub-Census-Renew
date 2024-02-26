@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@picocss/pico": "^2.0.0",
-    "sass": "^1.69.7",
+    "sass": "^1.71.1",
     "vue": "^3.4.18"
   },
   "devDependencies": {
