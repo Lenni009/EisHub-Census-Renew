@@ -7,31 +7,10 @@ on:
     # the time here is kinda random to dodge high load time on GH that may block cron jobs
     # if cron jobs are delayed for too long, they might be dropped -> bad
     - cron: '20 0 1 1 *'
-    # - cron: '43 4 1 2 *'
     - cron: '20 0 29 1 *'
 
 jobs:
-  set-visibility:
-    runs-on: ubuntu-latest
-
-    steps:
-      # set to public at the start of the year
-      - name: 'Show Repo'
-        if: github.event.schedule == '20 0 1 1 *'
-        run: gh repo edit ${{ github.repository }} --visibility public
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-
-      # set to private at the beginning of February
-      - name: 'Hide Repo'
-        if: github.event.schedule == '43 4 1 2 *'
-        run: gh repo edit ${{ github.repository }} --visibility private
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-
   announce:
-    needs: set-visibility
-
     runs-on: ubuntu-latest
 
     steps:
@@ -46,12 +25,9 @@ jobs:
           if [ "${{github.event.schedule}}" == '20 0 1 1 *' ]
           then
             message='The Census has reset! Renew your citizen status now: https://eisvana.github.io/Eisvana-Census-Renew/'
-          elif [ "${{github.event.schedule}}" == '43 4 1 2 *' ]
-          then
-            message='The Census Renewal Website has closed! It will reopen next year on the 1st of January. Contact Lenni if you want to renew your entry.'
           elif [ "${{github.event.schedule}}" == '20 0 29 1 *' ]
           then
-            message='Non-renewed citizens will lose the citizen role in 3 days. Renew your status now: https://eisvana.github.io/Eisvana-Census-Renew/'
+            message='All <@&1178746333499240528> will lose the citizen role in 3 days. Renew your status now: https://eisvana.github.io/Eisvana-Census-Renew/'
           fi
 
           if [ -n "$message" ]

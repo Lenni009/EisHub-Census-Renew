@@ -7,12 +7,14 @@ const filter = ref<string>('');
 const missingWebhook = !import.meta.env.VITE_DISCORD_WEBHOOK;
 
 const tooManyTries = ref(false);
+
+const isEisvanaHost = window.location.host === 'album.eisvana.com';
 </script>
 
 <template>
   <header class="header">
     <nav>
-      <a href="..">&larr; View other pages</a>
+      <a :href="isEisvanaHost ? 'https://eisvana.com' : '..'">&larr; View other pages</a>
     </nav>
     <h1 class="title">Eisvana Census Renewal</h1>
   </header>
@@ -59,7 +61,7 @@ const tooManyTries = ref(false);
 .warning {
   background-color: red;
   color: white;
-  border-radius: var(--border-radius);
+  border-radius: var(--pico-border-radius);
   padding: 0.5rem;
 }
 
