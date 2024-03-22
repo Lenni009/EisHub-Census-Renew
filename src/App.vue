@@ -8,7 +8,7 @@ const missingWebhook = !import.meta.env.VITE_DISCORD_WEBHOOK;
 
 const tooManyTries = ref(false);
 
-const isEisvanaHost = window.location.host === 'album.eisvana.com';
+const isEisvanaHost = window.location.host === 'census.eisvana.com';
 </script>
 
 <template>
