@@ -25,7 +25,7 @@ const renewText = computed(() => {
 
 const confirmDialog = ref<InstanceType<typeof ConfirmDialog> | null>(null);
 
-const emit = defineEmits<(e: 'renew') => void>();
+const emit = defineEmits<(e: 'renew', value: string) => void>();
 
 const renewed = computed(() => props.userObject.CensusRenewal.includes(props.renewalRevision));
 const renewRequested = ref(props.alreadyRequested);
@@ -40,10 +40,10 @@ async function requestRenewal() {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        content: `${userName.value} requested renewal.\n<${new URL(wikiLink + props.userObject.Name)}>`,
+        content: `${props.userName} requested renewal.\n<${new URL(wikiLink + props.userObject.Name)}>`,
       }),
     });
-    emit('renew', userName.value);
+    emit('renew', props.userName);
     renewRequested.value = true;
   } catch (error) {
     isFailed.value = true;
