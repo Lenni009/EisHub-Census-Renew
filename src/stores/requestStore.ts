@@ -15,4 +15,8 @@ export const useRequestStore = defineStore('requests', {
     requestFailed: false,
     censusData: [],
   }),
+
+  getters: {
+    censusCount: (state) => state.censusData.length,
+  },
 });
