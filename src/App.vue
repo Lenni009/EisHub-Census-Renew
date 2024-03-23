@@ -1,6 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, type Component } from 'vue';
 import UserTable from './components/UserTable.vue';
+import Table from './pages/Table.vue';
+import Renew from './pages/Renew.vue';
+import Form from './pages/Form.vue';
 
 const filter = ref<string>('');
 
@@ -9,6 +12,19 @@ const missingWebhook = !import.meta.env.VITE_DISCORD_RENEW_WEBHOOK;
 const tooManyTries = ref(false);
 
 const isEisvanaHost = window.location.host === 'census.eisvana.com';
+
+const router: { [key: string]: Component } = {
+  form: Form,
+  renew: Renew,
+};
+
+const route = window.location.pathname.split('/')?.at(-1)?.slice(0, -5); // NoSonar getting the current filename without the "html" ending
+const routeComponent = getRouteComponent();
+
+function getRouteComponent() {
+  if (!route) return Table;
+  return router[route] ?? Table;
+}
 </script>
 
 <template>
@@ -20,6 +36,8 @@ const isEisvanaHost = window.location.host === 'census.eisvana.com';
   </header>
 
   <main>
+    <component :is="routeComponent"></component>
+
     <p
       v-if="missingWebhook"
       class="warning"
