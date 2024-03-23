@@ -12,7 +12,7 @@ const props = defineProps<{
 
 const emit = defineEmits(['renew']);
 
-const webhook = atob(import.meta.env.VITE_DISCORD_WEBHOOK ?? '');
+const webhook = atob(import.meta.env.VITE_DISCORD_RENEW_WEBHOOK ?? '');
 const wikiLink = 'https://nomanssky.fandom.com/wiki/Special:EditPage/';
 const userName = computed(() => props.userObject.CensusPlayer);
 const isSending = ref(false);

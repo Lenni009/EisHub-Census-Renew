@@ -4,7 +4,7 @@ import UserTable from './components/UserTable.vue';
 
 const filter = ref<string>('');
 
-const missingWebhook = !import.meta.env.VITE_DISCORD_WEBHOOK;
+const missingWebhook = !import.meta.env.VITE_DISCORD_RENEW_WEBHOOK;
 
 const tooManyTries = ref(false);
 
