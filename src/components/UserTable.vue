@@ -1,53 +1,23 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watchEffect } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 import UserRow from './UserRow.vue';
-import type { CensusEntry, QueryEntry } from '@/types/query';
+import type { CensusEntry } from '@/types/query';
+import { useRequestStore } from '@/stores/requestStore';
+import { storeToRefs } from 'pinia';
 
 const props = defineProps<{
   filter: string;
 }>();
 
-const emit = defineEmits(['exceeded']);
+const pageData = useRequestStore();
+const { censusData } = storeToRefs(pageData);
 
-const apiPath = 'https://nomanssky.fandom.com/api.php';
-const civilized = 'Eisvana';
-const query = {
-  action: 'cargoquery',
-  format: 'json',
-  origin: '*',
-  limit: '500',
-  tables: 'Bases',
-  fields: ['Name', 'CensusPlayer', 'CensusRenewal'],
-  where: `CensusShow IS NOT NULL AND Civilized="${civilized}"`,
-  order_by: 'CensusRenewal',
-};
-
-const censusQuery = `${apiPath}?${Object.entries(query)
-  .map((param) => param.join('='))
-  .join('&')}`;
+const emit = defineEmits<(e: 'exceeded') => void>();
 
 const renewalRevision = new Date().getUTCFullYear().toString();
-const censusData = ref<CensusEntry[]>([]);
-const requestFailed = ref(false);
 const maximumAllowedTries = 3;
 const tries = ref(getLocalStorageAmount());
 const triesExceeded = computed(() => tries.value >= maximumAllowedTries);
-
-onMounted(async () => {
-  if (triesExceeded.value) return;
-  try {
-    const res = await fetch(censusQuery);
-    const data = await res.json();
-    censusData.value = data.cargoquery.map(({ title: item }: QueryEntry) => ({
-      Name: item.Name,
-      CensusPlayer: item.CensusPlayer,
-      CensusRenewal: item.CensusRenewal.split(',')?.map((item) => item.trim()) ?? [],
-    }));
-  } catch (e) {
-    console.warn(e);
-    requestFailed.value = true;
-  }
-});
 
 const isRequested = (dataObj: CensusEntry) => getLocalStorageSet().has(dataObj.CensusPlayer);
 
@@ -89,7 +59,7 @@ watchEffect(() => {
 </script>
 
 <template>
-  <template v-if="censusData.length">
+  <template v-if="censusData.length && !triesExceeded">
     <div class="table">
       <UserRow
         v-for="dataObj in filteredCensusData"
@@ -108,12 +78,6 @@ watchEffect(() => {
       Not on the census?<br /><a href="./form.html">Register now!</a>
     </div>
   </template>
-  <div
-    v-else-if="!requestFailed"
-    aria-busy="true"
-  ></div>
-
-  <div v-else>Something went wrong :/</div>
 </template>
 
 <style lang="scss">
