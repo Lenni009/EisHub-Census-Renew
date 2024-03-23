@@ -7,14 +7,14 @@ import vue from '@vitejs/plugin-vue';
 export default defineConfig({
   //   base: '/Eisvana-Census-Renew/',
   plugins: [vue()],
-  resolve: {
-    alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url)),
-    },
-  },
   build: {
     rollupOptions: {
       input: ['index.html', 'form.html', 'renew.html'],
+    },
+  },
+  resolve: {
+    alias: {
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
 });
