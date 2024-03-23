@@ -105,7 +105,7 @@ watchEffect(() => {
       v-if="!filteredCensusData.length"
       class="register-cta"
     >
-      Not on the census?<br /><a href="https://forms.gle/A85N3NkYXkM5XXjx5">Register now!</a>
+      Not on the census?<br /><a href="./form.html">Register now!</a>
     </div>
   </template>
   <div
