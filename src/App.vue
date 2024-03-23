@@ -34,11 +34,36 @@ onMounted(async () => {
     requestSent.value = true;
     const res = await fetch(censusQuery);
     const data = await res.json();
-    censusData.value = data.cargoquery.map(({ title: item }: QueryEntry) => ({
-      Name: item.Name,
-      CensusPlayer: item.CensusPlayer,
-      CensusRenewal: item.CensusRenewal.split(',')?.map((item) => item.trim()) ?? [],
-    }));
+    censusData.value = data.cargoquery.map(
+      ({
+        title: {
+          CensusArrival,
+          CensusDiscord,
+          CensusFriend,
+          CensusPlayer,
+          CensusReddit,
+          CensusRenewal,
+          'Game release': GameRelease,
+          Mode,
+          Name,
+          Platform,
+          System,
+        },
+      }: QueryEntry) => ({
+        CensusArrival: new Date(CensusArrival),
+        CensusRenewal: CensusRenewal.split(',')?.map((item) => item.trim()) ?? [],
+        CensusDiscord,
+        CensusFriend,
+        CensusPlayer,
+        CensusReddit,
+        GameRelease,
+        Mode,
+        Name,
+        Platform,
+        System,
+      })
+    );
+
     requestSucceeded.value = true;
   } catch (e) {
     console.warn(e);
@@ -50,7 +75,7 @@ onMounted(async () => {
 <template>
   <header class="header">
     <nav>
-      <a :href="isEisvanaHost && !route ? 'https://eisvana.com' : '..'">&larr; View other pages</a>
+      <a :href="isEisvanaHost && !route ? 'https://eisvana.com' : '..'">&larr; Back to main page</a>
     </nav>
   </header>
 
