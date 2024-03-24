@@ -56,10 +56,6 @@ defineProps<{
         <div class="heading">Arrival:</div>
         <div>{{ entry.CensusArrival.toLocaleDateString() }}</div>
       </div>
-      <div class="item-group">
-        <div class="heading">Renewed:</div>
-        <div>{{ entry.CensusRenewal.join(', ') }}</div>
-      </div>
     </div>
 
     <div class="action-buttons">
