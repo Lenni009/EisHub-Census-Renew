@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { useCensusDataStore } from '@/stores/censusDataStore';
 import { storeToRefs } from 'pinia';
-// import { parseUserLink } from '../helpers/wikitextParser';
 import { computed, ref } from 'vue';
-// import { wikiLink } from '../variables/wikiLink';
 import CensusItem from '../components/CensusItem.vue';
 
 const censusDataStore = useCensusDataStore();
@@ -38,12 +36,17 @@ const filteredCensusCount = computed(() => filteredEntries.value.length);
 
     <hr />
 
-    <div class="census-items">
-      <CensusItem
-        v-for="entry in filteredEntries"
-        :entry
-      />
-    </div>
+    <Transition>
+      <div
+        class="census-items"
+        v-if="censusData.length"
+      >
+        <CensusItem
+          v-for="entry in filteredEntries"
+          :entry
+        />
+      </div>
+    </Transition>
   </div>
 </template>
 
@@ -72,5 +75,16 @@ const filteredCensusCount = computed(() => filteredEntries.value.length);
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
+}
+
+.v-enter-active {
+  transition:
+    opacity 0.5s ease-out,
+    translate 0.5s ease-out;
+}
+
+.v-enter-from {
+  opacity: 0;
+  translate: 0 50px;
 }
 </style>
