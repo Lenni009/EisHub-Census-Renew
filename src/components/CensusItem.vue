@@ -3,9 +3,13 @@ import type { CensusEntry } from '@/types/query';
 import { encodePlayerName } from '@/helpers/nameTranscode';
 import LinkItem from './LinkItem.vue';
 
-defineProps<{
+const props = defineProps<{
   entry: CensusEntry;
 }>();
+
+function storeData() {
+  sessionStorage.setItem('update', JSON.stringify(props.entry));
+}
 </script>
 
 <template>
@@ -54,8 +58,9 @@ defineProps<{
       <button>Renew</button>
       <a
         :href="`./form.html?update=${encodePlayerName(entry.CensusPlayer)}`"
-        role="button"
         data-tooltip="New Census Base"
+        role="button"
+        @click="storeData"
         >Update</a
       >
     </div>
