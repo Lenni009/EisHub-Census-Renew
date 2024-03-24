@@ -40,6 +40,26 @@ defineProps<{
           <LinkItem :wikitext="entry.Name" />
         </div>
       </div>
+      <div class="item-group">
+        <div class="heading">System:</div>
+        <div>{{ entry.System }}</div>
+      </div>
+      <div class="item-group">
+        <div class="heading">Platform:</div>
+        <div>{{ entry.Platform }}</div>
+      </div>
+      <div class="item-group">
+        <div class="heading">Mode:</div>
+        <div>{{ entry.Mode }}</div>
+      </div>
+      <div class="item-group">
+        <div class="heading">Arrival:</div>
+        <div>{{ entry.CensusArrival.toLocaleDateString() }}</div>
+      </div>
+      <div class="item-group">
+        <div class="heading">Renewed:</div>
+        <div>{{ entry.CensusRenewal.join(', ') }}</div>
+      </div>
     </div>
 
     <div class="action-buttons">
@@ -59,11 +79,9 @@ defineProps<{
   gap: 0.75rem;
 
   .table-items {
-    // display: grid;
-    // grid-template-columns: repeat(2, auto);
-    gap: 0.5rem 1rem;
     display: flex;
     flex-wrap: wrap;
+    gap: 0.5rem 1rem;
 
     & > * {
       flex-grow: 1;
@@ -77,7 +95,6 @@ defineProps<{
     }
 
     .link {
-      // max-width: 300px;
       text-wrap: balance;
       overflow-wrap: anywhere;
     }
@@ -86,7 +103,7 @@ defineProps<{
   .action-buttons {
     display: flex;
     gap: 0.5rem;
-    justify-content: space-between;
+    justify-content: space-around;
   }
 
   .player-name {
