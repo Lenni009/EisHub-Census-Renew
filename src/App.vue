@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { computed, onMounted } from 'vue';
 import { censusQuery } from './variables/wikiRequest';
 import type { QueryEntry } from './types/query';
 import { useRequestStore } from './stores/requestStore';
@@ -7,6 +7,9 @@ import { storeToRefs } from 'pinia';
 import { useCensusDataStore } from './stores/censusDataStore';
 import { useRouteDataStore } from './stores/routeDataStore';
 import Router from './components/Router.vue';
+import LoadingError from './components/LoadingError.vue';
+import LoadingSpinner from './components/LoadingSpinner.vue';
+import ThemeSwitch from './components/ThemeSwitch.vue';
 
 const isEisvanaHost = window.location.host === 'census.eisvana.com';
 
@@ -61,6 +64,8 @@ onMounted(async () => {
     requestFailed.value = true;
   }
 });
+
+const isLoading = computed(() => requestSent.value && !requestSucceeded.value && !requestFailed.value);
 </script>
 
 <template>
@@ -68,15 +73,27 @@ onMounted(async () => {
     <nav>
       <a :href="isEisvanaHost && !route ? 'https://eisvana.com' : '..'">&larr; Back to main page</a>
     </nav>
+    <ThemeSwitch />
   </header>
 
-  <main>
-    <Router />
+  <main class="content">
+    <div v-show="requestSucceeded || isFormRoute">
+      <Router />
+    </div>
+    <LoadingSpinner v-if="isLoading" />
+    <LoadingError v-if="requestFailed" />
   </main>
 </template>
 
 <style scoped lang="scss">
 .header {
   margin-block-start: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.content {
+  margin-block: 1rem 5rem;
 }
 </style>
