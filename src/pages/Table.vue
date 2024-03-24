@@ -10,7 +10,10 @@ const { censusData, availableRevisions } = storeToRefs(censusDataStore);
 const revision = ref('');
 
 const filteredEntries = computed(() =>
-  revision.value ? censusData.value.filter((item) => item.CensusRenewal.includes(revision.value)) : censusData.value
+  (revision.value
+    ? censusData.value.filter((item) => item.CensusRenewal.includes(revision.value))
+    : censusData.value
+  ).toReversed()
 );
 const filteredCensusCount = computed(() => filteredEntries.value.length);
 </script>
