@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { CensusEntry } from '@/types/query';
+import { encodePlayerName } from '@/helpers/nameTranscode';
 import LinkItem from './LinkItem.vue';
 
 defineProps<{
@@ -52,7 +53,8 @@ defineProps<{
     <div class="action-buttons">
       <button>Renew</button>
       <a
-        href=""
+        :href="`./form.html?update=${encodePlayerName(entry.CensusPlayer)}`"
+        role="button"
         data-tooltip="New Census Base"
         >Update</a
       >
