@@ -9,7 +9,7 @@ export default defineConfig({
   plugins: [vue()],
   build: {
     rollupOptions: {
-      input: ['index.html', 'form.html', 'renew.html'],
+      input: ['index.html', 'form.html', 'renew.html', 'table.html'],
     },
   },
   resolve: {
