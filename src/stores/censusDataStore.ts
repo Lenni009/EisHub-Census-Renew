@@ -14,5 +14,10 @@ export const useCensusDataStore = defineStore('censusData', {
 
   getters: {
     censusCount: (state) => state.censusData.length,
+    availableRevisions: (state) => {
+      const revisionArray = state.censusData.flatMap((item) => item.CensusRenewal);
+      const uniqueRevisions = new Set(revisionArray);
+      return Array.from(uniqueRevisions);
+    },
   },
 });
