@@ -2,15 +2,15 @@
 import { computed, ref, watchEffect } from 'vue';
 import UserRow from './UserRow.vue';
 import type { CensusEntry } from '@/types/query';
-import { useRequestStore } from '@/stores/requestStore';
 import { storeToRefs } from 'pinia';
+import { useCensusDataStore } from '@/stores/censusDataStore';
 
 const props = defineProps<{
   filter: string;
 }>();
 
-const pageData = useRequestStore();
-const { censusData } = storeToRefs(pageData);
+const censusDataStore = useCensusDataStore();
+const { censusData } = storeToRefs(censusDataStore);
 
 const emit = defineEmits<(e: 'exceeded') => void>();
 

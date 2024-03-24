@@ -1,35 +1,26 @@
 <script setup lang="ts">
-import { onMounted, type Component } from 'vue';
-import Table from './pages/Table.vue';
-import Renew from './pages/Renew.vue';
-import Form from './pages/Form.vue';
+import { onMounted } from 'vue';
 import { censusQuery } from './variables/wikiRequest';
 import type { QueryEntry } from './types/query';
 import { useRequestStore } from './stores/requestStore';
 import { storeToRefs } from 'pinia';
+import { useCensusDataStore } from './stores/censusDataStore';
+import { useRouteDataStore } from './stores/routeDataStore';
+import Router from './components/Router.vue';
 
 const isEisvanaHost = window.location.host === 'census.eisvana.com';
 
-const router: { [key: string]: Component } = {
-  form: Form,
-  renew: Renew,
-};
+const requestData = useRequestStore();
+const { requestFailed, requestSucceeded, requestSent } = storeToRefs(requestData);
 
-const route = window.location.pathname.split('/')?.at(-1)?.slice(0, -5); // NoSonar getting the current filename without the "html" ending
-const routeComponent = getRouteComponent();
+const censusDataStore = useCensusDataStore();
+const { censusData } = storeToRefs(censusDataStore);
 
-const isFormRoute = route === 'form';
-
-function getRouteComponent() {
-  if (!route) return Table;
-  return router[route] ?? Table;
-}
-
-const pageData = useRequestStore();
-const { censusData, requestFailed, requestSucceeded, requestSent } = storeToRefs(pageData);
+const routeData = useRouteDataStore();
+const { route, isFormRoute } = storeToRefs(routeData);
 
 onMounted(async () => {
-  if (isFormRoute) return;
+  if (isFormRoute.value) return;
   try {
     requestSent.value = true;
     const res = await fetch(censusQuery);
@@ -80,15 +71,7 @@ onMounted(async () => {
   </header>
 
   <main>
-    <component
-      v-if="requestSucceeded || isFormRoute"
-      :is="routeComponent"
-    />
-    <div v-else-if="requestFailed">Something went wrong :/</div>
-    <div
-      v-else
-      aria-busy="true"
-    ></div>
+    <Router />
   </main>
 </template>
 

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { useRequestStore } from '@/stores/requestStore';
+import { useCensusDataStore } from '@/stores/censusDataStore';
 import { storeToRefs } from 'pinia';
 
-const pageData = useRequestStore();
-const { censusData, censusCount } = storeToRefs(pageData);
+const censusDataStore = useCensusDataStore();
+const { censusData, censusCount } = storeToRefs(censusDataStore);
 </script>
 
 <template>
@@ -20,8 +20,8 @@ const { censusData, censusCount } = storeToRefs(pageData);
     <div class="heading">Date of Arrival</div>
     <div class="heading">Renewed</div>
     <div class="heading">Release</div>
-    <div class="heading">Renew</div>
-    <div class="heading">Update Census Base</div>
+    <div class="heading">Renew Entry</div>
+    <div class="heading">Update Base</div>
     <template v-for="entry in censusData">
       <div>{{ entry.CensusPlayer }}</div>
       <div>{{ entry.CensusReddit }}</div>
@@ -35,7 +35,13 @@ const { censusData, censusCount } = storeToRefs(pageData);
       <div>{{ entry.CensusRenewal.join(', ') }}</div>
       <div>{{ entry.GameRelease }}</div>
       <div><button>Renew</button></div>
-      <div><a href="./form" role="button">Update Census Base</a></div>
+      <div>
+        <a
+          href="./form"
+          role="button"
+          >Update</a
+        >
+      </div>
     </template>
   </div>
 </template>
@@ -45,6 +51,11 @@ const { censusData, censusCount } = storeToRefs(pageData);
   display: grid;
   grid-template-columns: repeat(13, auto);
   gap: 0.5rem;
+  font-size: 1rem;
+
+  & > * {
+    font-size: inherit;
+  }
 
   .heading {
     font-weight: bold;
