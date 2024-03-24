@@ -2,17 +2,30 @@
 import { storeToRefs } from 'pinia';
 import { useRouteDataStore } from '@/stores/routeDataStore';
 import { defineAsyncComponent, type Component } from 'vue';
+import { useRequestStore } from '@/stores/requestStore';
 
 const routeData = useRouteDataStore();
 const { route } = storeToRefs(routeData);
 
-const router: Record<string, string> = {
-  form: 'Form',
-  renew: 'Renew',
-  table: 'Table',
+const requestData = useRequestStore();
+
+interface RouterObj {
+  component: string;
+  requiresData: boolean;
+}
+
+const router: Record<string, RouterObj> = {
+  form: { component: 'Form', requiresData: false },
+  renew: { component: 'Renew', requiresData: true },
+  table: { component: 'Table', requiresData: true },
+  index: { component: 'Home', requiresData: false },
 };
 
-const RouteComponent = defineAsyncComponent<Component>(() => import(`../pages/${getRouteComponent()}.vue`));
+const routeComponentObj = getRouteComponent();
+
+const RouteComponent = defineAsyncComponent<Component>(() => import(`../pages/${routeComponentObj.component}.vue`));
+
+if (routeComponentObj.requiresData) requestData.getCensusData();
 
 function getRouteComponent() {
   const currentRoute = route.value;
