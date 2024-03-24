@@ -13,14 +13,12 @@ interface RawCensusEntry {
 export interface CensusEntry extends RawCensusEntry {
   CensusRenewal: string[];
   CensusArrival: Date;
-  GameRelease: string;
 }
 
 // returned from query
 interface QueryCensusEntry extends RawCensusEntry {
   CensusRenewal: string;
   CensusArrival: string;
-  'Game release': string;
 }
 
 // API query returns an array of these

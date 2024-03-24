@@ -37,7 +37,6 @@ onMounted(async () => {
           CensusPlayer,
           CensusReddit,
           CensusRenewal,
-          'Game release': GameRelease,
           Mode,
           Name,
           Platform,
@@ -50,7 +49,6 @@ onMounted(async () => {
         CensusFriend,
         CensusPlayer,
         CensusReddit,
-        GameRelease,
         Mode,
         Name,
         Platform,
@@ -71,12 +69,20 @@ const isLoading = computed(() => requestSent.value && !requestSucceeded.value &&
 <template>
   <header class="header">
     <nav>
-      <a :href="isEisvanaHost && !route ? 'https://eisvana.com' : '..'">&larr; Back to main page</a>
+      <ul>
+        <li>
+          <a :href="isEisvanaHost && !route ? 'https://eisvana.com' : '..'">&larr; Back to main page</a>
+        </li>
+      </ul>
+      <ul>
+        <li>
+          <ThemeSwitch />
+        </li>
+      </ul>
     </nav>
-    <ThemeSwitch />
   </header>
 
-  <main class="content">
+  <main>
     <div v-show="requestSucceeded || isFormRoute">
       <Router />
     </div>
@@ -85,15 +91,3 @@ const isLoading = computed(() => requestSent.value && !requestSucceeded.value &&
   </main>
 </template>
 
-<style scoped lang="scss">
-.header {
-  margin-block-start: 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-}
-
-.content {
-  margin-block: 1rem 5rem;
-}
-</style>

@@ -17,7 +17,6 @@ const query = {
     'Mode',
     'CensusArrival',
     'CensusRenewal',
-    'Game_release',
   ],
   where: `CensusShow IS NOT NULL AND Civilized="${civilized}"`,
   order_by: 'CensusRenewal',
