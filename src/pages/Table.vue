@@ -85,6 +85,6 @@ const filteredCensusCount = computed(() => filteredEntries.value.length);
 
 .v-enter-from {
   opacity: 0;
-  translate: 0 50px;
+  translate: 0 30px;
 }
 </style>
