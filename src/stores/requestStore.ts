@@ -20,12 +20,10 @@ export const useRequestStore = defineStore('requests', {
     async getCensusData() {
       const censusDataStore = useCensusDataStore();
       const { censusData } = storeToRefs(censusDataStore);
-      const sleep = (delay: number) => new Promise((resolve) => setTimeout(resolve, delay));
       try {
         this.requestSent = true;
         const res = await fetch(censusQuery);
         const data = await res.json();
-        await sleep(3000);
         censusData.value = data.cargoquery.map(
           ({
             title: {
