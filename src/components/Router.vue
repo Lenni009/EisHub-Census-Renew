@@ -2,8 +2,6 @@
 import { storeToRefs } from 'pinia';
 import { useRouteDataStore } from '@/stores/routeDataStore';
 import { defineAsyncComponent, type Component } from 'vue';
-import LoadingSpinner from './LoadingSpinner.vue';
-import LoadingError from './LoadingError.vue';
 
 const routeData = useRouteDataStore();
 const { route } = storeToRefs(routeData);
@@ -14,11 +12,7 @@ const router: Record<string, string> = {
   table: 'Table',
 };
 
-const RouteComponent = defineAsyncComponent<Component>({
-  loader: () => import(`../pages/${getRouteComponent()}.vue`),
-  loadingComponent: LoadingSpinner,
-  errorComponent: LoadingError,
-});
+const RouteComponent = defineAsyncComponent<Component>(() => import(`../pages/${getRouteComponent()}.vue`));
 
 function getRouteComponent() {
   const currentRoute = route.value;
