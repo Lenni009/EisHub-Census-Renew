@@ -11,48 +11,39 @@ defineProps<{
   <article class="census-item">
     <p class="player-name">{{ entry.CensusPlayer }}</p>
     <div class="table-items">
-      <div
-        v-if="entry.CensusDiscord"
-        class="item-group"
-      >
+      <div v-if="entry.CensusDiscord">
         <div class="heading">Discord:</div>
         <div>{{ entry.CensusDiscord }}</div>
       </div>
-      <div
-        v-if="entry.CensusReddit"
-        class="item-group"
-      >
+      <div v-if="entry.CensusReddit">
         <div class="heading">Social Media:</div>
         <div class="link is-social">
           <LinkItem :wikitext="entry.CensusReddit" />
         </div>
       </div>
-      <div
-        v-if="entry.CensusFriend"
-        class="item-group"
-      >
+      <div v-if="entry.CensusFriend">
         <div class="heading">Friend Code:</div>
         <div>{{ entry.CensusFriend }}</div>
       </div>
-      <div class="item-group">
+      <div>
         <div class="heading">Base:</div>
         <div class="link">
           <LinkItem :wikitext="entry.Name" />
         </div>
       </div>
-      <div class="item-group">
+      <div>
         <div class="heading">System:</div>
         <div>{{ entry.System }}</div>
       </div>
-      <div class="item-group">
+      <div>
         <div class="heading">Platform:</div>
         <div>{{ entry.Platform }}</div>
       </div>
-      <div class="item-group">
+      <div>
         <div class="heading">Mode:</div>
         <div>{{ entry.Mode }}</div>
       </div>
-      <div class="item-group">
+      <div>
         <div class="heading">Arrival:</div>
         <div>{{ entry.CensusArrival.toLocaleDateString() }}</div>
       </div>
@@ -60,7 +51,11 @@ defineProps<{
 
     <div class="action-buttons">
       <button>Renew</button>
-      <button data-tooltip="New Census Base">Update</button>
+      <a
+        href=""
+        data-tooltip="New Census Base"
+        >Update</a
+      >
     </div>
   </article>
 </template>
