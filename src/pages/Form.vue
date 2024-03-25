@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { decodePlayerName } from '@/helpers/nameTranscode';
-import { onMounted, ref } from 'vue';
+import type { CensusEntry } from '@/types/query';
+import { useWikiPageDataStore } from '@/stores/wikiPageDataStore';
+import { storeToRefs } from 'pinia';
 
 const searchParamString = window.location.search;
 const searchParams = new URLSearchParams(searchParamString);
@@ -10,24 +12,27 @@ const updatePlayerId = decodePlayerName(updatePlayerIdEncoded ?? '');
 
 const playerDataString = sessionStorage.getItem('update');
 
-const playerData = JSON.parse(playerDataString ?? '{}');
+const playerData: CensusEntry = JSON.parse(playerDataString ?? '{}');
 
-console.log(updatePlayerId, playerData);
+const isUpdatingPage = updatePlayerId === playerData.CensusPlayer;
 
-const apiCall =
-  'https://nomanssky.fandom.com/api.php?action=parse&format=json&origin=*&page=Eisvana%20Research%20Outpost&prop=wikitext&section=3&contentmodel=wikitext';
+const wikiPageData = useWikiPageDataStore();
+const { pageName, sectionData } = storeToRefs(wikiPageData);
 
-const wikitext = ref('');
+pageName.value = playerData.Name;
 
-onMounted(async () => {
-  const res = await fetch(apiCall);
-  const { parse } = await res.json();
-  wikitext.value = parse.wikitext['*'].split('\n').slice(1).join('\n');
-});
+if (isUpdatingPage) wikiPageData.fetchWikiText();
 </script>
 
 <template>
-  <div>Hello world!</div>
-
-  <textarea v-model="wikitext"></textarea>
+  <label
+    v-for="section in sectionData"
+    :aria-busy="section.loading"
+    :for="section.name"
+    >{{ section.name }}
+    <textarea
+      :id="section.name"
+      v-model="section.text"
+    ></textarea>
+  </label>
 </template>
