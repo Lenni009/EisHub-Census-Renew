@@ -22,7 +22,7 @@ const wikitext = ref('');
 onMounted(async () => {
   const res = await fetch(apiCall);
   const { parse } = await res.json();
-  wikitext.value = parse.wikitext['*'];
+  wikitext.value = parse.wikitext['*'].split('\n').slice(1).join('\n');
 });
 </script>
 
