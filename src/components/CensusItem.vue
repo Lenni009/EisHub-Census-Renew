@@ -58,10 +58,17 @@ function storeData() {
       <button>Renew</button>
       <a
         :href="`./form.html?update=${encodePlayerName(entry.CensusPlayer)}`"
-        data-tooltip="New Census Base"
+        data-tooltip="Update Census Base"
         role="button"
         @click="storeData"
         >Update</a
+      >
+      <a
+        :href="`./form.html?new=${encodePlayerName(entry.CensusPlayer)}`"
+        data-tooltip="New Census Base"
+        role="button"
+        @click="storeData"
+        >New</a
       >
     </div>
   </article>
