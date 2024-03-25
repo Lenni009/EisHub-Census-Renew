@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { useCensusDataStore } from '@/stores/censusDataStore';
 import { storeToRefs } from 'pinia';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import CensusItem from '../components/CensusItem.vue';
 
 const censusDataStore = useCensusDataStore();
 const { censusData, availableRevisions } = storeToRefs(censusDataStore);
 
 const revision = ref('');
+
+watch(availableRevisions, (newVal) => (revision.value = newVal[0].toString()), { once: true });
 
 const filteredEntries = computed(() =>
   (revision.value

@@ -20,7 +20,7 @@ export const useCensusDataStore = defineStore('censusData', {
       const uniqueRevisionArray = Array.from(uniqueRevisions);
       const revisionNumbers = uniqueRevisionArray.map(Number);
       const sortedRevisions = revisionNumbers.toSorted((a: number, b: number) => b - a);
-      return sortedRevisions;
+      return sortedRevisions.map(String);
     },
   },
 });
