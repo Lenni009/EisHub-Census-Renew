@@ -29,7 +29,7 @@ if (routeComponentObj.requiresData) requestData.getCensusData();
 
 function getRouteComponent() {
   const currentRoute = route.value;
-  if (!currentRoute || !router[currentRoute]) return router.table;
+  if (!currentRoute || !router[currentRoute]) return router.index;
   return router[currentRoute];
 }
 </script>
