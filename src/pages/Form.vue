@@ -26,14 +26,20 @@ if (isUpdatingPage) wikiPageData.fetchWikiText();
 
 <template>
   <article v-for="section in sectionData">
-    <label
-      :aria-busy="section.loading"
-      :for="section.name"
-      >{{ section.name }}</label
-    >
+    <label :for="section.name">
+      <span>{{ section.name }}</span>
+      <span :aria-busy="section.loading"></span>
+    </label>
     <textarea
       :id="section.name"
       v-model="section.text"
     ></textarea>
   </article>
 </template>
+
+<style scoped lang="scss">
+label {
+  display: flex;
+  gap: 0.5rem;
+}
+</style>
