@@ -14,17 +14,24 @@ const requestData = useRequestStore();
 const { requestSent, requestSucceeded, requestFailed } = storeToRefs(requestData);
 
 const routeData = useRouteDataStore();
-const { route } = storeToRefs(routeData);
+const { route, isFormRoute } = storeToRefs(routeData);
 
 const isLoading = computed(() => requestSent.value && !requestSucceeded.value && !requestFailed.value);
+
+const hasSearchParams = Boolean(window.location.search);
 </script>
 
 <template>
   <header class="header">
     <nav>
       <ul>
-        <li>
-          <a :href="isEisvanaHost && !route ? 'https://eisvana.com' : '..'">&larr; Back to main page</a>
+        <li class="navigation-items">
+          <div>
+            <a :href="isEisvanaHost && !route ? 'https://eisvana.com' : '..'">&larr; Back to main page</a>
+          </div>
+          <div v-if="isFormRoute && hasSearchParams">
+            <a href="./table.html">&larr; Table</a>
+          </div>
         </li>
       </ul>
       <ul>
@@ -49,3 +56,10 @@ const isLoading = computed(() => requestSent.value && !requestSucceeded.value &&
     </Suspense>
   </main>
 </template>
+
+<style scoped lang="scss">
+.navigation-items {
+  display: flex;
+  flex-direction: column;
+}
+</style>
