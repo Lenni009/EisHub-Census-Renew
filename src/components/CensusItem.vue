@@ -1,15 +1,21 @@
 <script setup lang="ts">
 import type { CensusEntry } from '@/types/query';
 import { encodePlayerName } from '@/helpers/nameTranscode';
+import { getCurrentYear } from '@/helpers/date';
 import LinkItem from './LinkItem.vue';
+import { computed } from 'vue';
 
 const props = defineProps<{
   entry: CensusEntry;
 }>();
 
+const currentYear = getCurrentYear();
+
 function storeData() {
   sessionStorage.setItem('update', JSON.stringify(props.entry));
 }
+
+const isRenewed = computed(() => props.entry.CensusRenewal.includes(currentYear.toString()));
 </script>
 
 <template>
@@ -55,7 +61,9 @@ function storeData() {
     </div>
 
     <div class="action-buttons">
-      <button>Renew</button>
+      <div :data-tooltip="isRenewed ? `Already renewed!` : `Renew entry for ${currentYear}`">
+        <button :disabled="isRenewed">Renew</button>
+      </div>
       <a
         :href="`./form.html?update=${encodePlayerName(entry.CensusPlayer)}`"
         data-tooltip="Update Census Base"
@@ -109,6 +117,14 @@ function storeData() {
     display: flex;
     gap: 0.5rem;
     justify-content: space-around;
+
+    [data-tooltip] {
+      border: none;
+
+      &:has([disabled]) {
+        cursor: not-allowed;
+      }
+    }
   }
 
   .player-name {
