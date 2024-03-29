@@ -31,8 +31,14 @@ function filterEntry({
   return includesSome;
 }
 
-const filteredEntries = computed(() => censusData.value.filter(filterEntry).toReversed());
-const filteredCensusCount = computed(() => filteredEntries.value.length);
+const currentRevisionEntries = computed(() =>
+  (revision.value
+    ? censusData.value.filter((item) => item.CensusRenewal.includes(revision.value))
+    : censusData.value
+  ).toReversed()
+);
+const currentRevisionCensusCount = computed(() => currentRevisionEntries.value.length);
+const filteredEntries = computed(() => currentRevisionEntries.value.filter(filterEntry).toReversed());
 </script>
 
 <template>
@@ -40,7 +46,7 @@ const filteredCensusCount = computed(() => filteredEntries.value.length);
 
   <div class="layout-table">
     <div class="top-row">
-      <p>Census count: {{ filteredCensusCount }}</p>
+      <p>Census count: {{ currentRevisionCensusCount }}</p>
       <div>
         <input
           v-model="searchTerm"
