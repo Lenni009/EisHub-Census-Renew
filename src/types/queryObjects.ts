@@ -28,6 +28,7 @@ export interface BasicCargoQueryData extends BasicQueryApiData {
 
 export interface CensusQueryObject extends BasicCargoQueryData {
   order_by: string;
+  group_by: string;
 }
 
 export type QueryObjects = SectionQueryObject | SectionContentQueryObject | BasicCargoQueryData | CensusQueryObject;

@@ -67,6 +67,7 @@ const getCensusQueryObject = (civilized: string): CensusQueryObject => ({
   ],
   where: `CensusShow IS NOT NULL AND Civilized="${civilized}"`,
   order_by: 'CensusRenewal',
+  group_by: 'CensusPlayer',
 });
 
 const getBaseQueryObject = (baseName: string): BasicCargoQueryData => ({
