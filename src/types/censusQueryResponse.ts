@@ -13,6 +13,8 @@ interface RawCensusEntry {
 export interface CensusEntry extends RawCensusEntry {
   CensusRenewal: string[];
   CensusArrival: Date;
+  renewRequested: boolean;
+  renewed: boolean;
 }
 
 // returned from query

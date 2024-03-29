@@ -1,8 +1,10 @@
-import type { QueryEntry } from '@/types/censusQueryResponse';
+import type { QueryEntry, CensusEntry } from '@/types/censusQueryResponse';
 import { getCensusQueryUrl } from '@/helpers/wikiApi';
 import { defineStore, storeToRefs } from 'pinia';
 import { useCensusDataStore } from './censusDataStore';
 import { civilized } from '@/variables/civilized';
+import { currentYearString } from '@/variables/year';
+import { useRenewDataStore } from './renewDataStore';
 
 interface RequestStore {
   requestSent: boolean;
@@ -21,6 +23,8 @@ export const useRequestStore = defineStore('requests', {
     async getCensusData() {
       const censusDataStore = useCensusDataStore();
       const { censusData } = storeToRefs(censusDataStore);
+      const renewDataStore = useRenewDataStore();
+      const { requested } = storeToRefs(renewDataStore);
       try {
         this.requestSent = true;
         const censusQueryUrl = getCensusQueryUrl(civilized);
@@ -40,18 +44,23 @@ export const useRequestStore = defineStore('requests', {
               Platform,
               System,
             },
-          }: QueryEntry) => ({
-            CensusArrival: new Date(CensusArrival),
-            CensusRenewal: CensusRenewal.split(',')?.map((item) => item.trim()) ?? [],
-            CensusDiscord,
-            CensusFriend,
-            CensusPlayer,
-            CensusReddit,
-            Mode,
-            Name,
-            Platform,
-            System,
-          })
+          }: QueryEntry): CensusEntry => {
+            const censusRenewalArray = CensusRenewal?.split(',')?.map((item) => item.trim()) ?? [];
+            return {
+              renewed: censusRenewalArray.includes(currentYearString),
+              renewRequested: requested.value.includes(CensusPlayer),
+              CensusArrival: new Date(CensusArrival),
+              CensusRenewal: censusRenewalArray,
+              CensusDiscord,
+              CensusFriend,
+              CensusPlayer,
+              CensusReddit,
+              Mode,
+              Name,
+              Platform,
+              System,
+            };
+          }
         );
 
         this.requestSucceeded = true;
