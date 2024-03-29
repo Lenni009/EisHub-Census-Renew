@@ -43,7 +43,7 @@ const tooltipText = computed(() => {
       </div>
       <div v-if="entry.CensusFriend">
         <div class="heading">Friend Code:</div>
-        <div>{{ entry.CensusFriend }}</div>
+        <div class="friend-code">{{ entry.CensusFriend }}</div>
       </div>
       <div>
         <div class="heading">Base:</div>
@@ -145,6 +145,10 @@ const tooltipText = computed(() => {
     text-align: center;
     font-weight: bold;
     margin: 0;
+  }
+
+  .friend-code {
+    font-family: consolas, monospace;
   }
 }
 </style>
