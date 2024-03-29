@@ -40,11 +40,6 @@ const tooManyTries = ref(false);
 </template>
 
 <style scoped lang="scss">
-.title {
-  margin-block-end: 2rem;
-  text-align: center;
-}
-
 .warning {
   background-color: red;
   color: white;
