@@ -38,7 +38,7 @@ const currentRevisionEntries = computed(() =>
   ).toReversed()
 );
 const currentRevisionCensusCount = computed(() => currentRevisionEntries.value.length);
-const filteredEntries = computed(() => currentRevisionEntries.value.filter(filterEntry).toReversed());
+const filteredEntries = computed(() => currentRevisionEntries.value.filter(filterEntry));
 </script>
 
 <template>
