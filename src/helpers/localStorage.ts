@@ -1,9 +1,7 @@
 import type { Ref } from 'vue';
 import { removeDuplicates } from './array';
-import { getCurrentYear } from './date';
+import { currentYearString } from '@/variables/year';
 import type { LocalStorageData } from '@/types/localStorage';
-
-const currentYearString = getCurrentYear().toString();
 
 // local storage keys are the years
 // local storage values are objects with the keys "requested" and "amount"
