@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watchEffect } from 'vue';
 import UserRow from './UserRow.vue';
-import type { CensusEntry } from '@/types/query';
+import type { CensusEntry } from '@/types/censusQueryResponse';
 import { storeToRefs } from 'pinia';
 import { useCensusDataStore } from '@/stores/censusDataStore';
 

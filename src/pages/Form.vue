@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { decodePlayerName } from '@/helpers/nameTranscode';
-import type { CensusEntry } from '@/types/query';
+import type { CensusEntry } from '@/types/censusQueryResponse';
 import { useWikiPageDataStore } from '@/stores/wikiPageDataStore';
 import { storeToRefs } from 'pinia';
 

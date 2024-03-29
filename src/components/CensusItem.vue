@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { CensusEntry } from '@/types/query';
+import type { CensusEntry } from '@/types/censusQueryResponse';
 import { encodePlayerName } from '@/helpers/nameTranscode';
 import { getCurrentYear } from '@/helpers/date';
 import LinkItem from './LinkItem.vue';

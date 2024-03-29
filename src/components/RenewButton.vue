@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import ConfirmDialog from './ConfirmDialog.vue';
-import type { CensusEntry } from '@/types/query';
+import type { CensusEntry } from '@/types/censusQueryResponse';
 
 const props = defineProps<{
   userObject: CensusEntry;

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type CensusEntry } from '@/types/query';
+import { type CensusEntry } from '@/types/censusQueryResponse';
 import RenewButton from './RenewButton.vue';
 import { computed } from 'vue';
 

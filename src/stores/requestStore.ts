@@ -1,7 +1,8 @@
-import type { QueryEntry } from '@/types/query';
-import { censusQuery } from '@/variables/wikiRequest';
+import type { QueryEntry } from '@/types/censusQueryResponse';
+import { getCensusQueryUrl } from '@/helpers/wikiApi';
 import { defineStore, storeToRefs } from 'pinia';
 import { useCensusDataStore } from './censusDataStore';
+import { civilized } from '@/variables/civilized';
 
 interface RequestStore {
   requestSent: boolean;
@@ -22,7 +23,8 @@ export const useRequestStore = defineStore('requests', {
       const { censusData } = storeToRefs(censusDataStore);
       try {
         this.requestSent = true;
-        const res = await fetch(censusQuery);
+        const censusQueryUrl = getCensusQueryUrl(civilized);
+        const res = await fetch(censusQueryUrl);
         const data = await res.json();
         censusData.value = data.cargoquery.map(
           ({

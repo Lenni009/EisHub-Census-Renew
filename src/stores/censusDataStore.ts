@@ -1,4 +1,4 @@
-import type { CensusEntry } from '@/types/query';
+import type { CensusEntry } from '@/types/censusQueryResponse';
 import { defineStore } from 'pinia';
 
 interface CensusData {

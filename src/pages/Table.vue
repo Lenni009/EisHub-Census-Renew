@@ -3,7 +3,7 @@ import { useCensusDataStore } from '@/stores/censusDataStore';
 import { storeToRefs } from 'pinia';
 import { computed, ref, watch } from 'vue';
 import CensusItem from '../components/CensusItem.vue';
-import type { CensusEntry } from '@/types/query';
+import type { CensusEntry } from '@/types/censusQueryResponse';
 
 const censusDataStore = useCensusDataStore();
 const { censusData, availableRevisions } = storeToRefs(censusDataStore);
@@ -31,10 +31,15 @@ function filterEntry({
   return includesSome;
 }
 
+// only list the entries that are renewed for the currently selected year
 const currentRevisionEntries = computed(() =>
   revision.value ? censusData.value.filter((item) => item.CensusRenewal.includes(revision.value)) : censusData.value
 );
+
+// count the entries that are renewed for the currently selected year
 const currentRevisionCensusCount = computed(() => currentRevisionEntries.value.length);
+
+// filter the entries that are renewed for the currently selected year, then reverse that array
 const filteredEntries = computed(() => currentRevisionEntries.value.filter(filterEntry).toReversed());
 </script>
 
