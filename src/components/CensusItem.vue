@@ -23,7 +23,7 @@ const tooltipText = computed(() => {
   if (props.entry.renewed) return 'Already renewed';
   if (props.entry.renewRequested) return 'Renewal Requested';
   if (triesExceeded.value) return 'Too Many Requests';
-  return `Renew entry for ${currentYearString}`;
+  return `Request Renewal for ${currentYearString}`;
 });
 </script>
 
