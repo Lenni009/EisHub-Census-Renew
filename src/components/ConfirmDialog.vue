@@ -11,6 +11,10 @@ const toggleModal = () => {
   (document.activeElement as HTMLElement | null)?.blur();
 };
 
+const emit = defineEmits<{
+  confirm: [];
+}>();
+
 defineExpose({
   toggleModal,
 });
@@ -35,7 +39,7 @@ defineExpose({
         method="dialog"
         class="confirm-options"
       >
-        <button @click="$emit('confirm')">Yes</button>
+        <button @click.once="$emit('confirm')">Yes</button>
         <button class="secondary">No</button>
       </form>
     </article>
