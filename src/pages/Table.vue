@@ -32,13 +32,10 @@ function filterEntry({
 }
 
 const currentRevisionEntries = computed(() =>
-  (revision.value
-    ? censusData.value.filter((item) => item.CensusRenewal.includes(revision.value))
-    : censusData.value
-  ).toReversed()
+  revision.value ? censusData.value.filter((item) => item.CensusRenewal.includes(revision.value)) : censusData.value
 );
 const currentRevisionCensusCount = computed(() => currentRevisionEntries.value.length);
-const filteredEntries = computed(() => currentRevisionEntries.value.filter(filterEntry));
+const filteredEntries = computed(() => currentRevisionEntries.value.filter(filterEntry).toReversed());
 </script>
 
 <template>
