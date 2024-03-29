@@ -26,8 +26,8 @@ function filterEntry({
 }: CensusEntry): boolean {
   if (revision.value && !CensusRenewal.includes(revision.value)) return false;
   const allItems = [Name, CensusPlayer, CensusDiscord, CensusReddit, Mode, Platform, System, CensusFriend];
-  const allItemsLowerCase = allItems.map((item) => item?.toLowerCase());
-  const includesSome = allItemsLowerCase.some((item) => item?.includes(searchTerm.value.toLowerCase()));
+  const allItemsLowerCase = allItems.map((item) => item?.trim().toLowerCase());
+  const includesSome = allItemsLowerCase.some((item) => item?.includes(searchTerm.value.trim().toLowerCase()));
   return includesSome;
 }
 
