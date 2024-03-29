@@ -3,20 +3,35 @@ import { useCensusDataStore } from '@/stores/censusDataStore';
 import { storeToRefs } from 'pinia';
 import { computed, ref, watch } from 'vue';
 import CensusItem from '../components/CensusItem.vue';
+import type { CensusEntry } from '@/types/query';
 
 const censusDataStore = useCensusDataStore();
 const { censusData, availableRevisions } = storeToRefs(censusDataStore);
 
 const revision = ref('');
+const searchTerm = ref('');
 
 watch(availableRevisions, (newVal) => (revision.value = newVal[0].toString()), { once: true });
 
-const filteredEntries = computed(() =>
-  (revision.value
-    ? censusData.value.filter((item) => item.CensusRenewal.includes(revision.value))
-    : censusData.value
-  ).toReversed()
-);
+function filterEntry({
+  Name,
+  CensusPlayer,
+  CensusDiscord,
+  CensusReddit,
+  Mode,
+  Platform,
+  System,
+  CensusFriend,
+  CensusRenewal,
+}: CensusEntry): boolean {
+  if (revision.value && !CensusRenewal.includes(revision.value)) return false;
+  const allItems = [Name, CensusPlayer, CensusDiscord, CensusReddit, Mode, Platform, System, CensusFriend];
+  const allItemsLowerCase = allItems.map((item) => item?.toLowerCase());
+  const includesSome = allItemsLowerCase.some((item) => item?.includes(searchTerm.value.toLowerCase()));
+  return includesSome;
+}
+
+const filteredEntries = computed(() => censusData.value.filter(filterEntry).toReversed());
 const filteredCensusCount = computed(() => filteredEntries.value.length);
 </script>
 
@@ -26,6 +41,12 @@ const filteredCensusCount = computed(() => filteredEntries.value.length);
   <div class="layout-table">
     <div class="top-row">
       <p>Census count: {{ filteredCensusCount }}</p>
+      <div>
+        <input
+          v-model="searchTerm"
+          type="search"
+        />
+      </div>
       <div>
         <select v-model="revision">
           <option value="">All</option>
@@ -56,10 +77,6 @@ const filteredCensusCount = computed(() => filteredEntries.value.length);
 </template>
 
 <style scoped lang="scss">
-.title {
-  text-align: center;
-}
-
 .layout-table {
   display: flex;
   flex-direction: column;
