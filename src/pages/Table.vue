@@ -78,6 +78,7 @@ const filteredEntries = computed(() => currentRevisionEntries.value.filter(filte
         <CensusItem
           v-for="entry in filteredEntries"
           :entry
+          :key="entry.CensusPlayer"
         />
       </div>
     </Transition>

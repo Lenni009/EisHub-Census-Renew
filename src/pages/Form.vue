@@ -25,7 +25,10 @@ if (isUpdatingPage) wikiPageData.fetchWikiText();
 </script>
 
 <template>
-  <article v-for="section in sectionData">
+  <article
+    v-for="section in sectionData"
+    :key="section.name"
+  >
     <label :for="section.name">
       <span>{{ section.name }}</span>
       <span :aria-busy="section.loading"></span>
