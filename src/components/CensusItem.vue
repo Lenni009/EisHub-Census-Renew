@@ -1,21 +1,30 @@
 <script setup lang="ts">
 import type { CensusEntry } from '@/types/censusQueryResponse';
 import { encodePlayerName } from '@/helpers/nameTranscode';
-import { getCurrentYear } from '@/helpers/date';
 import LinkItem from './LinkItem.vue';
 import { computed } from 'vue';
+import RenewButton from './RenewButton.vue';
+import { currentYearString } from '@/variables/year';
+import { useRenewDataStore } from '@/stores/renewDataStore';
+import { storeToRefs } from 'pinia';
 
 const props = defineProps<{
   entry: CensusEntry;
 }>();
 
-const currentYear = getCurrentYear();
+const renewDataStore = useRenewDataStore();
+const { triesExceeded } = storeToRefs(renewDataStore);
 
 function storeData() {
   sessionStorage.setItem('update', JSON.stringify(props.entry));
 }
 
-const isRenewed = computed(() => props.entry.CensusRenewal.includes(currentYear.toString()));
+const tooltipText = computed(() => {
+  if (props.entry.renewed) return 'Already renewed';
+  if (props.entry.renewRequested) return 'Renewal Requested';
+  if (triesExceeded.value) return 'Too Many Requests';
+  return `Renew entry for ${currentYearString}`;
+});
 </script>
 
 <template>
@@ -61,8 +70,13 @@ const isRenewed = computed(() => props.entry.CensusRenewal.includes(currentYear.
     </div>
 
     <div class="action-buttons">
-      <div :data-tooltip="isRenewed ? `Already renewed!` : `Renew entry for ${currentYear}`">
-        <button :disabled="isRenewed">Renew</button>
+      <div :data-tooltip="tooltipText">
+        <RenewButton
+          :user-object="entry"
+          button-text="Renew"
+          button-text-failed="Failed!"
+          button-text-success="Renewed!"
+        />
       </div>
       <a
         :href="`./form.html?update=${encodePlayerName(entry.CensusPlayer)}`"

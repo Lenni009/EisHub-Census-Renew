@@ -3,8 +3,6 @@ import { computed } from 'vue';
 import UserRow from './UserRow.vue';
 import { storeToRefs } from 'pinia';
 import { useCensusDataStore } from '@/stores/censusDataStore';
-import { updateLocalStorage } from '@/helpers/localStorage';
-import { useRenewDataStore } from '@/stores/renewDataStore';
 
 const props = defineProps<{
   filter: string;
@@ -13,28 +11,18 @@ const props = defineProps<{
 const censusDataStore = useCensusDataStore();
 const { censusData } = storeToRefs(censusDataStore);
 
-const renewDataStore = useRenewDataStore();
-const { triesExceeded, tries, requested } = storeToRefs(renewDataStore);
-
-const emit = defineEmits<{
-  exceeded: [];
-}>();
-
 const filteredCensusData = computed(() =>
   censusData.value.filter((item) => item.CensusPlayer.toLowerCase().includes(props.filter.toLowerCase()))
 );
-
-const incrementData = (userName: string) => updateLocalStorage(requested, tries, userName);
 </script>
 
 <template>
-  <template v-if="censusData.length && !triesExceeded">
+  <template v-if="censusData.length">
     <div class="table">
       <UserRow
         v-for="dataObj in filteredCensusData"
         :key="dataObj.CensusPlayer"
         :user-object="dataObj"
-        @renew="incrementData"
       />
     </div>
     <div

@@ -5,23 +5,23 @@ import { computed } from 'vue';
 
 const props = defineProps<{
   userObject: CensusEntry;
-  tries: number;
-  renewalRevision: string;
-  alreadyRequested: boolean;
 }>();
 
 const userName = computed(() => props.userObject.CensusPlayer);
 
-const emit = defineEmits(['renew']);
+const buttonText = computed(() => {
+  if (props.userObject.renewed) return 'Already renewed';
+  if (props.userObject.renewRequested) return 'Renewal Requested';
+  return 'Request Renewal';
+});
 </script>
 
 <template>
   <div>{{ userName }}</div>
   <RenewButton
-    :user-name="userName"
+    :button-text
     :user-object="userObject"
-    :renewal-revision="renewalRevision"
-    :already-requested="alreadyRequested"
+    button-text-failed="Request Failed!"
   />
 </template>
 

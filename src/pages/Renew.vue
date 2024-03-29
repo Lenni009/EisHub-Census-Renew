@@ -1,42 +1,39 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import UserTable from '../components/UserTable.vue';
+import { renewWebhook } from '@/variables/env';
+import { useRenewDataStore } from '@/stores/renewDataStore';
+import { storeToRefs } from 'pinia';
 
 const filter = ref<string>('');
 
-const missingWebhook = !import.meta.env.VITE_DISCORD_RENEW_WEBHOOK;
-
-const tooManyTries = ref(false);
+const renewDataStore = useRenewDataStore();
+const { triesExceeded } = storeToRefs(renewDataStore);
 </script>
 
 <template>
   <h1 class="title">Eisvana Census Renewal</h1>
 
   <p
-    v-if="missingWebhook"
+    v-if="!renewWebhook"
     class="warning"
   >
     No Webhook URL found, no message will be sent!
   </p>
-  <template v-if="!tooManyTries">
-    <input
-      id="searchBar"
-      name="searchBar"
-      placeholder="Search Name"
-      type="text"
-      v-model="filter"
-    />
-    <UserTable
-      :filter="filter"
-      @exceeded="tooManyTries = true"
-    />
-  </template>
+  <input
+    v-model="filter"
+    id="searchBar"
+    name="searchBar"
+    placeholder="Search Name"
+    type="search"
+  />
   <p
-    v-else
-    class="tries-exceeded-error"
+    v-if="triesExceeded"
+    class="warning"
   >
     You have requested too many renewals. Please contact Lenni on Discord for help.
   </p>
+  <UserTable :filter="filter" />
 </template>
 
 <style scoped lang="scss">
@@ -45,9 +42,6 @@ const tooManyTries = ref(false);
   color: white;
   border-radius: var(--pico-border-radius);
   padding: 0.5rem;
-}
-
-.tries-exceeded-error {
   text-align: center;
 }
 </style>
