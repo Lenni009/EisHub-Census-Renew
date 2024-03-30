@@ -63,8 +63,7 @@ export function buildBasePage({
 | terminal = ${terminal}
 | racetrack = ${racetrack}
 | censusplayer = ${censusPlayer}
-| censusreddit = ${censusReddit}
-| censussocial = ${censusSocial}
+| ${censusReddit ? 'censusreddit = ' + censusReddit : 'censussocial = ' + censusSocial}
 | censusdiscord = ${censusDiscord}
 | censusfriend = ${censusFriend}
 | censusarrival = ${arrival}
@@ -74,7 +73,7 @@ export function buildBasePage({
 '''${name}''' is a player base.
 
 ==Summary==
-'''${name}''' is a [[Habitable Base|player base]], located on the ${moon ? 'moon [[' + moon + ']] of the' : ''} planet [[${planet}]] in the [[${system}]] system.
+'''${name}''' is a [[Habitable Base|player base]], located on the ${moon ? 'moon [[' + moon + ']] of the ' : ''}planet [[${planet}]] in the [[${system}]] system.
 
 ==Layout==
 ${layout}
