@@ -110,9 +110,10 @@ function buildFileItem(files: File[], storeLoc: Ref<FileItem[]>) {
   border-radius: var(--pico-border-radius);
   border: 2px dashed;
   cursor: pointer;
+  container-type: inline-size;
   transition:
-    background-color 0.2s ease-in-out,
-    border 0.2s ease-in-out;
+    background-color var(--pico-transition),
+    border var(--pico-transition);
 
   &:hover,
   &.drag-active {
@@ -125,7 +126,6 @@ function buildFileItem(files: File[], storeLoc: Ref<FileItem[]>) {
   }
 
   input[type='file'] {
-    width: max-content;
     height: auto;
     padding: 5px;
     border-radius: var(--pico-border-radius);
@@ -134,6 +134,12 @@ function buildFileItem(files: File[], storeLoc: Ref<FileItem[]>) {
     &::file-selector-button {
       padding: 10px 20px;
     }
+  }
+}
+
+@container (width > 400px) {
+  input[type='file'] {
+    width: max-content;
   }
 }
 </style>

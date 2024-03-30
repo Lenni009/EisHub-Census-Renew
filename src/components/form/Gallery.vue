@@ -41,9 +41,9 @@ const togglePreview = () => (isPreviewHidden.value = !isPreviewHidden.value);
     v-if="gallery.length"
     class="gallery-preview-header"
   >
-    <p class="has-text-weight-bold">Gallery Preview</p>
+    <p class="preview-caption has-text-weight-bold">Gallery Preview</p>
     <button
-      class="button"
+      class="show-hide-button"
       type="button"
       @click="togglePreview"
     >
@@ -72,5 +72,10 @@ const togglePreview = () => (isPreviewHidden.value = !isPreviewHidden.value);
   align-items: baseline;
   gap: 1rem;
   margin-block-end: 0.5rem;
+}
+
+.preview-caption,
+.show-hide-button {
+  margin: 0;
 }
 </style>
