@@ -11,7 +11,7 @@ const filePreview = ref<HTMLDivElement | null>(null);
 const isPreviewHidden = ref(false);
 
 onMounted(() => {
-  if (window.matchMedia('(pointer: coarse)').matches || !filePreview.value) return;
+  if (!filePreview.value) return;
   // prettier-ignore
   new Sortable(filePreview.value, { // NoSonar (used by a library, not useless!)
     handle: '.handle', // handle's class
