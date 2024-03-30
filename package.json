@@ -11,12 +11,15 @@
   },
   "dependencies": {
     "@picocss/pico": "^2.0.6",
+    "parse-mediawiki-template": "^0.1.0",
     "pinia": "^2.1.7",
     "sass": "^1.72.0",
+    "sortablejs": "^1.15.2",
     "vue": "^3.4.21"
   },
   "devDependencies": {
     "@types/node": "^20.11.28",
+    "@types/sortablejs": "^1.15.8",
     "@vitejs/plugin-vue": "^5.0.4",
     "prettier": "^3.2.5",
     "typescript": "^5.4.2",
