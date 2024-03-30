@@ -22,12 +22,70 @@ interface SectionQueryObject {
 interface WikiPageData {
   pageName: string;
   sectionData: SectionObject[];
+  discord: string;
+  reddit: string;
+  social: string;
+  player: string;
+  friend: string;
+  platform: 'PC' | 'PlayStation' | 'Xbox' | 'Switch' | null;
+  mode: 'Normal' | 'Relaxed' | 'Survival' | 'Permadeath' | 'Creative' | 'Custom' | null;
+  arrival: string;
+  shareTimezone: boolean;
+  activeTime: string;
+  baseName: string;
+  image: File | null;
+  region: string;
+  system: string;
+  planet: string;
+  moon: string;
+  axes: string;
+  glyphs: string;
+  farm: boolean | null;
+  geobay: boolean | null;
+  arena: boolean | null;
+  racetrack: boolean | null;
+  landingpad: boolean | null;
+  terminal: boolean | null;
+  type: string;
+  layout: string;
+  features: string;
+  addInfo: string;
+  gallery: File[];
 }
 
 export const useWikiPageDataStore = defineStore('wikiPageData', {
   state: (): WikiPageData => ({
     pageName: '',
     sectionData: [{ name: 'Layout' }, { name: 'Features' }, { name: 'Additional Information' }],
+    discord: '',
+    reddit: '',
+    social: '',
+    player: '',
+    friend: '',
+    platform: null,
+    mode: null,
+    arrival: '',
+    shareTimezone: false,
+    activeTime: '',
+    baseName: '',
+    image: null,
+    region: '',
+    system: '',
+    planet: '',
+    moon: '',
+    axes: '',
+    glyphs: '',
+    farm: false,
+    geobay: false,
+    arena: false,
+    racetrack: false,
+    landingpad: false,
+    terminal: false,
+    type: '',
+    layout: '',
+    features: '',
+    addInfo: '',
+    gallery: [],
   }),
 
   actions: {
