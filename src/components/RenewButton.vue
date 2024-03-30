@@ -60,7 +60,7 @@ const openDialog = () => confirmDialog.value?.toggleModal();
 <template>
   <button
     :aria-busy="isSending"
-    :class="{ failed: isFailed }"
+    :class="{ 'is-danger': isFailed }"
     :disabled="isDisabled"
     class="renew-button"
     type="button"
@@ -78,9 +78,5 @@ const openDialog = () => confirmDialog.value?.toggleModal();
 <style scoped lang="scss">
 .renew-button {
   margin: 0;
-}
-
-.failed {
-  background-color: indianred;
 }
 </style>
