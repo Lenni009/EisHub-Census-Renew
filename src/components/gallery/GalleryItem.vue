@@ -16,22 +16,16 @@ function removeItem(fileItem: FileItem) {
 }
 
 function moveItem(fileItem: FileItem, direction: 'up' | 'down') {
-  const galleryIndex = gallery.value.indexOf(fileItem);
-
-  const activeStore = (() => {
-    if (galleryIndex !== -1) return gallery;
-    throw new Error("Couldn't find item!");
-  })();
-
-  const indexInStore = activeStore.value.indexOf(fileItem);
+  const indexInStore = gallery.value.indexOf(fileItem);
+  if (indexInStore === -1) throw new Error("Couldn't find item!");
   if (direction === 'up' && indexInStore) {
-    activeStore.value.splice(indexInStore - 1, 0, fileItem);
-    activeStore.value.splice(indexInStore + 1, 1);
-  } else if (direction === 'down' && indexInStore !== activeStore.value.length - 1) {
+    gallery.value.splice(indexInStore - 1, 0, fileItem);
+    gallery.value.splice(indexInStore + 1, 1);
+  } else if (direction === 'down' && indexInStore !== gallery.value.length - 1) {
     // for some reason I cannot splice this together like I can when moving up
-    const filteredArray = activeStore.value.filter((item) => item !== fileItem);
+    const filteredArray = gallery.value.filter((item) => item !== fileItem);
     filteredArray.splice(indexInStore + 1, 0, fileItem);
-    activeStore.value = filteredArray;
+    gallery.value = filteredArray;
   }
 }
 </script>
