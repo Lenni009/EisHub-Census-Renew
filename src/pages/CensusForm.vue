@@ -1,24 +1,26 @@
 <script setup lang="ts">
-// import { isUpdating, isNewPage } from '@/helpers/censusForm';
+import { isUpdating, isNewPage } from '@/helpers/censusForm';
 // import { parseTemplate } from '@/helpers/wikiTemplateParser';
 // import { useWikiPageDataStore } from '@/stores/wikiPageDataStore';
 // import { storeToRefs } from 'pinia';
-import { computed, ref } from 'vue';
+import { computed, ref, type Component } from 'vue';
 import PlayerData from '@/components/form/PlayerData.vue';
 import BaseData from '@/components/form/BaseData.vue';
 // import { onMounted } from 'vue';
 
-// const isUpdatingPage = isUpdating();
-// const isMakingNewPage = isNewPage();
+const isUpdatingPage = isUpdating();
+const isMakingNewPage = isNewPage();
 
-const hash = ref(window.location.hash);
+const skipVerification = isUpdatingPage || isMakingNewPage;
+
 const hasPageOneCompleted = ref(false);
+const hash = ref(window.location.hash);
 
 if (hash.value && !hasPageOneCompleted.value) window.location.hash = '';
 
 onhashchange = () => (hash.value = window.location.hash);
 
-const page = computed(() => (hash.value === '#2' && hasPageOneCompleted.value ? 2 : 1));
+const page = computed(() => ((hash.value === '#2' && hasPageOneCompleted.value) || skipVerification ? 2 : 1));
 
 // const localStorageCensusData = localStorage.getItem('censusForm');
 
@@ -48,6 +50,13 @@ function validateInputs() {
   hasPageOneCompleted.value = true;
   scrollTo(0, 0);
 }
+
+const router: Record<number, Component> = {
+  1: PlayerData,
+  2: BaseData,
+};
+
+const RenderComponent = router[page.value];
 </script>
 
 <template>
@@ -56,8 +65,7 @@ function validateInputs() {
     class="questions"
     @submit.prevent="sendForm"
   >
-    <PlayerData v-if="page === 1" />
-    <BaseData v-if="page === 2" />
+    <RenderComponent />
     <div>
       <a
         v-if="page === 1"
