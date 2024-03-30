@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import UserTable from '../components/UserTable.vue';
+import UserTable from '@/components/renew/UserTable.vue';
 import { renewWebhook } from '@/variables/env';
 import { useRenewDataStore } from '@/stores/renewDataStore';
 import { storeToRefs } from 'pinia';

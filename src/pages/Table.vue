@@ -2,7 +2,7 @@
 import { useCensusDataStore } from '@/stores/censusDataStore';
 import { storeToRefs } from 'pinia';
 import { computed, ref, watch } from 'vue';
-import CensusItem from '../components/CensusItem.vue';
+import CensusItem from '@/components/table/CensusItem.vue';
 import type { CensusEntry } from '@/types/censusQueryResponse';
 
 const censusDataStore = useCensusDataStore();
@@ -27,7 +27,7 @@ function filterEntry({
   if (revision.value && !CensusRenewal.includes(revision.value)) return false;
   const allItems = [Name, CensusPlayer, CensusDiscord, CensusReddit, Mode, Platform, System, CensusFriend];
   const allItemsLowerCase = allItems.map((item) => item?.trim().toLowerCase());
-  const includesSome = allItemsLowerCase.some((item) => item?.includes(searchTerm.value.trim().toLowerCase()));
+  const includesSome = allItemsLowerCase.some((item) => item?.includes(searchTerm.value.toLowerCase()));
   return includesSome;
 }
 
@@ -51,7 +51,7 @@ const filteredEntries = computed(() => currentRevisionEntries.value.filter(filte
       <p>Census count: {{ currentRevisionCensusCount }}</p>
       <div>
         <input
-          v-model="searchTerm"
+          v-model.trim="searchTerm"
           type="search"
         />
       </div>

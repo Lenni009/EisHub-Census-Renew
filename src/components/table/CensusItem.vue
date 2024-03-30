@@ -3,8 +3,8 @@ import type { CensusEntry } from '@/types/censusQueryResponse';
 import { encodePlayerName } from '@/helpers/nameTranscode';
 import LinkItem from './LinkItem.vue';
 import { computed } from 'vue';
-import RenewButton from './RenewButton.vue';
-import { currentYearString } from '@/variables/year';
+import RenewButton from '../RenewButton.vue';
+import { currentYearString } from '@/variables/dateTime';
 import { useRenewDataStore } from '@/stores/renewDataStore';
 import { storeToRefs } from 'pinia';
 
@@ -29,7 +29,7 @@ const tooltipText = computed(() => {
 
 <template>
   <article class="census-item">
-    <p class="player-name">{{ entry.CensusPlayer }}</p>
+    <p class="player-name text-bold">{{ entry.CensusPlayer }}</p>
     <div class="table-items">
       <div v-if="entry.CensusDiscord">
         <div class="heading">Discord:</div>
@@ -143,7 +143,6 @@ const tooltipText = computed(() => {
 
   .player-name {
     text-align: center;
-    font-weight: bold;
     margin: 0;
   }
 
@@ -152,3 +151,4 @@ const tooltipText = computed(() => {
   }
 }
 </style>
+@/variables/date

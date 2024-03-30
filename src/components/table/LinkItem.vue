@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { parseUserLink } from '../helpers/wikitextParser';
+import { parseUserLink } from '@/helpers/wikitextParser';
 import { wikiLink } from '@/variables/wikiLink';
 
 const props = defineProps<{
