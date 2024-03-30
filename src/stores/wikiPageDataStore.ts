@@ -1,4 +1,5 @@
 import { getPageSectionContentApiUrl, getPageSectionsApiUrl } from '@/helpers/wikiApi';
+import type { FileItem } from '@/types/file';
 import { defineStore } from 'pinia';
 
 interface SectionObject {
@@ -50,7 +51,7 @@ interface WikiPageData {
   layout: string;
   features: string;
   addInfo: string;
-  gallery: File[];
+  gallery: FileItem[];
 }
 
 export const useWikiPageDataStore = defineStore('wikiPageData', {

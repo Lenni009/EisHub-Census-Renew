@@ -5,6 +5,7 @@ import MultipleChoice from './MultipleChoice.vue';
 import GlyphInput from './GlyphInput.vue';
 import { watchEffect, reactive } from 'vue';
 import { regionArray } from '@/variables/regions';
+import Gallery from './Gallery.vue';
 
 const wikiPageData = useWikiPageDataStore();
 const {
@@ -28,7 +29,6 @@ const {
   features,
   addInfo,
   image,
-  gallery,
 } = storeToRefs(wikiPageData);
 
 watchEffect(() => (region.value = regionArray.find((item) => item[0] === glyphs.value.slice(4))?.[1] ?? ''));
@@ -80,13 +80,6 @@ function uploadMainFile(e: Event) {
   const { target } = e;
   if (!(target instanceof HTMLInputElement)) return;
   image.value = target.files?.[0] ?? null; // target.files could be null, and since optional chaining returns undefined, we have to specify null as fallback ourselves. The image variable can also take null as value.
-}
-
-function uploadGallery(e: Event) {
-  const { target } = e;
-  if (!(target instanceof HTMLInputElement)) return;
-  const fileArray = Array.from(target.files ?? []);
-  gallery.value.push(...fileArray);
 }
 </script>
 
@@ -189,6 +182,7 @@ function uploadGallery(e: Event) {
     <p class="question">Main picture</p>
     <p class="subtitle">Picture clearly showing the entire base</p>
     <input
+      accept="image/*"
       type="file"
       @change="uploadMainFile"
     />
@@ -196,11 +190,7 @@ function uploadGallery(e: Event) {
   <article>
     <p class="question">Gallery</p>
     <p class="subtitle">Other pictures</p>
-    <input
-      type="file"
-      multiple
-      @change="uploadGallery"
-    />
+    <Gallery />
   </article>
 </template>
 

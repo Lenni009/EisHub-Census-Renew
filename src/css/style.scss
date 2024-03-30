@@ -5,6 +5,14 @@
     url('../assets/NMS-Glyphs-Mono.ttf') format('truetype');
 }
 
+:root {
+  --invert: 0;
+}
+
+[data-theme='dark'] {
+  --invert: 100;
+}
+
 .container {
   margin-block-start: 1rem;
   margin-block-end: 5rem;
