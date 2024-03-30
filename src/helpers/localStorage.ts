@@ -1,6 +1,6 @@
 import type { Ref } from 'vue';
 import { removeDuplicates } from './array';
-import { currentYearString } from '@/variables/year';
+import { currentYearString } from '@/variables/dateTime';
 import type { LocalStorageData } from '@/types/localStorage';
 
 // local storage keys are the years

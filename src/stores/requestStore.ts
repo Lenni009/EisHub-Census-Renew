@@ -3,7 +3,7 @@ import { getCensusQueryUrl } from '@/helpers/wikiApi';
 import { defineStore, storeToRefs } from 'pinia';
 import { useCensusDataStore } from './censusDataStore';
 import { civilized } from '@/variables/civilized';
-import { currentYearString } from '@/variables/year';
+import { currentYearString } from '@/variables/dateTime';
 import { useRenewDataStore } from './renewDataStore';
 
 interface RequestStore {
