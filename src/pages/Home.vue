@@ -8,17 +8,17 @@
 
   <div class="link-list">
     <article>
-      <header>Table</header>
+      <header class="text-bold">Table</header>
       <p>Eisvana's Census table, including past census data and management functions.</p>
       <footer><a href="./table.html">Table</a></footer>
     </article>
     <article>
-      <header>Form</header>
+      <header class="text-bold">Form</header>
       <p>New to Eisvana? Fill out the census form here!</p>
       <footer><a href="./form.html">Form</a></footer>
     </article>
     <article>
-      <header>Renew</header>
+      <header class="text-bold">Renew</header>
       <p>Renew your census entry here if you are not on the census anymore!</p>
       <footer><a href="./renew.html">Renew</a></footer>
     </article>
@@ -51,10 +51,6 @@
     header,
     footer {
       text-align: center;
-    }
-
-    header {
-      font-weight: bold;
     }
 
     p {
