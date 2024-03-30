@@ -23,3 +23,8 @@ export function validateFriendCode(code: string) {
   const friendCodeRegex = new RegExp(/^((?:[0-9A-Za-z]{4}-){2}[0-9A-Za-z]{5})$/);
   return !code || (friendCodeRegex.test(code) && code.toLowerCase() !== 'xxxx-xxxx-xxxxx');
 }
+
+export function validateCoords(axes: string) {
+  const axesRegex = new RegExp(/^([+-](?:[0-9]{1,3})\.(?:[0-9]{2}), [+-](?:[0-9]{1,3})\.(?:[0-9]{2}))$/);
+  return !axes || axesRegex.test(axes);
+}
