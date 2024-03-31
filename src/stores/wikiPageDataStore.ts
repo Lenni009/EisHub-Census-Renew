@@ -62,7 +62,6 @@ const defaultStoreObject: WikiPageData = {
     platform: undefined, // NoSonar undefined is the proper value
     mode: undefined, // NoSonar undefined is the proper value
     baseName: '',
-    region: '',
     system: '',
     planet: '',
     moon: '',

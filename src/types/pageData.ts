@@ -20,7 +20,6 @@ export interface BaseData {
   platform: Platforms | undefined;
   mode: Modes | undefined;
   baseName: string;
-  region: string;
   system: string;
   planet: string;
   moon: string;
