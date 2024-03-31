@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, toRefs } from 'vue';
 import Sortable, { type SortableEvent } from 'sortablejs';
 import GalleryItem from '../gallery/GalleryItem.vue';
 import FileUpload from '../gallery/FileUpload.vue';
@@ -21,7 +21,8 @@ onMounted(() => {
 });
 
 const wikiPageDataStore = useWikiPageDataStore();
-const { gallery } = storeToRefs(wikiPageDataStore);
+const { imageData } = storeToRefs(wikiPageDataStore);
+const { gallery } = toRefs(imageData.value);
 
 function dragItem(evt: SortableEvent) {
   const oldIndex = evt.oldIndex;

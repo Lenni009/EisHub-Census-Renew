@@ -20,22 +20,22 @@ interface SectionQueryObject {
   anchor: string;
 }
 
-interface WikiPageData {
-  pageName: string;
-  sectionData: SectionObject[];
+interface PlayerData {
   discord: string;
   reddit: string;
   social: string;
   wikiName: string;
   player: string;
   friend: string;
-  platform: 'PC' | 'PlayStation' | 'Xbox' | 'Switch' | null;
-  mode: 'Normal' | 'Relaxed' | 'Survival' | 'Permadeath' | 'Creative' | 'Custom' | null;
   arrival: string;
   shareTimezone: boolean;
   activeTime: string;
+}
+
+interface BaseData {
+  platform: 'PC' | 'PlayStation' | 'Xbox' | 'Switch' | null;
+  mode: 'Normal' | 'Relaxed' | 'Survival' | 'Permadeath' | 'Creative' | 'Custom' | null;
   baseName: string;
-  image: File | null;
   region: string;
   system: string;
   planet: string;
@@ -52,43 +52,61 @@ interface WikiPageData {
   layout: string;
   features: string;
   addInfo: string;
+}
+
+interface ImageData {
+  image: File | null;
   gallery: FileItem[];
+}
+
+interface WikiPageData {
+  pageName: string;
+  sectionData: SectionObject[];
+  playerData: PlayerData;
+  baseData: BaseData;
+  imageData: ImageData;
 }
 
 export const useWikiPageDataStore = defineStore('wikiPageData', {
   state: (): WikiPageData => ({
     pageName: '',
     sectionData: [{ name: 'Layout' }, { name: 'Features' }, { name: 'Additional Information' }],
-    discord: '',
-    reddit: '',
-    social: '',
-    wikiName: '',
-    player: '',
-    friend: '',
-    platform: null,
-    mode: null,
-    arrival: '',
-    shareTimezone: false,
-    activeTime: '',
-    baseName: '',
-    image: null,
-    region: '',
-    system: '',
-    planet: '',
-    moon: '',
-    axes: '',
-    glyphs: '',
-    farm: false,
-    geobay: false,
-    arena: false,
-    racetrack: false,
-    landingpad: false,
-    terminal: false,
-    type: '',
-    layout: '',
-    features: '',
-    addInfo: '',
-    gallery: [],
+    playerData: {
+      discord: '',
+      reddit: '',
+      social: '',
+      wikiName: '',
+      player: '',
+      friend: '',
+      arrival: '',
+      shareTimezone: false,
+      activeTime: '',
+    },
+    baseData: {
+      platform: null,
+      mode: null,
+      baseName: '',
+      region: '',
+      system: '',
+      planet: '',
+      moon: '',
+      axes: '',
+      glyphs: '',
+      farm: false,
+      geobay: false,
+      arena: false,
+      racetrack: false,
+      landingpad: false,
+      terminal: false,
+      type: '',
+      layout: '',
+      features: '',
+      addInfo: '',
+    },
+    imageData: {
+      image: null,
+      gallery: [],
+    },
   }),
 
   actions: {

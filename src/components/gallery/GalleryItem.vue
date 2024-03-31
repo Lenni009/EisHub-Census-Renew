@@ -2,13 +2,15 @@
 import { storeToRefs } from 'pinia';
 import type { FileItem } from '@/types/file';
 import { useWikiPageDataStore } from '@/stores/wikiPageDataStore';
+import { toRefs } from 'vue';
 
 defineProps<{
   fileItem: FileItem;
 }>();
 
 const wikiPageDataStore = useWikiPageDataStore();
-const { gallery } = storeToRefs(wikiPageDataStore);
+const { imageData } = storeToRefs(wikiPageDataStore);
+const { gallery } = toRefs(imageData.value);
 
 function removeItem(fileItem: FileItem) {
   URL.revokeObjectURL(fileItem.url);

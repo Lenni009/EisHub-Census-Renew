@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watchEffect } from 'vue';
+import { computed, ref, toRefs, watchEffect } from 'vue';
 import {
   discordValidation,
   validateDiscord,
@@ -14,8 +14,8 @@ import { useWikiPageDataStore } from '@/stores/wikiPageDataStore';
 import { userExists } from '@/helpers/wikiApi';
 
 const wikiPageData = useWikiPageDataStore();
-const { discord, reddit, social, player, friend, arrival, shareTimezone, activeTime, wikiName } =
-  storeToRefs(wikiPageData);
+const { playerData } = storeToRefs(wikiPageData);
+const { discord, reddit, social, player, friend, wikiName } = toRefs(playerData.value);
 
 const wikiUserExists = ref(true);
 
@@ -34,7 +34,7 @@ watchEffect(() => (friend.value = friend.value.toUpperCase()));
     <p class="question">What is your Discord name?</p>
     <p class="subtitle">Please enter your username, not your display name.</p>
     <input
-      v-model="discord"
+      v-model="playerData.discord"
       :aria-invalid="!isDiscordValid || undefined"
       :pattern="discordValidation"
       type="text"
@@ -49,7 +49,7 @@ watchEffect(() => (friend.value = friend.value.toUpperCase()));
   <article>
     <p class="question">What is your Reddit name?</p>
     <input
-      v-model="reddit"
+      v-model="playerData.reddit"
       :aria-invalid="!isRedditValid || undefined"
       type="text"
     />
@@ -67,7 +67,7 @@ watchEffect(() => (friend.value = friend.value.toUpperCase()));
       (Facebook, Instagram, Wiki, etc.)? Please put the full link here.
     </p>
     <input
-      v-model="social"
+      v-model="playerData.social"
       :aria-invalid="!isSocialValid || undefined"
       type="text"
     />
@@ -81,7 +81,7 @@ watchEffect(() => (friend.value = friend.value.toUpperCase()));
   <article>
     <p class="question">If you have a NMS Fandom wiki account, what's its name? (else leave empty)</p>
     <input
-      v-model.lazy="wikiName"
+      v-model.lazy="playerData.wikiName"
       :aria-invalid="!wikiUserExists || undefined"
       type="text"
     />
@@ -96,7 +96,7 @@ watchEffect(() => (friend.value = friend.value.toUpperCase()));
     <p class="question">What is your ingame name?</p>
     <p class="subtitle">Found on the top left in your inventory/pause menu. Exclude any game titles.</p>
     <input
-      v-model="player"
+      v-model="playerData.player"
       :aria-invalid="!isNameValid || undefined"
       type="text"
     />
@@ -111,7 +111,7 @@ watchEffect(() => (friend.value = friend.value.toUpperCase()));
     <p class="question">No Man's Sky Friend Code</p>
     <p class="subtitle">Please enter your friend code in the following format: "XXXX-XXXX-XXXXX" including dashes.</p>
     <input
-      v-model="friend"
+      v-model="playerData.friend"
       :aria-invalid="!isFriendValid || undefined"
       type="text"
     />
@@ -126,7 +126,7 @@ watchEffect(() => (friend.value = friend.value.toUpperCase()));
     <p class="question">Date of Arrival</p>
     <p class="subtitle">When did you arrive in Eisvana space?</p>
     <input
-      v-model="arrival"
+      v-model="playerData.arrival"
       type="date"
     />
   </article>
@@ -141,7 +141,7 @@ watchEffect(() => (friend.value = friend.value.toUpperCase()));
     <label>
       <span>Share timezone ({{ timezoneOffset }})</span>
       <input
-        v-model="shareTimezone"
+        v-model="playerData.shareTimezone"
         type="checkbox"
       />
     </label>
@@ -152,7 +152,7 @@ watchEffect(() => (friend.value = friend.value.toUpperCase()));
       I. e. mornings, afternoon, evenings, late night, 9 AM to 12 PM, etc. This is used in order to better plan events.
     </p>
     <input
-      v-model="activeTime"
+      v-model="playerData.activeTime"
       type="text"
     />
   </article>

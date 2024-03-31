@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, type Ref } from 'vue';
+import { ref, toRefs, type Ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import type { FileItem } from '@/types/file';
 import { useWikiPageDataStore } from '@/stores/wikiPageDataStore';
@@ -9,7 +9,8 @@ const errors = ref<string[]>([]);
 const infoboxImageInGallery = ref(false);
 
 const wikiPageDataStore = useWikiPageDataStore();
-const { gallery, image } = storeToRefs(wikiPageDataStore);
+const { imageData } = storeToRefs(wikiPageDataStore);
+const { gallery, image } = toRefs(imageData.value);
 
 function dropFile(e: DragEvent) {
   dragActive.value = false;
