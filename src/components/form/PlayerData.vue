@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, watchEffect } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 import {
   discordValidation,
   validateDiscord,
@@ -11,18 +11,13 @@ import {
 import { storeToRefs } from 'pinia';
 import { timezoneOffset } from '@/variables/dateTime';
 import { useWikiPageDataStore } from '@/stores/wikiPageDataStore';
+import { userExists } from '@/helpers/wikiApi';
 
 const wikiPageData = useWikiPageDataStore();
-const {
-  discord,
-  reddit,
-  social,
-  player,
-  friend,
-  arrival,
-  shareTimezone,
-  activeTime,
-} = storeToRefs(wikiPageData);
+const { discord, reddit, social, player, friend, arrival, shareTimezone, activeTime, wikiName } =
+  storeToRefs(wikiPageData);
+
+const wikiUserExists = ref(true);
 
 const isDiscordValid = computed(() => validateDiscord(discord.value));
 const isRedditValid = computed(() => validateReddit(reddit.value));
@@ -30,6 +25,7 @@ const isSocialValid = computed(() => isValidHttpUrl(social.value));
 const isNameValid = computed(() => validatePlayerName(player.value));
 const isFriendValid = computed(() => validateFriendCode(friend.value));
 
+watchEffect(async () => (wikiUserExists.value = wikiName.value ? await userExists(wikiName.value) : true));
 watchEffect(() => (friend.value = friend.value.toUpperCase()));
 </script>
 
@@ -80,6 +76,20 @@ watchEffect(() => (friend.value = friend.value.toUpperCase()));
       class="error"
     >
       Please give a link to that profile.
+    </p>
+  </article>
+  <article>
+    <p class="question">If you have a NMS Fandom wiki account, what's its name? (else leave empty)</p>
+    <input
+      v-model.lazy="wikiName"
+      :aria-invalid="!wikiUserExists || undefined"
+      type="text"
+    />
+    <p
+      v-if="!wikiUserExists"
+      class="error"
+    >
+      This wiki user doesn't exist!
     </p>
   </article>
   <article>

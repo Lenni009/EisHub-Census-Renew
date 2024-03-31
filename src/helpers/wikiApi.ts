@@ -6,11 +6,12 @@ import type {
   RawQueryObject,
   SectionContentQueryObject,
   SectionQueryObject,
+  UserQueryObject,
 } from '@/types/queryObjects';
 import { apiPath } from '@/variables/wikiLink';
 
 // generic function to build a URL from an object
-const buildQueryObject = (queryObject: QueryObjects) =>
+const buildQueryUrl = (queryObject: QueryObjects) =>
   `${apiPath}?${Object.entries(queryObject)
     .map((param) => param.join('='))
     .join('&')}`;
@@ -39,9 +40,9 @@ const getSectionContentQueryObject = (pageName: string, section: number): Sectio
 });
 
 // exported functions to get wikitext URLs
-export const getPageSectionsApiUrl = (pageName: string) => buildQueryObject(getSectionQueryObject(pageName));
+export const getPageSectionsApiUrl = (pageName: string) => buildQueryUrl(getSectionQueryObject(pageName));
 export const getPageSectionContentApiUrl = (pageName: string, section: number) =>
-  buildQueryObject(getSectionContentQueryObject(pageName, section));
+  buildQueryUrl(getSectionContentQueryObject(pageName, section));
 
 // cargo
 const getCargoQueryRawObject = () => ({
@@ -77,5 +78,21 @@ const getBaseQueryObject = (baseName: string): BasicCargoQueryData => ({
 });
 
 // exported functions to get cargo query URLs
-export const getCensusQueryUrl = (civilized: string) => buildQueryObject(getCensusQueryObject(civilized));
-export const getBaseQueryUrl = (baseName: string) => buildQueryObject(getBaseQueryObject(baseName));
+export const getCensusQueryUrl = (civilized: string) => buildQueryUrl(getCensusQueryObject(civilized));
+export const getBaseQueryUrl = (baseName: string) => buildQueryUrl(getBaseQueryObject(baseName));
+
+const getUserQueryObj = (user: string): UserQueryObject => ({
+  ...basicQueryData,
+  action: 'query',
+  list: 'users',
+  ususers: user,
+});
+
+export async function userExists(user: string) {
+  const apiUrl = buildQueryUrl(getUserQueryObj(user));
+  const data = await fetch(apiUrl);
+  const jsonData = await data.json();
+
+  const userObj = jsonData.query.users[0];
+  return Boolean(userObj.userid);
+}

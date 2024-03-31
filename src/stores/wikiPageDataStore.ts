@@ -26,6 +26,7 @@ interface WikiPageData {
   discord: string;
   reddit: string;
   social: string;
+  wikiName: string;
   player: string;
   friend: string;
   platform: 'PC' | 'PlayStation' | 'Xbox' | 'Switch' | null;
@@ -61,6 +62,7 @@ export const useWikiPageDataStore = defineStore('wikiPageData', {
     discord: '',
     reddit: '',
     social: '',
+    wikiName: '',
     player: '',
     friend: '',
     platform: null,

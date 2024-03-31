@@ -31,4 +31,14 @@ export interface CensusQueryObject extends BasicCargoQueryData {
   group_by: string;
 }
 
-export type QueryObjects = SectionQueryObject | SectionContentQueryObject | BasicCargoQueryData | CensusQueryObject;
+export interface UserQueryObject extends BasicQueryApiData {
+  list: string;
+  ususers: string;
+}
+
+export type QueryObjects =
+  | SectionQueryObject
+  | SectionContentQueryObject
+  | BasicCargoQueryData
+  | CensusQueryObject
+  | UserQueryObject;
