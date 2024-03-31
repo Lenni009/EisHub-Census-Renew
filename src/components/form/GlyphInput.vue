@@ -33,7 +33,7 @@ const numberToGlyph = (n: number) => n.toString(16).toUpperCase(); // NoSonar th
   <div class="glyph-input">
     <div class="glyph-input-wrapper">
       <input
-        v-model="model"
+        v-model.trim="model"
         :aria-invalid="(model.length === expectedGlyphLength && !isAddressInEisvana) || undefined"
         class="glyphs-input"
         :maxlength="expectedGlyphLength"

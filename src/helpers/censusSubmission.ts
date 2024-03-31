@@ -22,7 +22,7 @@ function constructNewFile(fileObj: FileItem, baseName: string): File {
 
 export async function submitCensus(): Promise<void> {
   const wikiPageData = useWikiPageDataStore();
-  const { baseData, playerData, imageData } = wikiPageData;
+  const { baseData, playerData, imageData, region } = wikiPageData;
   const { image, gallery } = imageData;
   const { mode, platform } = baseData;
   const galleryEntries: [File, string][] = gallery.map((item) => [
@@ -38,13 +38,13 @@ export async function submitCensus(): Promise<void> {
   const wikipageText = buildBasePage({
     version,
     galleryPics,
+    region,
     name: baseData.baseName,
     image: image?.name ?? '',
     platform: platform ?? 'PC',
     mode: mode ?? 'Normal',
     builderlink: playerData.wikiName,
     builder: passBuilder,
-    region: baseData.region,
     system: baseData.system,
     planet: baseData.planet,
     moon: baseData.moon,
@@ -69,10 +69,19 @@ export async function submitCensus(): Promise<void> {
     addInfo: baseData.addInfo,
   });
 
-  const wikiTextFile = new File([wikipageText], baseData.baseName, { type: 'text/plain' });
+  const wikiTextFile = new File([wikipageText], `${baseData.baseName}.txt`, { type: 'text/plain' });
 
   // start with wikitextfile so we don't need to add that to the array later, and can potentially save one request
   const compressedFiles = [wikiTextFile];
+
+  if (!image) return;
+
+  const fileType = image.type;
+  const mainImageName = image.name;
+  const fileExtension = mainImageName.split('.').at(-1);
+  const newImageName = `${escapeName(baseData.baseName)}-main.${fileExtension}`;
+  const mainImageFile = new File([image], newImageName, { type: fileType });
+  galleryFiles.unshift(mainImageFile);
 
   // compressing one-by-one to avoid weird Firefox issues
   for (const file of galleryFiles) {
@@ -92,6 +101,9 @@ export async function submitCensus(): Promise<void> {
       embeds: [
         {
           title: 'New Census Submission!',
+          image: {
+            url: 'attachment://' + compressedFiles[0].name,
+          },
           fields: [
             {
               name: 'Player',
@@ -124,12 +136,8 @@ function constructFileFormData(fileArray: File[]): FormData {
 }
 
 async function sendFormData(formData: FormData) {
-  if (import.meta.env.DEV) {
-    console.log(formData);
-  } else {
-    await fetch(formWebhook, {
-      method: 'POST',
-      body: formData,
-    });
-  }
+  await fetch(formWebhook, {
+    method: 'POST',
+    body: formData,
+  });
 }

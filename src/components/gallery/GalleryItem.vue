@@ -51,7 +51,7 @@ function moveItem(fileItem: FileItem, direction: 'up' | 'down') {
         <input
           type="text"
           placeholder="Description"
-          v-model="fileItem.desc"
+          v-model.trim="fileItem.desc"
         />
       </div>
     </div>

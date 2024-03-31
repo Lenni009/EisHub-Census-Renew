@@ -21,7 +21,7 @@ const { triesExceeded } = storeToRefs(renewDataStore);
     No Webhook URL found, no message will be sent!
   </p>
   <input
-    v-model="filter"
+    v-model.trim="filter"
     id="searchBar"
     name="searchBar"
     placeholder="Search Name"

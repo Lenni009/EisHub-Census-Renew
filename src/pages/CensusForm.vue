@@ -57,6 +57,7 @@ function replacer(key: string, value: unknown) {
 // persist the whole state to the local storage whenever it changes
 wikiPageDataStore.$subscribe((_, state) => {
   localStorage.setItem('censusForm', JSON.stringify(state, replacer));
+  localStorage.setItem('lastUpdated', Date.now().toString());
 });
 
 async function sendForm() {
@@ -65,6 +66,7 @@ async function sendForm() {
   wikiPageDataStore.resetStore();
   isSending.value = false;
   localStorage.removeItem('censusForm');
+  localStorage.removeItem('lastUpdated');
 }
 
 function scrollToTop() {

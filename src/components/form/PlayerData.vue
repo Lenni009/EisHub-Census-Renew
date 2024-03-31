@@ -21,7 +21,7 @@ watchEffect(() => (friend.value = friend.value.toUpperCase()));
     <p class="question">What is your Discord name?</p>
     <p class="subtitle">Please enter your username, not your display name.</p>
     <input
-      v-model="playerData.discord"
+      v-model.trim="playerData.discord"
       :aria-invalid="!isDiscordValid || undefined"
       :pattern="discordValidation"
       type="text"
@@ -36,7 +36,7 @@ watchEffect(() => (friend.value = friend.value.toUpperCase()));
   <article>
     <p class="question">What is your Reddit name?</p>
     <input
-      v-model="playerData.reddit"
+      v-model.trim="playerData.reddit"
       :aria-invalid="!isRedditValid || undefined"
       type="text"
     />
@@ -54,7 +54,7 @@ watchEffect(() => (friend.value = friend.value.toUpperCase()));
       (Facebook, Instagram, Wiki, etc.)? Please put the full link here.
     </p>
     <input
-      v-model="playerData.social"
+      v-model.trim="playerData.social"
       :aria-invalid="!isSocialValid || undefined"
       type="text"
     />
@@ -68,7 +68,7 @@ watchEffect(() => (friend.value = friend.value.toUpperCase()));
   <article>
     <p class="question">If you have a NMS Fandom wiki account, what's its name? (else leave empty)</p>
     <input
-      v-model.lazy="playerData.wikiName"
+      v-model.trim.lazy="playerData.wikiName"
       :aria-invalid="!wikiUserExists || undefined"
       type="text"
     />
@@ -83,7 +83,7 @@ watchEffect(() => (friend.value = friend.value.toUpperCase()));
     <p class="question">What is your ingame name?</p>
     <p class="subtitle">Found on the top left in your inventory/pause menu. Exclude any game titles.</p>
     <input
-      v-model="playerData.player"
+      v-model.trim="playerData.player"
       :aria-invalid="!isNameValid || undefined"
       type="text"
     />
@@ -98,7 +98,7 @@ watchEffect(() => (friend.value = friend.value.toUpperCase()));
     <p class="question">No Man's Sky Friend Code</p>
     <p class="subtitle">Please enter your friend code in the following format: "XXXX-XXXX-XXXXX" including dashes.</p>
     <input
-      v-model="playerData.friend"
+      v-model.trim.lazy="playerData.friend"
       :aria-invalid="!isFriendValid || undefined"
       type="text"
     />
@@ -113,7 +113,7 @@ watchEffect(() => (friend.value = friend.value.toUpperCase()));
     <p class="question">Date of Arrival</p>
     <p class="subtitle">When did you arrive in Eisvana space?</p>
     <input
-      v-model="playerData.arrival"
+      v-model.trim="playerData.arrival"
       type="date"
     />
   </article>
@@ -128,7 +128,7 @@ watchEffect(() => (friend.value = friend.value.toUpperCase()));
     <label>
       <span>Share timezone ({{ timezoneOffset }})</span>
       <input
-        v-model="playerData.shareTimezone"
+        v-model.trim="playerData.shareTimezone"
         type="checkbox"
       />
     </label>
@@ -139,7 +139,7 @@ watchEffect(() => (friend.value = friend.value.toUpperCase()));
       I. e. mornings, afternoon, evenings, late night, 9 AM to 12 PM, etc. This is used in order to better plan events.
     </p>
     <input
-      v-model="playerData.activeTime"
+      v-model.trim="playerData.activeTime"
       type="text"
     />
   </article>

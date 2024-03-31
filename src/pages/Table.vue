@@ -56,7 +56,7 @@ const filteredEntries = computed(() => currentRevisionEntries.value.filter(filte
         />
       </div>
       <div>
-        <select v-model="revision">
+        <select v-model.trim="revision">
           <option value="">All</option>
           <option
             v-for="revision in availableRevisions"

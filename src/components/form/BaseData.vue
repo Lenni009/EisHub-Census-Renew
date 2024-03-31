@@ -65,7 +65,7 @@ function uploadMainFile(e: Event) {
   <article>
     <p class="question">What is the name of your base?</p>
     <input
-      v-model="baseData.baseName"
+      v-model.trim="baseData.baseName"
       type="text"
     />
   </article>
@@ -73,7 +73,7 @@ function uploadMainFile(e: Event) {
     <p class="question">What is the name of the system where your base is?</p>
     <p class="subtitle">The name of the system can be seen by looking at the galaxy map in space.</p>
     <input
-      v-model="baseData.system"
+      v-model.trim="baseData.system"
       type="text"
     />
   </article>
@@ -82,14 +82,14 @@ function uploadMainFile(e: Event) {
       What is the name of the planet on which your base is or that is orbited by the moon on which your base is?
     </p>
     <input
-      v-model="baseData.planet"
+      v-model.trim="baseData.planet"
       type="text"
     />
   </article>
   <article>
     <p class="question">If your base is on a moon (else leave empty): What is the name of the moon?</p>
     <input
-      v-model="baseData.moon"
+      v-model.trim="baseData.moon"
       type="text"
     />
   </article>
@@ -97,7 +97,7 @@ function uploadMainFile(e: Event) {
     <p class="question">What are the planetary coordinates of your base?</p>
     <p class="subtitle">You can find the coordinates when you look through your visor. Example: -14.24, +121.12</p>
     <input
-      v-model.lazy="baseData.axes"
+      v-model.trim.lazy="baseData.axes"
       :aria-invalid="!isAxesValid || undefined"
       type="text"
     />
@@ -111,14 +111,14 @@ function uploadMainFile(e: Event) {
   <article>
     <p class="question">What are the glyphs?</p>
     <p class="subtitle">Glyphs can be found in photo mode</p>
-    <GlyphInput v-model="baseData.glyphs" />
+    <GlyphInput v-model.trim="baseData.glyphs" />
   </article>
   <article>
     <p class="question">Base Features: Check all that apply</p>
     <div class="checkboxes">
       <label v-for="feature in featureList">
         <input
-          v-model="feature.value"
+          v-model.trim="feature.value"
           type="checkbox"
         />
         <span>{{ feature.label }}</span>
@@ -129,14 +129,14 @@ function uploadMainFile(e: Event) {
     <p class="question">What type of base do you have? What is its purpose?</p>
     <p class="subtitle">Some examples are Artistic, Embassy, Farm, Industrial, Memorial and Residential.</p>
     <input
-      v-model="baseData.type"
+      v-model.trim="baseData.type"
       type="text"
     />
   </article>
   <article>
     <p class="question">On which platform was the base built?</p>
     <MultipleChoice
-      v-model="baseData.platform"
+      v-model.trim="baseData.platform"
       :items="platforms"
       name="platform"
     />
@@ -144,7 +144,7 @@ function uploadMainFile(e: Event) {
   <article>
     <p class="question">On which Game Mode was the base built?</p>
     <MultipleChoice
-      v-model="baseData.mode"
+      v-model.trim="baseData.mode"
       :items="modes"
       name="mode"
     />
@@ -152,17 +152,17 @@ function uploadMainFile(e: Event) {
   <article>
     <p class="question">Layout</p>
     <p class="subtitle">What does the base look like?</p>
-    <textarea v-model="baseData.layout"></textarea>
+    <textarea v-model.trim="baseData.layout"></textarea>
   </article>
   <article>
     <p class="question">Features</p>
     <p class="subtitle">List the basic features, such as crops, biodomes, landing pads, exocraft bays, etc.</p>
-    <textarea v-model="baseData.features"></textarea>
+    <textarea v-model.trim="baseData.features"></textarea>
   </article>
   <article>
     <p class="question">Additional Information</p>
     <p class="subtitle">Any nearby resources, tourist traps, other bases</p>
-    <textarea v-model="baseData.addInfo"></textarea>
+    <textarea v-model.trim="baseData.addInfo"></textarea>
   </article>
   <article>
     <p class="question">Main picture</p>

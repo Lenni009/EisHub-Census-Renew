@@ -30,7 +30,7 @@ const focusInput = () => otherInput.value?.focus();
       class="multiple-choice-label"
     >
       <input
-        v-model="model"
+        v-model.trim="model"
         :id="`${name}-${id}`"
         :name
         :value="item"
@@ -48,7 +48,7 @@ const focusInput = () => otherInput.value?.focus();
         class="other-input-label"
       >
         <input
-          v-model="model"
+          v-model.trim="model"
           :id="`${name}-other`"
           :name
           :value="otherValue"
@@ -59,7 +59,7 @@ const focusInput = () => otherInput.value?.focus();
         <span>Other:</span>
       </label>
       <input
-        v-model="otherValue"
+        v-model.trim="otherValue"
         :id="`${name}-other-input`"
         class="input-other"
         ref="otherInput"
