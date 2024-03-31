@@ -6,6 +6,9 @@ import { isUpdating, isNewPage } from '@/helpers/censusForm';
 import { computed, ref, type Component } from 'vue';
 import PlayerData from '@/components/form/PlayerData.vue';
 import BaseData from '@/components/form/BaseData.vue';
+import { submitCensus } from '@/helpers/censusSubmission';
+import { useWikiPageDataStore } from '@/stores/wikiPageDataStore';
+import { useFormValidation } from '@/composables/useFormValidation';
 // import { onMounted } from 'vue';
 
 const isUpdatingPage = isUpdating();
@@ -21,6 +24,8 @@ if (hash.value && !hasPageOneCompleted.value) window.location.hash = '';
 onhashchange = () => (hash.value = window.location.hash);
 
 const page = computed(() => ((hash.value === '#2' && hasPageOneCompleted.value) || skipVerification ? 2 : 1));
+
+const isSending = ref(false);
 
 // const localStorageCensusData = localStorage.getItem('censusForm');
 
@@ -41,8 +46,24 @@ const page = computed(() => ((hash.value === '#2' && hasPageOneCompleted.value) 
 //   parseTemplate(jsonData.parse.wikitext['*']);
 // });
 
-function sendForm() {
-  console.log('...');
+const wikiPageDataStore = useWikiPageDataStore();
+
+function replacer(key: string, value: unknown) {
+  if (value instanceof File) return null;
+  if (key === 'gallery') return [];
+  return value;
+}
+
+// persist the whole state to the local storage whenever it changes
+wikiPageDataStore.$subscribe((_, state) => {
+  localStorage.setItem('censusForm', JSON.stringify(state, replacer));
+});
+
+async function sendForm() {
+  isSending.value = true;
+  await submitCensus();
+  wikiPageDataStore.resetStore();
+  isSending.value = false;
   localStorage.removeItem('censusForm');
 }
 
@@ -56,7 +77,9 @@ const router: Record<number, Component> = {
   2: BaseData,
 };
 
-const RenderComponent = router[page.value];
+const RenderComponent = computed(() => router[page.value]);
+
+const { isDataValid } = useFormValidation();
 </script>
 
 <template>
@@ -75,7 +98,13 @@ const RenderComponent = router[page.value];
       >
         Continue
       </a>
-      <button v-if="page === 2">Submit</button>
+      <button
+        :disabled="!isDataValid"
+        :aria-busy="isSending"
+        v-if="page === 2"
+      >
+        {{ isSending ? '' : 'Submit' }}
+      </button>
     </div>
   </form>
 

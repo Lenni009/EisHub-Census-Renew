@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { ref, toRefs, type Ref } from 'vue';
+import { ref, toRefs } from 'vue';
 import { storeToRefs } from 'pinia';
-import type { FileItem } from '@/types/file';
 import { useWikiPageDataStore } from '@/stores/wikiPageDataStore';
 
 const dragActive = ref(false);
@@ -27,23 +26,20 @@ function uploadFile(e: Event) {
 function addFiles(files: FileList) {
   const fileArray = Array.from(files);
 
-  const uploadSizeLimit = 10000000;
-
-  const largeFiles = fileArray.filter((file) => file.size > uploadSizeLimit);
-  errors.value = largeFiles.map((file) => file.name);
-
   infoboxImageInGallery.value = fileArray.map((file) => file.name).includes(image.value?.name ?? '');
 
-  const validFiles = fileArray.filter((file) => !largeFiles.includes(file) && file.name !== image.value?.name);
+  const validFiles = infoboxImageInGallery.value
+    ? fileArray.filter((file) => file.name !== image.value?.name)
+    : fileArray;
 
-  buildFileItem(validFiles, gallery);
+  buildFileItem(validFiles);
 }
 
 let id = 0;
 
-function buildFileItem(files: File[], storeLoc: Ref<FileItem[]>) {
+function buildFileItem(files: File[]) {
   for (const file of files) {
-    storeLoc.value.unshift({
+    gallery.value.unshift({
       id: id++,
       desc: '',
       url: URL.createObjectURL(file),
@@ -81,21 +77,6 @@ function buildFileItem(files: File[], storeLoc: Ref<FileItem[]>) {
   >
     <div v-if="infoboxImageInGallery">
       {{ image?.name }} is already in the infobox and therefore wasn't added to the gallery.
-    </div>
-    <div v-if="errors.length">
-      The following file(s) exceed the 10MB upload limit and couldn't be added. You can compress them with the
-      <a
-        href="https://nmscd.com/Image-Compressor/"
-        target="_blank"
-        rel="noopener noreferrer"
-        >Image Compressor</a
-      >.
-    </div>
-    <div
-      v-for="error in errors"
-      :key="error"
-    >
-      {{ error }}
     </div>
   </div>
 </template>

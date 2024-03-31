@@ -2,7 +2,7 @@ import { useWikiPageDataStore } from '@/stores/wikiPageDataStore';
 import { buildBasePage } from './baseTemplate';
 import { version } from '@/variables/version';
 import type { ExplicitBoolean } from '@/types/pageData';
-import { currentYearString } from '@/variables/dateTime';
+import { currentYearString, timezoneOffset } from '@/variables/dateTime';
 import { compressFile } from './fileCompression';
 import { paginate } from './array';
 import type { FileItem } from '@/types/file';
@@ -83,6 +83,33 @@ export async function submitCensus(): Promise<void> {
   // Discord's file limit is 10, so we make sure to only send 10 files at once
   const paginatedFiles = paginate(compressedFiles, maxFilePerMessage);
   const formDataArray = paginatedFiles.map(constructFileFormData);
+  formDataArray[0].append(
+    'payload_json',
+    JSON.stringify({
+      allowed_mentions: {
+        parse: [],
+      },
+      embeds: [
+        {
+          title: 'New Census Submission!',
+          fields: [
+            {
+              name: 'Player',
+              value: playerData.player,
+            },
+            {
+              name: 'Timezone',
+              value: playerData.shareTimezone ? timezoneOffset : 'not disclosed',
+            },
+            {
+              name: 'Active Time',
+              value: playerData.activeTime,
+            },
+          ],
+        },
+      ],
+    })
+  );
 
   const promises = formDataArray.map(sendFormData);
   await Promise.all(promises);

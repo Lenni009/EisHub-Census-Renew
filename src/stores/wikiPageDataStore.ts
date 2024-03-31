@@ -21,7 +21,7 @@ interface SectionQueryObject {
   anchor: string;
 }
 
-interface PlayerData {
+export interface PlayerData {
   discord: string;
   reddit: string;
   social: string;
@@ -33,7 +33,7 @@ interface PlayerData {
   activeTime: string;
 }
 
-interface BaseData {
+export interface BaseData {
   platform: Platforms | undefined;
   mode: Modes | undefined;
   baseName: string;
@@ -55,7 +55,7 @@ interface BaseData {
   addInfo: string;
 }
 
-interface ImageData {
+export interface ImageData {
   image: File | null;
   gallery: FileItem[];
 }
@@ -68,47 +68,54 @@ interface WikiPageData {
   imageData: ImageData;
 }
 
+const defaultStoreObject: WikiPageData = {
+  pageName: '',
+  sectionData: [{ name: 'Layout' }, { name: 'Features' }, { name: 'Additional Information' }],
+  playerData: {
+    discord: '',
+    reddit: '',
+    social: '',
+    wikiName: '',
+    player: '',
+    friend: '',
+    arrival: '',
+    shareTimezone: false,
+    activeTime: '',
+  },
+  baseData: {
+    platform: undefined, // NoSonar undefined is the proper value
+    mode: undefined, // NoSonar undefined is the proper value
+    baseName: '',
+    region: '',
+    system: '',
+    planet: '',
+    moon: '',
+    axes: '',
+    glyphs: '',
+    farm: false,
+    geobay: false,
+    arena: false,
+    racetrack: false,
+    landingpad: false,
+    terminal: false,
+    type: '',
+    layout: '',
+    features: '',
+    addInfo: '',
+  },
+  imageData: {
+    image: null,
+    gallery: [],
+  },
+};
+
+const defaultStoreObjectString = JSON.stringify(defaultStoreObject);
+
+const localStorageData = localStorage.getItem('censusForm');
+const localStorageDataJson: WikiPageData = JSON.parse(localStorageData ?? defaultStoreObjectString);
+
 export const useWikiPageDataStore = defineStore('wikiPageData', {
-  state: (): WikiPageData => ({
-    pageName: '',
-    sectionData: [{ name: 'Layout' }, { name: 'Features' }, { name: 'Additional Information' }],
-    playerData: {
-      discord: '',
-      reddit: '',
-      social: '',
-      wikiName: '',
-      player: '',
-      friend: '',
-      arrival: '',
-      shareTimezone: false,
-      activeTime: '',
-    },
-    baseData: {
-      platform: undefined, // NoSonar undefined is the proper value
-      mode: undefined, // NoSonar undefined is the proper value
-      baseName: '',
-      region: '',
-      system: '',
-      planet: '',
-      moon: '',
-      axes: '',
-      glyphs: '',
-      farm: false,
-      geobay: false,
-      arena: false,
-      racetrack: false,
-      landingpad: false,
-      terminal: false,
-      type: '',
-      layout: '',
-      features: '',
-      addInfo: '',
-    },
-    imageData: {
-      image: null,
-      gallery: [],
-    },
-  }),
+  state: (): WikiPageData => localStorageDataJson,
 
   actions: {
     async fetchWikiText() {
@@ -141,6 +148,10 @@ export const useWikiPageDataStore = defineStore('wikiPageData', {
       } finally {
         section.loading = false;
       }
+    },
+
+    resetStore() {
+      this.$patch(defaultStoreObject);
     },
   },
 });
