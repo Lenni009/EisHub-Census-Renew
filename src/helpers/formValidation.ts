@@ -1,3 +1,5 @@
+import { discordValidation } from '@/variables/formValidation';
+
 export function isValidHttpUrl(string: string) {
   if (!string) return true;
   try {
@@ -8,7 +10,6 @@ export function isValidHttpUrl(string: string) {
   }
 }
 
-export const discordValidation = '^[a-z0-9._]+$';
 const discordValidationRegexp = new RegExp(discordValidation);
 
 export const validateDiscord = (name: string) => !name || discordValidationRegexp.test(name);
