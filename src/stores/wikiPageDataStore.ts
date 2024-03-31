@@ -84,8 +84,8 @@ export const useWikiPageDataStore = defineStore('wikiPageData', {
       activeTime: '',
     },
     baseData: {
-      platform: undefined,
-      mode: undefined,
+      platform: undefined, // NoSonar undefined is the proper value
+      mode: undefined, // NoSonar undefined is the proper value
       baseName: '',
       region: '',
       system: '',
