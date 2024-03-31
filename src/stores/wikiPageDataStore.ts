@@ -8,6 +8,7 @@ import {
 } from '@/helpers/formValidation';
 import { getPageSectionContentApiUrl, getPageSectionsApiUrl } from '@/helpers/wikiApi';
 import type { BaseData, ImageData, PlayerData } from '@/types/pageData';
+import { weekInMilliseconds } from '@/variables/dateTime';
 import { regionArray } from '@/variables/regions';
 import { defineStore } from 'pinia';
 
@@ -85,6 +86,12 @@ const defaultStoreObject: WikiPageData = {
 };
 
 const defaultStoreObjectString = JSON.stringify(defaultStoreObject);
+
+// localstorage gets cleared after one week
+const currentDate = Date.now();
+const lastUpdated = localStorage.getItem('lastUpdated') ?? currentDate.toString();
+const lastUpdatedNumber = parseInt(lastUpdated);
+if (currentDate - lastUpdatedNumber > weekInMilliseconds) localStorage.removeItem('censusForm');
 
 const localStorageData = localStorage.getItem('censusForm');
 const localStorageDataJson: WikiPageData = JSON.parse(localStorageData ?? defaultStoreObjectString);
