@@ -8,13 +8,15 @@ import { paginate } from './array';
 import type { FileItem } from '@/types/file';
 import { formWebhook } from '@/variables/env';
 import { maxFilePerMessage } from '@/variables/fileSize';
+import { escapeName } from './nameEscape';
 
 const getExplicitBoolean = (bool: boolean): ExplicitBoolean => (bool ? 'Yes' : 'No');
 
 function constructNewFile(fileObj: FileItem, baseName: string): File {
+  const sanitisedBaseName = escapeName(baseName);
   const fileName = fileObj.file.name;
   const fileExtension = fileName.split('.').at(-1);
-  const newFileName = `${baseName}${fileObj.id}.${fileExtension}`;
+  const newFileName = `${sanitisedBaseName}${fileObj.id}.${fileExtension}`;
   return new File([fileObj.file], newFileName, { type: fileObj.file.type });
 }
 
