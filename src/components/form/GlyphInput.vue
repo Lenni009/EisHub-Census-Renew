@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, watchEffect } from 'vue';
 import { regions } from '@/variables/regions';
+import { expectedGlyphLength } from '@/variables/formValidation';
 
 const validGlyphsRegex = /[0-9A-F]/;
 
@@ -9,7 +10,7 @@ const model = defineModel({ type: String, required: true });
 const isAddressInEisvana = computed(() => model.value.slice(4) in regions);
 
 function addGlyph(glyph: string) {
-  if (model.value.length < 12) model.value += glyph; // NoSonar 12 is maximum glyph length
+  if (model.value.length < expectedGlyphLength) model.value += glyph; // NoSonar 12 is maximum glyph length
 }
 
 function deleteGlyph() {
@@ -33,9 +34,9 @@ const numberToGlyph = (n: number) => n.toString(16).toUpperCase(); // NoSonar th
     <div class="glyph-input-wrapper">
       <input
         v-model="model"
-        :aria-invalid="(model.length === 12 && !isAddressInEisvana) || undefined"
+        :aria-invalid="(model.length === expectedGlyphLength && !isAddressInEisvana) || undefined"
         class="glyphs-input"
-        maxlength="12"
+        :maxlength="expectedGlyphLength"
         type="text"
       />
       <button
@@ -47,7 +48,7 @@ const numberToGlyph = (n: number) => n.toString(16).toUpperCase(); // NoSonar th
       </button>
     </div>
     <p
-      v-if="model.length === 12 && !isAddressInEisvana"
+      v-if="model.length === expectedGlyphLength && !isAddressInEisvana"
       class="error"
     >
       Glyphs are outside of Eisvana space!
