@@ -27,6 +27,7 @@ const focusInput = () => otherInput.value?.focus();
       v-for="(item, id) in items"
       :for="`${name}-${id}`"
       :key="id"
+      class="multiple-choice-label"
     >
       <input
         v-model="model"
@@ -74,6 +75,15 @@ const focusInput = () => otherInput.value?.focus();
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+
+  .multiple-choice-label {
+    width: 100%;
+
+    span {
+      flex-grow: 1;
+      cursor: default;
+    }
+  }
 
   .radio-select-item-other {
     display: flex;
