@@ -1,46 +1,61 @@
 import { useWikiPageDataStore, type ImageData, type PlayerData, type BaseData } from '@/stores/wikiPageDataStore';
 import { storeToRefs } from 'pinia';
-import { computed } from 'vue';
+import { computed, type Ref } from 'vue';
 
 type AllProps = ImageData & PlayerData & BaseData;
 type OptionalProps = keyof AllProps;
+
+const optionalProperties: OptionalProps[] = [
+  'reddit',
+  'social',
+  'wikiName',
+  'friend',
+  'activeTime',
+  'moon',
+  'type',
+  'features',
+  'addInfo',
+];
 
 export function useFormValidation() {
   const wikiPageDataStore = useWikiPageDataStore();
   const { playerData, imageData, baseData } = storeToRefs(wikiPageDataStore);
 
-  const optionalProperties: OptionalProps[] = [
-    'reddit',
-    'social',
-    'wikiName',
-    'friend',
-    'activeTime',
-    'moon',
-    'type',
-    'features',
-    'addInfo',
-  ];
+  const { isDataValid: isPlayerDataValid, missingProps: missingPlayerProps } = useDataValidation(playerData);
+  const { isDataValid: isBaseDataValid, missingProps: missingBaseProps } = useDataValidation(baseData);
+  const { isDataValid: isImageDataValid, missingProps: missingImageProps } = useDataValidation(imageData);
 
-  const playerDataEntries = computed(() => Object.entries(playerData.value));
-  const baseDataEntries = computed(() => Object.entries(baseData.value));
-  const iamgeDataEntries = computed(() => Object.entries(imageData.value));
+  const isPageTwoDataValid = computed(() => isBaseDataValid.value && isImageDataValid.value);
+  const missingPageTwoProps = computed(() => [...missingBaseProps.value, ...missingImageProps.value]);
 
-  const allArrays = computed(() => [...playerDataEntries.value, ...baseDataEntries.value, ...iamgeDataEntries.value]);
+  const isAllDataValid = computed(() => isPlayerDataValid.value && isPageTwoDataValid.value);
+  const allMissingProps = computed(() => [...missingPlayerProps.value, ...missingPageTwoProps.value]);
 
+  return {
+    isAllDataValid,
+    allMissingProps,
+    isPageTwoDataValid,
+    missingPageTwoProps,
+    isPlayerDataValid,
+    missingPlayerProps,
+  };
+}
+
+function useDataValidation(storeObj: Ref<ImageData> | Ref<PlayerData> | Ref<BaseData>) {
+  const entries = computed(() => Object.entries(storeObj.value));
   const filteredEntries = computed(() =>
-    allArrays.value.filter((item) => isFormProperty(item[0]) && !optionalProperties.includes(item[0]))
+    entries.value.filter((item) => isFormProperty(item[0]) && !optionalProperties.includes(item[0]))
   );
-
   const invalidValues = computed(() =>
-    filteredEntries.value.filter(
-      (item) => item[1] === undefined || item[1] === '' || (item[0] === 'image' && item[1] === null)
-    )
+    filteredEntries.value.filter((item) => !item[1] && typeof item[1] !== 'boolean')
   );
   const missingProps = computed(() => invalidValues.value.map((item) => item[0]));
-  const isDataValid = computed(() => !invalidValues.value.length);
-  return { isDataValid, missingProps }; // return true if everything is good, else return false
+  const isDataValid = computed(() => !invalidValues.value.length); // return true if everything is good, else return false
+  return { isDataValid, missingProps };
+}
 
-  function isFormProperty(str: string): str is OptionalProps {
-    return str in playerData.value || str in baseData.value || str in imageData.value;
-  }
+function isFormProperty(str: string): str is OptionalProps {
+  const wikiPageDataStore = useWikiPageDataStore();
+  const { playerData, imageData, baseData } = storeToRefs(wikiPageDataStore);
+  return str in playerData.value || str in baseData.value || str in imageData.value;
 }

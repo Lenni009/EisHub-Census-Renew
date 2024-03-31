@@ -16,14 +16,14 @@ const isMakingNewPage = isNewPage();
 
 const skipVerification = isUpdatingPage || isMakingNewPage;
 
-const hasPageOneCompleted = ref(false);
+const { isAllDataValid, allMissingProps, missingPlayerProps, isPlayerDataValid } = useFormValidation();
 const hash = ref(window.location.hash);
 
-if (hash.value && !hasPageOneCompleted.value) window.location.hash = '';
+if (hash.value && !isPlayerDataValid.value) window.location.hash = '';
 
 onhashchange = () => (hash.value = window.location.hash);
 
-const page = computed(() => ((hash.value === '#2' && hasPageOneCompleted.value) || skipVerification ? 2 : 1));
+const page = computed(() => ((hash.value === '#2' && isPlayerDataValid.value) || skipVerification ? 2 : 1));
 
 const isSending = ref(false);
 
@@ -67,9 +67,8 @@ async function sendForm() {
   localStorage.removeItem('censusForm');
 }
 
-function validateInputs() {
-  hasPageOneCompleted.value = true;
-  scrollTo(0, 0);
+function scrollToTop() {
+  if (isPlayerDataValid.value) scrollTo(0, 0);
 }
 
 const router: Record<number, Component> = {
@@ -78,8 +77,6 @@ const router: Record<number, Component> = {
 };
 
 const RenderComponent = computed(() => router[page.value]);
-
-const { isDataValid } = useFormValidation();
 </script>
 
 <template>
@@ -90,21 +87,25 @@ const { isDataValid } = useFormValidation();
   >
     <RenderComponent />
     <div>
-      <a
-        v-if="page === 1"
-        :href="hasPageOneCompleted ? '#2' : undefined"
-        role="button"
-        @click="validateInputs"
-      >
-        Continue
-      </a>
-      <button
-        :disabled="!isDataValid"
-        :aria-busy="isSending"
-        v-if="page === 2"
-      >
-        {{ isSending ? '' : 'Submit' }}
-      </button>
+      <template v-if="page === 1">
+        <a
+          :href="isPlayerDataValid ? '#2' : undefined"
+          role="button"
+          @click="scrollToTop"
+        >
+          Continue
+        </a>
+        <p v-if="missingPlayerProps.length">Missing Data: {{ missingPlayerProps.join(', ') }}</p>
+      </template>
+      <template v-if="page === 2">
+        <button
+          :aria-busy="isSending"
+          :disabled="!isAllDataValid"
+        >
+          {{ isSending ? '' : 'Submit' }}
+        </button>
+        <p v-if="allMissingProps.length">Missing Data: {{ allMissingProps.join(', ') }}</p>
+      </template>
     </div>
   </form>
 
