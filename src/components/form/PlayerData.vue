@@ -1,29 +1,16 @@
 <script setup lang="ts">
-import { computed, ref, toRefs, watchEffect } from 'vue';
-import {
-  discordValidation,
-  validateDiscord,
-  isValidHttpUrl,
-  validateReddit,
-  validatePlayerName,
-  validateFriendCode,
-} from '@/helpers/formValidation';
+import { toRefs, watchEffect } from 'vue';
 import { storeToRefs } from 'pinia';
 import { timezoneOffset } from '@/variables/dateTime';
 import { useWikiPageDataStore } from '@/stores/wikiPageDataStore';
 import { userExists } from '@/helpers/wikiApi';
+import { discordValidation } from '@/variables/formValidation';
 
 const wikiPageData = useWikiPageDataStore();
-const { playerData } = storeToRefs(wikiPageData);
-const { discord, reddit, social, player, friend, wikiName } = toRefs(playerData.value);
-
-const wikiUserExists = ref(true);
-
-const isDiscordValid = computed(() => validateDiscord(discord.value));
-const isRedditValid = computed(() => validateReddit(reddit.value));
-const isSocialValid = computed(() => isValidHttpUrl(social.value));
-const isNameValid = computed(() => validatePlayerName(player.value));
-const isFriendValid = computed(() => validateFriendCode(friend.value));
+const { playerData, validation, isDiscordValid, isRedditValid, isFriendValid, isNameValid, isSocialValid } =
+  storeToRefs(wikiPageData);
+const { friend, wikiName } = toRefs(playerData.value);
+const { wikiUserExists } = toRefs(validation.value);
 
 watchEffect(async () => (wikiUserExists.value = wikiName.value ? await userExists(wikiName.value) : true));
 watchEffect(() => (friend.value = friend.value.toUpperCase()));

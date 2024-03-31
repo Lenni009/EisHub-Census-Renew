@@ -3,18 +3,13 @@ import { useWikiPageDataStore } from '@/stores/wikiPageDataStore';
 import { storeToRefs } from 'pinia';
 import MultipleChoice from './MultipleChoice.vue';
 import GlyphInput from './GlyphInput.vue';
-import { watchEffect, reactive, computed, toRefs } from 'vue';
-import { regionArray } from '@/variables/regions';
+import { reactive, toRefs } from 'vue';
 import Gallery from './Gallery.vue';
-import { validateCoords } from '@/helpers/formValidation';
 
 const wikiPageData = useWikiPageDataStore();
-const { baseData, imageData } = storeToRefs(wikiPageData);
-const { region, axes, glyphs, landingpad, terminal, geobay, farm, racetrack, arena } = toRefs(baseData.value);
+const { baseData, imageData, isAxesValid } = storeToRefs(wikiPageData);
+const { landingpad, terminal, geobay, farm, racetrack, arena } = toRefs(baseData.value);
 const { image } = toRefs(imageData.value);
-
-watchEffect(() => (region.value = regionArray.find((item) => item[0] === glyphs.value.slice(4))?.[1] ?? ''));
-const isAxesValid = computed(() => validateCoords(axes.value));
 
 const platforms: Record<string, string> = {
   PC: 'PC',
@@ -102,7 +97,7 @@ function uploadMainFile(e: Event) {
     <p class="question">What are the planetary coordinates of your base?</p>
     <p class="subtitle">You can find the coordinates when you look through your visor. Example: -14.24, +121.12</p>
     <input
-      v-model="baseData.axes"
+      v-model.lazy="baseData.axes"
       :aria-invalid="!isAxesValid || undefined"
       type="text"
     />

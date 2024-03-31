@@ -16,14 +16,14 @@ const isMakingNewPage = isNewPage();
 
 const skipVerification = isUpdatingPage || isMakingNewPage;
 
-const { isAllDataValid, allMissingProps, missingPlayerProps, isPlayerDataValid } = useFormValidation();
+const { isAllDataValid, allMissingProps, isPageOneValid, missingPageOneProps } = useFormValidation();
 const hash = ref(window.location.hash);
 
-if (hash.value && !isPlayerDataValid.value) window.location.hash = '';
+if (hash.value && !isPageOneValid.value) window.location.hash = '';
 
 onhashchange = () => (hash.value = window.location.hash);
 
-const page = computed(() => ((hash.value === '#2' && isPlayerDataValid.value) || skipVerification ? 2 : 1));
+const page = computed(() => ((hash.value === '#2' && isPageOneValid.value) || skipVerification ? 2 : 1));
 
 const isSending = ref(false);
 
@@ -68,7 +68,7 @@ async function sendForm() {
 }
 
 function scrollToTop() {
-  if (isPlayerDataValid.value) scrollTo(0, 0);
+  if (isPageOneValid.value) scrollTo(0, 0);
 }
 
 const router: Record<number, Component> = {
@@ -89,13 +89,14 @@ const RenderComponent = computed(() => router[page.value]);
     <div>
       <template v-if="page === 1">
         <a
-          :href="isPlayerDataValid ? '#2' : undefined"
+          :href="isPageOneValid ? '#2' : undefined"
+          :aria-disabled="!isPageOneValid"
           role="button"
           @click="scrollToTop"
         >
           Continue
         </a>
-        <p v-if="missingPlayerProps.length">Missing Data: {{ missingPlayerProps.join(', ') }}</p>
+        <p v-if="missingPageOneProps.length">Missing Data: {{ missingPageOneProps.join(', ') }}</p>
       </template>
       <template v-if="page === 2">
         <button
@@ -126,6 +127,11 @@ const RenderComponent = computed(() => router[page.value]);
 </template>
 
 <style lang="scss">
+a:not([href]) {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
 .questions {
   display: flex;
   flex-direction: column;

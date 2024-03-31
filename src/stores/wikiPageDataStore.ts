@@ -1,6 +1,14 @@
+import {
+  isValidHttpUrl,
+  validateCoords,
+  validateDiscord,
+  validateFriendCode,
+  validatePlayerName,
+  validateReddit,
+} from '@/helpers/formValidation';
 import { getPageSectionContentApiUrl, getPageSectionsApiUrl } from '@/helpers/wikiApi';
-import type { FileItem } from '@/types/file';
-import type { Modes, Platforms } from '@/types/pageData';
+import type { BaseData, ImageData, PlayerData } from '@/types/pageData';
+import { regionArray } from '@/variables/regions';
 import { defineStore } from 'pinia';
 
 interface SectionObject {
@@ -20,49 +28,14 @@ interface SectionQueryObject {
   byteoffset: number;
   anchor: string;
 }
-
-export interface PlayerData {
-  discord: string;
-  reddit: string;
-  social: string;
-  wikiName: string;
-  player: string;
-  friend: string;
-  arrival: string;
-  shareTimezone: boolean;
-  activeTime: string;
-}
-
-export interface BaseData {
-  platform: Platforms | undefined;
-  mode: Modes | undefined;
-  baseName: string;
-  region: string;
-  system: string;
-  planet: string;
-  moon: string;
-  axes: string;
-  glyphs: string;
-  farm: boolean;
-  geobay: boolean;
-  arena: boolean;
-  racetrack: boolean;
-  landingpad: boolean;
-  terminal: boolean;
-  type: string;
-  layout: string;
-  features: string;
-  addInfo: string;
-}
-
-export interface ImageData {
-  image: File | null;
-  gallery: FileItem[];
+interface Validation {
+  wikiUserExists: boolean;
 }
 
 interface WikiPageData {
   pageName: string;
   sectionData: SectionObject[];
+  validation: Validation;
   playerData: PlayerData;
   baseData: BaseData;
   imageData: ImageData;
@@ -71,6 +44,9 @@ interface WikiPageData {
 const defaultStoreObject: WikiPageData = {
   pageName: '',
   sectionData: [{ name: 'Layout' }, { name: 'Features' }, { name: 'Additional Information' }],
+  validation: {
+    wikiUserExists: true,
+  },
   playerData: {
     discord: '',
     reddit: '',
@@ -116,6 +92,16 @@ const localStorageDataJson: WikiPageData = JSON.parse(localStorageData ?? defaul
 
 export const useWikiPageDataStore = defineStore('wikiPageData', {
   state: (): WikiPageData => localStorageDataJson,
+
+  getters: {
+    isDiscordValid: (state) => validateDiscord(state.playerData.discord),
+    isRedditValid: (state) => validateReddit(state.playerData.reddit),
+    isSocialValid: (state) => isValidHttpUrl(state.playerData.social),
+    isNameValid: (state) => validatePlayerName(state.playerData.player),
+    isFriendValid: (state) => validateFriendCode(state.playerData.friend),
+    isAxesValid: (state) => validateCoords(state.baseData.axes),
+    region: (state) => regionArray.find((item) => item[0] === state.baseData.glyphs.slice(4))?.[1] ?? '',
+  },
 
   actions: {
     async fetchWikiText() {
