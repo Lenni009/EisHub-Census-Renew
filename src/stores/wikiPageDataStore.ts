@@ -1,5 +1,6 @@
 import { getPageSectionContentApiUrl, getPageSectionsApiUrl } from '@/helpers/wikiApi';
 import type { FileItem } from '@/types/file';
+import type { Modes, Platforms } from '@/types/pageData';
 import { defineStore } from 'pinia';
 
 interface SectionObject {
@@ -33,8 +34,8 @@ interface PlayerData {
 }
 
 interface BaseData {
-  platform: 'PC' | 'PlayStation' | 'Xbox' | 'Switch' | null;
-  mode: 'Normal' | 'Relaxed' | 'Survival' | 'Permadeath' | 'Creative' | 'Custom' | null;
+  platform: Platforms | undefined;
+  mode: Modes | undefined;
   baseName: string;
   region: string;
   system: string;
@@ -42,12 +43,12 @@ interface BaseData {
   moon: string;
   axes: string;
   glyphs: string;
-  farm: boolean | null;
-  geobay: boolean | null;
-  arena: boolean | null;
-  racetrack: boolean | null;
-  landingpad: boolean | null;
-  terminal: boolean | null;
+  farm: boolean;
+  geobay: boolean;
+  arena: boolean;
+  racetrack: boolean;
+  landingpad: boolean;
+  terminal: boolean;
   type: string;
   layout: string;
   features: string;
@@ -83,8 +84,8 @@ export const useWikiPageDataStore = defineStore('wikiPageData', {
       activeTime: '',
     },
     baseData: {
-      platform: null,
-      mode: null,
+      platform: undefined,
+      mode: undefined,
       baseName: '',
       region: '',
       system: '',
