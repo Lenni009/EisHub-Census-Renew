@@ -1,5 +1,5 @@
 import { imageTypes, compressImage } from 'simple-image-compressor';
-import { maxFileSize } from '@/variables/fileSize';
+import { maxFileSize } from '@/variables/fileLimits';
 
 export async function compressFile(file: File, quality: number = 1): Promise<File> {
   if (file.size < maxFileSize) return file; // if below 25 MB, don't do anything

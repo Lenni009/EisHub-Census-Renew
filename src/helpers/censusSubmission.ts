@@ -7,7 +7,7 @@ import { compressFile } from './fileCompression';
 import { paginate } from './array';
 import type { FileItem } from '@/types/file';
 import { formWebhook } from '@/variables/env';
-import { maxFilePerMessage } from '@/variables/fileSize';
+import { maxFilePerMessage } from '@/variables/fileLimits';
 import { escapeName } from './nameEscape';
 
 const getExplicitBoolean = (bool: boolean): ExplicitBoolean => (bool ? 'Yes' : 'No');
