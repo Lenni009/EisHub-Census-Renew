@@ -122,13 +122,12 @@ if (isMakingNewPage && sessionStorageData) {
   // if it's not a reddit link, we check if it's a URL. It could also be a wiki profile, which isn't a URL.
   // if it's a link, we return the raw link.
   // if it's a wiki profile, that's handled by the wikiname field.
-  localStorageDataJson.playerData.social = sessionStorageDataJson.CensusReddit
-    ? sessionStorageDataJson.CensusReddit.includes('reddit.com')
-      ? ''
-      : isValidHttpUrl(sessionStorageDataJson.CensusReddit ?? '')
-        ? sessionStorageDataJson.CensusReddit?.split(' ')[0].slice(1)
-        : ''
-    : '';
+  const censusReddit = sessionStorageDataJson.CensusReddit ?? '';
+  const censusRedditLink = censusReddit.startsWith('[') ? censusReddit.slice(1, -1).split(' ')[0] : censusReddit;
+  const isCensusRedditUrl = isValidHttpUrl(censusRedditLink);
+  const isRedditUrl = isCensusRedditUrl && censusReddit.includes('reddit.com');
+
+  localStorageDataJson.playerData.social = isRedditUrl ? '' : isCensusRedditUrl ? censusRedditLink : '';
 
   const secionContentApiUrl = getPageSectionContentApiUrl(sessionStorageDataJson.Name, 0);
   const sectionContentResponse = await fetch(secionContentApiUrl);
