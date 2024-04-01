@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { toRefs, watchEffect } from 'vue';
 import { storeToRefs } from 'pinia';
-import { timezoneOffset } from '@/variables/dateTime';
+import TimezoneQuestions from './TimezoneQuestions.vue';
 import { useWikiPageDataStore } from '@/stores/wikiPageDataStore';
 import { userExists } from '@/helpers/wikiApi';
 import { discordValidation } from '@/variables/formValidation';
+import { isMakingNewPage } from '@/variables/formMode';
 
 const wikiPageData = useWikiPageDataStore();
 const { playerData, validation, isDiscordValid, isRedditValid, isFriendValid, isNameValid, isSocialValid } =
@@ -109,7 +110,7 @@ watchEffect(() => (friend.value = friend.value.toUpperCase()));
       Format must be as follows: XXXX-XXXX-XXXXX
     </p>
   </article>
-  <article>
+  <article v-if="!isMakingNewPage">
     <p class="question required">Date of Arrival</p>
     <p class="subtitle">When did you arrive in Eisvana space?</p>
     <input
@@ -117,30 +118,6 @@ watchEffect(() => (friend.value = friend.value.toUpperCase()));
       type="date"
     />
   </article>
-  <article>
-    <p class="question">[OPTIONAL] Timezone</p>
-    <p class="subtitle">
-      Detected timezone: <span class="text-bold">{{ timezoneOffset }}</span>
-      <br />
-      This will be used to plan future events accordingly. This information will remain private and will only be shared
-      with Eisvana Leadership.
-    </p>
-    <label>
-      <span>Share timezone ({{ timezoneOffset }})</span>
-      <input
-        v-model.trim="playerData.shareTimezone"
-        type="checkbox"
-      />
-    </label>
-  </article>
-  <article>
-    <p class="question">[OPTIONAL] In this time zone, when do you play No Man's Sky the most?</p>
-    <p class="subtitle">
-      I. e. mornings, afternoon, evenings, late night, 9 AM to 12 PM, etc. This is used in order to better plan events.
-    </p>
-    <input
-      v-model.trim="playerData.activeTime"
-      type="text"
-    />
-  </article>
+
+  <TimezoneQuestions v-if="!isMakingNewPage" />
 </template>
