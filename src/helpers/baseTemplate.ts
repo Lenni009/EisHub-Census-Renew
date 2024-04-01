@@ -119,10 +119,11 @@ ${features}
 ${addInfo}
 
 ==Gallery==
-<gallery>
-${galleryPics}
+<gallery>${galleryPics ? '\n' + galleryPics : ''}
 </gallery>
 `;
 
-  return template;
+  const multiWhiteSpaceRegex = / {2,}/g;
+  const doubleLineBreaksRegex = /\n{3,}/g;
+  return template.replace(doubleLineBreaksRegex, '\n\n').replace(multiWhiteSpaceRegex, ' ');
 }
