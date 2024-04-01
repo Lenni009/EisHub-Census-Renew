@@ -69,28 +69,31 @@ export async function submitCensus(): Promise<void> {
     addInfo: baseData.addInfo,
   });
 
-  const wikiTextFile = new File([wikipageText], `${baseData.baseName}.txt`, { type: 'text/plain' });
-
-  // start with wikitextfile so we don't need to add that to the array later, and can potentially save one request
-  const compressedFiles = [wikiTextFile];
-
   if (!image) return;
 
   const fileType = image.type;
   const mainImageName = image.name;
   const fileExtension = mainImageName.split('.').at(-1);
   const newImageName = `${escapeName(baseData.baseName)}-main.${fileExtension}`;
-  const mainImageFile = new File([image], newImageName, { type: fileType });
-  galleryFiles.unshift(mainImageFile);
+  const mainImage = new File([image], newImageName, { type: fileType });
+
+  const compressedFiles: File[] = [];
 
   // compressing one-by-one to avoid weird Firefox issues
-  for (const file of galleryFiles) {
+  for (const file of [mainImage, ...galleryFiles]) {
     const compressedFile = await compressFile(file);
     compressedFiles.push(compressedFile);
   }
 
+  const wikiTextFile = new File([wikipageText], `${baseData.baseName}.txt`, { type: 'text/plain' });
+  const compressedMainImage = compressedFiles.shift();
+
+  if (!compressedMainImage) return;
+
   // Discord's file limit is 10, so we make sure to only send 10 files at once
   const paginatedFiles = paginate(compressedFiles, maxFilePerMessage);
+  paginatedFiles.unshift([compressedMainImage, wikiTextFile]);
+
   const formDataArray = paginatedFiles.map(constructFileFormData);
   formDataArray[0].append(
     'payload_json',
@@ -102,7 +105,7 @@ export async function submitCensus(): Promise<void> {
         {
           title: 'New Census Submission!',
           image: {
-            url: 'attachment://' + compressedFiles[0].name,
+            url: `attachment://${compressedMainImage.name}`,
           },
           fields: [
             {
@@ -115,9 +118,15 @@ export async function submitCensus(): Promise<void> {
             },
             {
               name: 'Active Time',
-              value: playerData.activeTime,
+              value: playerData.activeTime || 'not disclosed',
             },
           ],
+        },
+      ],
+      attachments: [
+        {
+          id: 0,
+          filename: compressedMainImage.name,
         },
       ],
     })
@@ -130,7 +139,7 @@ export async function submitCensus(): Promise<void> {
 function constructFileFormData(fileArray: File[]): FormData {
   // initialising form data object
   const formData = new FormData();
-  fileArray.forEach((file, index) => formData.append(`image${index}`, file));
+  fileArray.forEach((file, index) => formData.append(`files[${index}]`, file));
 
   return formData;
 }
