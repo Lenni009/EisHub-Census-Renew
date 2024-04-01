@@ -12,6 +12,7 @@ export interface PlayerData {
   player: string;
   friend: string;
   arrival: string;
+  renewals: string[];
   shareTimezone: boolean;
   activeTime: string;
 }

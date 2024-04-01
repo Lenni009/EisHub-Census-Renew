@@ -47,6 +47,7 @@ export const useRequestStore = defineStore('requests', {
           }: QueryEntry): CensusEntry => {
             const censusRenewalArray = CensusRenewal?.split(',')?.map((item) => item.trim()) ?? [];
             return {
+              renewals: censusRenewalArray,
               renewed: censusRenewalArray.includes(currentYearString),
               renewRequested: requested.value.includes(CensusPlayer),
               CensusArrival: new Date(CensusArrival),

@@ -7,8 +7,11 @@ import {
   validateReddit,
 } from '@/helpers/formValidation';
 import { getPageSectionContentApiUrl, getPageSectionsApiUrl } from '@/helpers/wikiApi';
+import { parseWikiTemplate } from '@/helpers/wikiTemplateParser';
+import type { CensusEntry } from '@/types/censusQueryResponse';
 import type { BaseData, ImageData, PlayerData } from '@/types/pageData';
-import { weekInMilliseconds } from '@/variables/dateTime';
+import { currentYearString, weekInMilliseconds } from '@/variables/dateTime';
+import { isMakingNewPage, isNewCitizen } from '@/variables/formMode';
 import { regionArray } from '@/variables/regions';
 import { defineStore } from 'pinia';
 
@@ -56,6 +59,7 @@ const defaultStoreObject: WikiPageData = {
     player: '',
     friend: '',
     arrival: '',
+    renewals: [currentYearString],
     shareTimezone: false,
     activeTime: '',
   },
@@ -93,8 +97,40 @@ const lastUpdated = localStorage.getItem('lastUpdated') ?? currentDate.toString(
 const lastUpdatedNumber = parseInt(lastUpdated);
 if (currentDate - lastUpdatedNumber > weekInMilliseconds) localStorage.removeItem('censusForm');
 
-const localStorageData = localStorage.getItem('censusForm');
+// kinda ugly and doesn't scale, but idk how else to do this without using an IIFE or some really ugly mapping code
+const localStorageKey = isNewCitizen ? 'censusForm' : isMakingNewPage ? 'newBase' : 'updateBase';
+
+const localStorageData = localStorage.getItem(localStorageKey);
 const localStorageDataJson: WikiPageData = JSON.parse(localStorageData ?? defaultStoreObjectString);
+
+const sessionStorageData = sessionStorage.getItem('update');
+const sessionStorageDataJson: CensusEntry = JSON.parse(sessionStorageData ?? '{}');
+
+// if sessionstorage has our data, we use that to populate the store
+if (isMakingNewPage && sessionStorageData) {
+  localStorageDataJson.playerData.arrival = new Date(sessionStorageDataJson.CensusArrival).toISOString().split('T')[0];
+  localStorageDataJson.playerData.discord = sessionStorageDataJson.CensusDiscord;
+  localStorageDataJson.playerData.reddit = sessionStorageDataJson.CensusReddit?.includes('reddit.com')
+    ? sessionStorageDataJson.CensusReddit.split(' ')[1].slice(0, -1)
+    : '';
+  localStorageDataJson.playerData.player = sessionStorageDataJson.CensusPlayer;
+  localStorageDataJson.playerData.friend = sessionStorageDataJson.CensusFriend ?? '';
+  localStorageDataJson.playerData.renewals = sessionStorageDataJson.renewals;
+
+  localStorageDataJson.playerData.social = sessionStorageDataJson.CensusReddit?.includes('reddit.com')
+    ? ''
+    : isValidHttpUrl(sessionStorageDataJson.CensusReddit)
+      ? sessionStorageDataJson.CensusReddit.split(' ')[0].slice(1)
+      : '';
+
+  const secionContentApiUrl = getPageSectionContentApiUrl(sessionStorageDataJson.Name, 0);
+  const sectionContentResponse = await fetch(secionContentApiUrl);
+  const sectionContent = await sectionContentResponse.json();
+  const wikitext = sectionContent.parse.wikitext['*'];
+  const { builderlink } = parseWikiTemplate(wikitext, 'Base infobox')[0];
+
+  localStorageDataJson.playerData.wikiName = builderlink;
+}
 
 export const useWikiPageDataStore = defineStore('wikiPageData', {
   state: (): WikiPageData => localStorageDataJson,
@@ -144,7 +180,7 @@ export const useWikiPageDataStore = defineStore('wikiPageData', {
 
     resetStore() {
       this.$patch(defaultStoreObject);
-      this.imageData.gallery = [];  // $patch apparently doesn't work well with arrays, so we need to replace it manually
+      this.imageData.gallery = []; // $patch apparently doesn't work well with arrays, so we need to replace it manually
     },
   },
 });

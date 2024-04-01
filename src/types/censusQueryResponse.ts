@@ -1,12 +1,12 @@
 interface RawCensusEntry {
-  Name: string;
-  CensusPlayer: string;
+  Name: string; // name of base
+  CensusPlayer: string; // player name
   CensusDiscord: string;
   CensusFriend: string;
   CensusReddit: string;
   Mode: string;
   Platform: string;
-  System: string;
+  System: string; // system where base is located
 }
 
 // change string to array for later code to consume
@@ -15,6 +15,7 @@ export interface CensusEntry extends RawCensusEntry {
   CensusArrival: Date;
   renewRequested: boolean;
   renewed: boolean;
+  renewals: string[];
 }
 
 // returned from query

@@ -2,7 +2,7 @@ import { useWikiPageDataStore } from '@/stores/wikiPageDataStore';
 import { buildBasePage } from './baseTemplate';
 import { version } from '@/variables/version';
 import type { ExplicitBoolean } from '@/types/pageData';
-import { currentYearString, timezoneOffset } from '@/variables/dateTime';
+import { timezoneOffset } from '@/variables/dateTime';
 import { compressFile } from './fileCompression';
 import { paginate } from './array';
 import type { FileItem } from '@/types/file';
@@ -65,7 +65,7 @@ export async function submitCensus(): Promise<void> {
     censusSocial: passSocial,
     censusFriend: playerData.friend,
     arrival: playerData.arrival,
-    renew: currentYearString,
+    renew: playerData.renewals.join(', '),
     layout: baseData.layout,
     features: baseData.features,
     addInfo: baseData.addInfo,
