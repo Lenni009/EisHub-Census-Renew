@@ -125,5 +125,5 @@ ${addInfo}
 
   const multiWhiteSpaceRegex = / {2,}/g;
   const doubleLineBreaksRegex = /\n{3,}/g;
-  return template.replace(doubleLineBreaksRegex, '\n\n').replace(multiWhiteSpaceRegex, ' ');
+  return template.trim().replace(doubleLineBreaksRegex, '\n\n').replace(multiWhiteSpaceRegex, ' ');
 }
