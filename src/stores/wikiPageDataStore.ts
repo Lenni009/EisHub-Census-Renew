@@ -119,7 +119,7 @@ if (isMakingNewPage && sessionStorageData) {
 
   localStorageDataJson.playerData.social = sessionStorageDataJson.CensusReddit?.includes('reddit.com')
     ? ''
-    : isValidHttpUrl(sessionStorageDataJson.CensusReddit)
+    : isValidHttpUrl(sessionStorageDataJson.CensusReddit ?? '')
       ? sessionStorageDataJson.CensusReddit.split(' ')[0].slice(1)
       : '';
 
