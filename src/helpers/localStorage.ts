@@ -43,3 +43,9 @@ export function updateLocalStorage(requested: Ref<string[]>, tries: Ref<number>,
   const localStorageJson = JSON.stringify(localStorageObj);
   localStorage.setItem(currentYearString, localStorageJson);
 }
+
+export function fileReplacer(key: string, value: unknown) {
+  if (value instanceof File) return null;
+  if (key === 'gallery') return [];
+  return value;
+}
