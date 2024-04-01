@@ -29,7 +29,7 @@ export async function submitCensus(): Promise<void> {
     constructNewFile(item, baseData.baseName),
     item.desc,
   ]);
-  const galleryPics = galleryEntries.map((item) => [item[0].name, item[1]].join('|')).join('\n');
+  const galleryPics = galleryEntries.map(([file, str]) => (str ? `${file.name}|${str}` : file.name)).join('\n');
   const galleryFiles = galleryEntries.map((item) => item[0]);
 
   const passBuilder = playerData.wikiName ? '' : playerData.player;
