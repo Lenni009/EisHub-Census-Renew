@@ -3,9 +3,10 @@ import { isUpdating, isNewPage } from '@/helpers/censusForm';
 // import { parseTemplate } from '@/helpers/wikiTemplateParser';
 // import { useWikiPageDataStore } from '@/stores/wikiPageDataStore';
 // import { storeToRefs } from 'pinia';
-import { computed, ref, type Component } from 'vue';
-import PlayerData from '@/components/form/PlayerData.vue';
-import BaseData from '@/components/form/BaseData.vue';
+import { computed, ref } from 'vue';
+import NewCitizen from '@/components/form/NewCitizen.vue';
+import NewBase from '@/components/form/NewBase.vue';
+import UpdateBase from '@/components/form/UpdateBase.vue';
 import { submitCensus } from '@/helpers/censusSubmission';
 import { useWikiPageDataStore } from '@/stores/wikiPageDataStore';
 import { useFormValidation } from '@/composables/useFormValidation';
@@ -72,13 +73,6 @@ async function sendForm() {
 function scrollToTop() {
   if (isPageOneValid.value) scrollTo(0, 0);
 }
-
-const router: Record<number, Component> = {
-  1: PlayerData,
-  2: BaseData,
-};
-
-const RenderComponent = computed(() => router[page.value]);
 </script>
 
 <template>
@@ -87,7 +81,14 @@ const RenderComponent = computed(() => router[page.value]);
     class="questions"
     @submit.prevent="sendForm"
   >
-    <RenderComponent />
+    <NewCitizen
+      v-if="!skipVerification"
+      :page
+    />
+
+    <NewBase v-if="isMakingNewPage" />
+    <UpdateBase v-if="isUpdatingPage" />
+
     <div>
       <template v-if="page === 1">
         <a
