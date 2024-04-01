@@ -114,7 +114,7 @@ function uploadMainFile(e: Event) {
     <GlyphInput v-model.trim="baseData.glyphs" />
   </article>
   <article>
-    <p class="question">Base Features: Check all that apply</p>
+    <p class="question">Base Features: Check all that apply:</p>
     <div class="checkboxes">
       <label v-for="feature in featureList">
         <input
@@ -142,7 +142,7 @@ function uploadMainFile(e: Event) {
     />
   </article>
   <article>
-    <p class="question">What type of base do you have? What is its purpose?</p>
+    <p class="question">What type of base is it? What is its purpose?</p>
     <p class="subtitle">Some examples are Artistic, Embassy, Farm, Industrial, Memorial and Residential.</p>
     <input
       v-model.trim="baseData.type"
