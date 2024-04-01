@@ -33,7 +33,9 @@ export async function submitCensus(): Promise<void> {
   const galleryFiles = galleryEntries.map((item) => item[0]);
 
   const passBuilder = playerData.wikiName ? '' : playerData.player;
-  const passSocial = playerData.reddit ? '' : playerData.social;
+
+  const socialWiki = playerData.social ? playerData.social : `{{profile|${playerData.wikiName}}}`;
+  const passSocial = playerData.reddit ? '' : socialWiki;
 
   const wikipageText = buildBasePage({
     version,
