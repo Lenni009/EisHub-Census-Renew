@@ -52,7 +52,7 @@ watchEffect(() => (friend.value = friend.value.toUpperCase()));
     <p class="question">Social media link if you don't have Reddit</p>
     <p class="subtitle">
       If you don't have Reddit, do you have a different social media account that you'd like to have on the census
-      (Facebook, Instagram, Wiki, etc.)? Please put the full link here.
+      (Facebook, Instagram, etc.)? Please put the full link here.
     </p>
     <input
       v-model.trim="playerData.social"
