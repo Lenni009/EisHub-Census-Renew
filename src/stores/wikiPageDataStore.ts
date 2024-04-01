@@ -117,11 +117,18 @@ if (isMakingNewPage && sessionStorageData) {
   localStorageDataJson.playerData.friend = sessionStorageDataJson.CensusFriend ?? '';
   localStorageDataJson.playerData.renewals = sessionStorageDataJson.renewals;
 
-  localStorageDataJson.playerData.social = sessionStorageDataJson.CensusReddit?.includes('reddit.com')
-    ? ''
-    : isValidHttpUrl(sessionStorageDataJson.CensusReddit ?? '')
-      ? sessionStorageDataJson.CensusReddit?.split(' ')[0].slice(1)
-      : '';
+  // first we check whether this is not null, since the API can return null.
+  // then we check whether the value is a reddit link. If yes, then that's already handled by the CensusReddit field.
+  // if it's not a reddit link, we check if it's a URL. It could also be a wiki profile, which isn't a URL.
+  // if it's a link, we return the raw link.
+  // if it's a wiki profile, that's handled by the wikiname field.
+  localStorageDataJson.playerData.social = sessionStorageDataJson.CensusReddit
+    ? sessionStorageDataJson.CensusReddit.includes('reddit.com')
+      ? ''
+      : isValidHttpUrl(sessionStorageDataJson.CensusReddit ?? '')
+        ? sessionStorageDataJson.CensusReddit?.split(' ')[0].slice(1)
+        : ''
+    : '';
 
   const secionContentApiUrl = getPageSectionContentApiUrl(sessionStorageDataJson.Name, 0);
   const sectionContentResponse = await fetch(secionContentApiUrl);

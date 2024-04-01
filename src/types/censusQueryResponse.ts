@@ -2,8 +2,8 @@ interface RawCensusEntry {
   Name: string; // name of base
   CensusPlayer: string; // player name
   CensusDiscord: string;
-  CensusFriend: string;
-  CensusReddit: string;
+  CensusFriend: string | null;
+  CensusReddit: string | null;
   Mode: string;
   Platform: string;
   System: string; // system where base is located
