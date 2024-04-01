@@ -4,8 +4,7 @@ import { isUpdatingPage, isMakingNewPage, isNewCitizen } from '@/variables/formM
 // import { useWikiPageDataStore } from '@/stores/wikiPageDataStore';
 // import { storeToRefs } from 'pinia';
 import { computed, ref } from 'vue';
-import NewCitizen from '@/components/form/NewCitizen.vue';
-import NewBase from '@/components/form/NewBase.vue';
+import BaseForm from '@/components/form/BaseForm.vue';
 import UpdateBase from '@/components/form/UpdateBase.vue';
 import { submitCensus } from '@/helpers/censusSubmission';
 import { useWikiPageDataStore } from '@/stores/wikiPageDataStore';
@@ -17,9 +16,9 @@ const hash = ref(window.location.hash);
 
 if (hash.value && !isPageOneValid.value) window.location.hash = '';
 
-onhashchange = () => (hash.value = window.location.hash);
+addEventListener('hashchange', () => (hash.value = window.location.hash));
 
-const page = computed(() => ((hash.value === '#2' && isPageOneValid.value) || isNewCitizen ? 2 : 1));
+const page = computed(() => (hash.value === '#2' && isPageOneValid.value ? 2 : 1));
 
 const isSending = ref(false);
 
@@ -44,25 +43,16 @@ const isSending = ref(false);
 
 const wikiPageDataStore = useWikiPageDataStore();
 
-function replacer(key: string, value: unknown) {
-  if (value instanceof File) return null;
-  if (key === 'gallery') return [];
-  return value;
-}
-
-// persist the whole state to the local storage whenever it changes
-wikiPageDataStore.$subscribe((_, state) => {
-  localStorage.setItem('censusForm', JSON.stringify(state, replacer));
-  localStorage.setItem('lastUpdated', Date.now().toString());
-});
-
 async function sendForm() {
   isSending.value = true;
   await submitCensus();
   wikiPageDataStore.resetStore();
   isSending.value = false;
   localStorage.removeItem('censusForm');
+  localStorage.removeItem('updateBase');
+  localStorage.removeItem('newBase');
   localStorage.removeItem('lastUpdated');
+  sessionStorage.removeItem('update');
 }
 
 function scrollToTop() {
@@ -76,12 +66,15 @@ function scrollToTop() {
     class="questions"
     @submit.prevent="sendForm"
   >
-    <NewCitizen
-      v-if="!isNewCitizen"
+    <!--New citizen-->
+    <!--Existing citizen is creating a new census page-->
+    <BaseForm
+      v-if="isNewCitizen || isMakingNewPage"
       :page
+      :local-storage-key="isNewCitizen ? 'censusForm' : 'newBase'"
     />
 
-    <NewBase v-if="isMakingNewPage" />
+    <!--Existing citizen making updates to their base page-->
     <UpdateBase v-if="isUpdatingPage" />
 
     <div>
