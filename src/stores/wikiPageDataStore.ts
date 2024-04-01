@@ -144,6 +144,7 @@ export const useWikiPageDataStore = defineStore('wikiPageData', {
 
     resetStore() {
       this.$patch(defaultStoreObject);
+      this.imageData.gallery = [];  // $patch apparently doesn't work well with arrays, so we need to replace it manually
     },
   },
 });
