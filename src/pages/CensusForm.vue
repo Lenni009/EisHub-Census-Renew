@@ -150,6 +150,12 @@ a:not([href]) {
     font-weight: bold;
     margin-block-end: 0.5rem;
 
+    &.required::after {
+      content: '*';
+      color: red;
+      margin-inline-start: 0.25rem;
+    }
+
     &:only-child {
       margin: 0;
     }

@@ -18,7 +18,7 @@ watchEffect(() => (friend.value = friend.value.toUpperCase()));
 
 <template>
   <article>
-    <p class="question">What is your Discord name?</p>
+    <p class="question required">What is your Discord name?</p>
     <p class="subtitle">Please enter your username, not your display name.</p>
     <input
       v-model.trim="playerData.discord"
@@ -80,7 +80,7 @@ watchEffect(() => (friend.value = friend.value.toUpperCase()));
     </p>
   </article>
   <article>
-    <p class="question">What is your ingame name?</p>
+    <p class="question required">What is your ingame name?</p>
     <p class="subtitle">Found on the top left in your inventory/pause menu. Exclude any game titles.</p>
     <input
       v-model.trim="playerData.player"
@@ -110,7 +110,7 @@ watchEffect(() => (friend.value = friend.value.toUpperCase()));
     </p>
   </article>
   <article>
-    <p class="question">Date of Arrival</p>
+    <p class="question required">Date of Arrival</p>
     <p class="subtitle">When did you arrive in Eisvana space?</p>
     <input
       v-model.trim="playerData.arrival"

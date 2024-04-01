@@ -63,14 +63,14 @@ function uploadMainFile(e: Event) {
 
 <template>
   <article>
-    <p class="question">What is the name of your base?</p>
+    <p class="question required">What is the name of your base?</p>
     <input
       v-model.trim="baseData.baseName"
       type="text"
     />
   </article>
   <article>
-    <p class="question">What is the name of the system where your base is?</p>
+    <p class="question required">What is the name of the system where your base is?</p>
     <p class="subtitle">The name of the system can be seen by looking at the galaxy map in space.</p>
     <input
       v-model.trim="baseData.system"
@@ -78,7 +78,7 @@ function uploadMainFile(e: Event) {
     />
   </article>
   <article>
-    <p class="question">
+    <p class="question required">
       What is the name of the planet on which your base is or that is orbited by the moon on which your base is?
     </p>
     <input
@@ -94,7 +94,7 @@ function uploadMainFile(e: Event) {
     />
   </article>
   <article>
-    <p class="question">What are the planetary coordinates of your base?</p>
+    <p class="question required">What are the planetary coordinates of your base?</p>
     <p class="subtitle">You can find the coordinates when you look through your visor. Example: -14.24, +121.12</p>
     <input
       v-model.trim.lazy="baseData.axes"
@@ -109,7 +109,7 @@ function uploadMainFile(e: Event) {
     </p>
   </article>
   <article>
-    <p class="question">What are the glyphs?</p>
+    <p class="question required">What are the glyphs?</p>
     <p class="subtitle">Glyphs can be found in photo mode</p>
     <GlyphInput v-model.trim="baseData.glyphs" />
   </article>
@@ -126,6 +126,22 @@ function uploadMainFile(e: Event) {
     </div>
   </article>
   <article>
+    <p class="question required">On which platform was the base built?</p>
+    <MultipleChoice
+      v-model.trim="baseData.platform"
+      :items="platforms"
+      name="platform"
+    />
+  </article>
+  <article>
+    <p class="question required">On which Game Mode was the base built?</p>
+    <MultipleChoice
+      v-model.trim="baseData.mode"
+      :items="modes"
+      name="mode"
+    />
+  </article>
+  <article>
     <p class="question">What type of base do you have? What is its purpose?</p>
     <p class="subtitle">Some examples are Artistic, Embassy, Farm, Industrial, Memorial and Residential.</p>
     <input
@@ -134,23 +150,7 @@ function uploadMainFile(e: Event) {
     />
   </article>
   <article>
-    <p class="question">On which platform was the base built?</p>
-    <MultipleChoice
-      v-model.trim="baseData.platform"
-      :items="platforms"
-      name="platform"
-    />
-  </article>
-  <article>
-    <p class="question">On which Game Mode was the base built?</p>
-    <MultipleChoice
-      v-model.trim="baseData.mode"
-      :items="modes"
-      name="mode"
-    />
-  </article>
-  <article>
-    <p class="question">Layout</p>
+    <p class="question required">Layout</p>
     <p class="subtitle">What does the base look like?</p>
     <textarea v-model.trim="baseData.layout"></textarea>
   </article>
