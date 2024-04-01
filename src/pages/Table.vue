@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useCensusDataStore } from '@/stores/censusDataStore';
 import { storeToRefs } from 'pinia';
-import { computed, ref, watch } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 import CensusItem from '@/components/table/CensusItem.vue';
 import type { CensusEntry } from '@/types/censusQueryResponse';
 
@@ -11,7 +11,7 @@ const { censusData, availableRevisions } = storeToRefs(censusDataStore);
 const revision = ref('');
 const searchTerm = ref('');
 
-watch(availableRevisions, (newVal) => (revision.value = newVal[0].toString()), { once: true });
+watchEffect(() => (revision.value = availableRevisions.value[0]?.toString()));
 
 function filterEntry({
   Name,
