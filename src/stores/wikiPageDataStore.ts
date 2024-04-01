@@ -120,7 +120,7 @@ if (isMakingNewPage && sessionStorageData) {
   localStorageDataJson.playerData.social = sessionStorageDataJson.CensusReddit?.includes('reddit.com')
     ? ''
     : isValidHttpUrl(sessionStorageDataJson.CensusReddit ?? '')
-      ? sessionStorageDataJson.CensusReddit.split(' ')[0].slice(1)
+      ? sessionStorageDataJson.CensusReddit?.split(' ')[0].slice(1)
       : '';
 
   const secionContentApiUrl = getPageSectionContentApiUrl(sessionStorageDataJson.Name, 0);
