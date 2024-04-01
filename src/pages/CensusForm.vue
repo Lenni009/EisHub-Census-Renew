@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { isUpdating, isNewPage } from '@/helpers/censusForm';
+import { isUpdatingPage, isMakingNewPage, isNewCitizen } from '@/variables/formMode';
 // import { parseTemplate } from '@/helpers/wikiTemplateParser';
 // import { useWikiPageDataStore } from '@/stores/wikiPageDataStore';
 // import { storeToRefs } from 'pinia';
@@ -12,11 +12,6 @@ import { useWikiPageDataStore } from '@/stores/wikiPageDataStore';
 import { useFormValidation } from '@/composables/useFormValidation';
 // import { onMounted } from 'vue';
 
-const isUpdatingPage = isUpdating();
-const isMakingNewPage = isNewPage();
-
-const skipVerification = isUpdatingPage || isMakingNewPage;
-
 const { isAllDataValid, allMissingProps, isPageOneValid, missingPageOneProps } = useFormValidation();
 const hash = ref(window.location.hash);
 
@@ -24,7 +19,7 @@ if (hash.value && !isPageOneValid.value) window.location.hash = '';
 
 onhashchange = () => (hash.value = window.location.hash);
 
-const page = computed(() => ((hash.value === '#2' && isPageOneValid.value) || skipVerification ? 2 : 1));
+const page = computed(() => ((hash.value === '#2' && isPageOneValid.value) || isNewCitizen ? 2 : 1));
 
 const isSending = ref(false);
 
@@ -82,7 +77,7 @@ function scrollToTop() {
     @submit.prevent="sendForm"
   >
     <NewCitizen
-      v-if="!skipVerification"
+      v-if="!isNewCitizen"
       :page
     />
 
