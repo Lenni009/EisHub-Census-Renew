@@ -8,6 +8,7 @@ export default defineConfig({
   //   base: '/Eisvana-Census-Renew/',
   plugins: [vue()],
   build: {
+    target: 'ESNext',
     rollupOptions: {
       input: ['index.html', 'form.html', 'renew.html', 'table.html'],
     },
