@@ -1,6 +1,6 @@
 import type { CensusEntry } from '@/types/censusQueryResponse';
 import { renewWebhook } from '@/variables/env';
-import { wikiEditLink } from '@/variables/wikiLink';
+import { buildWikiEditLink } from './wikiLinkConstructor';
 
 export async function renewCensus(userObject: CensusEntry) {
   await fetch(renewWebhook, {
@@ -9,7 +9,7 @@ export async function renewCensus(userObject: CensusEntry) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      content: `${userObject.CensusPlayer} requested renewal.\n<${new URL(wikiEditLink + userObject.Name)}>`,
+      content: `${userObject.CensusPlayer} requested renewal.\n<${buildWikiEditLink(userObject.Name)}>`,
     }),
   });
 }
