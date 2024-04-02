@@ -98,7 +98,8 @@ const lastUpdatedNumber = parseInt(lastUpdated);
 if (currentDate - lastUpdatedNumber > weekInMilliseconds) localStorage.removeItem('censusForm');
 
 // kinda ugly and doesn't scale, but idk how else to do this without using an IIFE or some really ugly mapping code
-const localStorageKey = isNewCitizen ? 'censusForm' : isMakingNewPage ? 'newBase' : 'updateBase';
+const newPageLocalStorageKey = isMakingNewPage ? 'newBase' : 'updateBase';
+const localStorageKey = isNewCitizen ? 'censusForm' : newPageLocalStorageKey;
 
 const localStorageData = localStorage.getItem(localStorageKey);
 const localStorageDataJson: WikiPageData = JSON.parse(localStorageData ?? defaultStoreObjectString);
@@ -127,7 +128,8 @@ if (isMakingNewPage && sessionStorageData) {
   const isCensusRedditUrl = isValidHttpUrl(censusRedditLink);
   const isRedditUrl = isCensusRedditUrl && censusReddit.includes('reddit.com');
 
-  localStorageDataJson.playerData.social = isRedditUrl ? '' : isCensusRedditUrl ? censusRedditLink : '';
+  const censusRedditUrlOrEmpty = isCensusRedditUrl ? censusRedditLink : '';
+  localStorageDataJson.playerData.social = isRedditUrl ? '' : censusRedditUrlOrEmpty;
 
   const secionContentApiUrl = getPageSectionContentApiUrl(sessionStorageDataJson.Name, 0);
   const sectionContentResponse = await fetch(secionContentApiUrl);
