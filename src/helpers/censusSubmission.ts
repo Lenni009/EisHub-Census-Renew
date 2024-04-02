@@ -9,6 +9,7 @@ import type { FileItem } from '@/types/file';
 import { formWebhook } from '@/variables/env';
 import { maxFilePerMessage } from '@/variables/fileLimits';
 import { escapeName } from './nameEscape';
+import { buildWikiEditLink } from './wikiLinkConstructor';
 
 const getExplicitBoolean = (bool: boolean): ExplicitBoolean => (bool ? 'Yes' : 'No');
 
@@ -20,7 +21,7 @@ function constructNewFile(fileObj: FileItem, baseName: string): File {
   return new File([fileObj.file], newFileName, { type: fileObj.file.type });
 }
 
-export async function submitCensus(): Promise<void> {
+export async function submitCensus(description: string): Promise<void> {
   const wikiPageData = useWikiPageDataStore();
   const { baseData, playerData, imageData, region } = wikiPageData;
   const { image, gallery } = imageData;
@@ -111,6 +112,7 @@ export async function submitCensus(): Promise<void> {
       },
       embeds: [
         {
+          description,
           title: 'New Census Submission!',
           image: {
             url: `attachment://${compressedMainImage.name}`,
@@ -119,6 +121,10 @@ export async function submitCensus(): Promise<void> {
             {
               name: 'Player',
               value: playerData.player,
+            },
+            {
+              name: 'Wikipage',
+              value: buildWikiEditLink(baseData.baseName),
             },
             {
               name: 'Timezone',

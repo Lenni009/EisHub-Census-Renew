@@ -9,6 +9,8 @@ import UpdateBase from '@/components/form/UpdateBase.vue';
 import { submitCensus } from '@/helpers/censusSubmission';
 import { useWikiPageDataStore } from '@/stores/wikiPageDataStore';
 import { useFormValidation } from '@/composables/useFormValidation';
+import type { CensusEntry } from '@/types/censusQueryResponse';
+import { buildWikiEditLink } from '@/helpers/wikiLinkConstructor';
 // import { onMounted } from 'vue';
 
 const { isAllDataValid, allMissingProps, isPageOneValid, missingPageOneProps } = useFormValidation();
@@ -41,18 +43,24 @@ const isSending = ref(false);
 //   parseTemplate(jsonData.parse.wikitext['*']);
 // });
 
-const wikiPageDataStore = useWikiPageDataStore();
-
 async function sendForm() {
   isSending.value = true;
-  await submitCensus();
+  const wikiPageDataStore = useWikiPageDataStore();
+  const sessionStorageItem = sessionStorage.getItem('update');
+  const sessionStorageData: CensusEntry = JSON.parse(sessionStorageItem ?? '{}');
+  const oldBaseName = sessionStorageData.Name;
+  const messageExistingCitizen = isMakingNewPage
+    ? `New Page for existing citizen. Old page: ${buildWikiEditLink(oldBaseName)}`
+    : 'Updated Base Page';
+  const message = isNewCitizen ? 'New Citizen' : messageExistingCitizen;
+  await submitCensus(message);
   wikiPageDataStore.resetStore();
-  isSending.value = false;
   localStorage.removeItem('censusForm');
   localStorage.removeItem('updateBase');
   localStorage.removeItem('newBase');
   localStorage.removeItem('lastUpdated');
   sessionStorage.removeItem('update');
+  isSending.value = false;
 }
 
 function scrollToTop() {
