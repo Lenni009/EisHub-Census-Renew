@@ -7,7 +7,6 @@ import {
   validateReddit,
 } from '@/helpers/formValidation';
 import { getPageSectionContentApiUrl, getPageSectionsApiUrl } from '@/helpers/wikiApi';
-import { parseWikiTemplate } from '@/helpers/wikiTemplateParser';
 import type { CensusEntry } from '@/types/censusQueryResponse';
 import type { BaseData, ImageData, PlayerData } from '@/types/pageData';
 import { currentYearString, weekInMilliseconds } from '@/variables/dateTime';
