@@ -39,10 +39,13 @@ export async function submitCensus(description: string): Promise<void> {
 
   const passBuilder = playerData.wikiName ? '' : playerData.player;
 
+  const wikiProfileLink = `{{profile|${playerData.wikiName}}}`;
   const socialName = playerData.social.split('/').at(-1);
+  const socialLink = `[${playerData.social} ${socialName}]`;
 
-  const socialWiki = playerData.social ? `[${playerData.social} ${socialName}]` : `{{profile|${playerData.wikiName}}}`;
-  const passSocial = playerData.reddit ? '' : socialWiki;
+  const socialWiki = playerData.social ? socialLink : wikiProfileLink;
+  const socialLinkOrEmpty = playerData.reddit ? '' : socialWiki;
+  const passSocial = !playerData.social && !playerData.wikiName ? '' : socialLinkOrEmpty;
 
   const wikipageText = buildBasePage({
     version,
@@ -78,18 +81,11 @@ export async function submitCensus(description: string): Promise<void> {
     addInfo: baseData.addInfo,
   });
 
-  if (!image) return;
-
-  const fileType = image.type;
-  const mainImageName = image.name;
-  const fileExtension = mainImageName.split('.').at(-1);
-  const newImageName = `${escapeName(baseData.baseName)}-main.${fileExtension}`;
-  const mainImage = new File([image], newImageName, { type: fileType });
-
   const compressedFiles: File[] = [];
 
   // compressing one-by-one to avoid weird Firefox issues
-  for (const file of [mainImage, ...galleryFiles]) {
+  for (const file of [image, ...galleryFiles]) {
+    if (!file) continue;
     const compressedFile = await compressFile(file);
     compressedFiles.push(compressedFile);
   }

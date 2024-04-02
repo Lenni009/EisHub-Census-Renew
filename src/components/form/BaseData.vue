@@ -5,6 +5,7 @@ import MultipleChoice from './MultipleChoice.vue';
 import GlyphInput from './GlyphInput.vue';
 import { reactive, toRefs } from 'vue';
 import Gallery from './Gallery.vue';
+import { escapeName } from '@/helpers/nameEscape';
 
 const wikiPageData = useWikiPageDataStore();
 const { baseData, imageData, isAxesValid } = storeToRefs(wikiPageData);
@@ -57,7 +58,21 @@ const featureList = reactive([
 function uploadMainFile(e: Event) {
   const { target } = e;
   if (!(target instanceof HTMLInputElement)) return;
-  image.value = target.files?.[0] ?? null; // target.files could be null, and since optional chaining returns undefined, we have to specify null as fallback ourselves. The image variable can also take null as value.
+
+  const uploadedFile = target.files?.[0];
+
+  if (!uploadedFile) {
+    image.value = null;
+    return;
+  }
+
+  const fileType = uploadedFile.type;
+  const mainImageName = uploadedFile.name;
+  const fileExtension = mainImageName.split('.').at(-1);
+  const newImageName = `${escapeName(baseData.value.baseName)}-main.${fileExtension}`;
+  const mainImage = new File([uploadedFile], newImageName, { type: fileType });
+
+  image.value = mainImage;
 }
 </script>
 
