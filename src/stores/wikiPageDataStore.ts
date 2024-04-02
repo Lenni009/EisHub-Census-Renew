@@ -131,13 +131,7 @@ if (isMakingNewPage && sessionStorageData) {
   const censusRedditUrlOrEmpty = isCensusRedditUrl ? censusRedditLink : '';
   localStorageDataJson.playerData.social = isRedditUrl ? '' : censusRedditUrlOrEmpty;
 
-  const secionContentApiUrl = getPageSectionContentApiUrl(sessionStorageDataJson.Name, 0);
-  const sectionContentResponse = await fetch(secionContentApiUrl);
-  const sectionContent = await sectionContentResponse.json();
-  const wikitext = sectionContent.parse.wikitext['*'];
-  const { builderlink } = parseWikiTemplate(wikitext, 'Base infobox')[0];
-
-  localStorageDataJson.playerData.wikiName = builderlink;
+  localStorageDataJson.playerData.wikiName = sessionStorageDataJson.Builderlink ?? '';
 }
 
 export const useWikiPageDataStore = defineStore('wikiPageData', {

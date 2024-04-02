@@ -43,6 +43,7 @@ export const useRequestStore = defineStore('requests', {
               Name,
               Platform,
               System,
+              Builderlink,
             },
           }: QueryEntry): CensusEntry => {
             const censusRenewalArray = CensusRenewal?.split(',')?.map((item) => item.trim()) ?? [];
@@ -60,6 +61,7 @@ export const useRequestStore = defineStore('requests', {
               Name,
               Platform,
               System,
+              Builderlink,
             };
           }
         );

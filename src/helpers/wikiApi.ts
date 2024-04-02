@@ -65,6 +65,7 @@ const getCensusQueryObject = (civilized: string): CensusQueryObject => ({
     'Mode',
     'CensusArrival',
     'CensusRenewal',
+    'Builderlink',
   ],
   where: `CensusShow IS NOT NULL AND Civilized="${civilized}"`,
   order_by: 'CensusRenewal',
@@ -81,6 +82,7 @@ const getBaseQueryObject = (baseName: string): BasicCargoQueryData => ({
 export const getCensusQueryUrl = (civilized: string) => buildQueryUrl(getCensusQueryObject(civilized));
 export const getBaseQueryUrl = (baseName: string) => buildQueryUrl(getBaseQueryObject(baseName));
 
+// check whether user exists on the wiki
 const getUserQueryObj = (user: string): UserQueryObject => ({
   ...basicQueryData,
   action: 'query',

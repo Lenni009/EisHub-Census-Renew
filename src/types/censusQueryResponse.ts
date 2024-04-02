@@ -4,6 +4,7 @@ interface RawCensusEntry {
   CensusDiscord: string;
   CensusFriend: string | null;
   CensusReddit: string | null;
+  Builderlink: string | null;
   Mode: string;
   Platform: string;
   System: string; // system where base is located
