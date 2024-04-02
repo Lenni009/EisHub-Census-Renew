@@ -39,17 +39,29 @@ export async function submitCensus(description: string): Promise<void> {
 
   const passBuilder = playerData.wikiName ? '' : playerData.player;
 
+  const wikiProfileLink = `{{profile|${playerData.wikiName}}}`;
   const socialName = playerData.social.split('/').at(-1);
+  const socialLink = `[${playerData.social} ${socialName}]`;
 
-  const socialWiki = playerData.social ? `[${playerData.social} ${socialName}]` : `{{profile|${playerData.wikiName}}}`;
-  const passSocial = playerData.reddit ? '' : socialWiki;
+  const socialWiki = playerData.social ? socialLink : wikiProfileLink;
+  const socialLinkOrEmpty = playerData.reddit ? '' : socialWiki;
+
+  const passSocial = !playerData.social && !playerData.wikiName ? '' : socialLinkOrEmpty;
+
+  if (!image) return;
+
+  const fileType = image.type;
+  const mainImageName = image.name;
+  const fileExtension = mainImageName.split('.').at(-1);
+  const newImageName = `${escapeName(baseData.baseName)}-main.${fileExtension}`;
+  const mainImage = new File([image], newImageName, { type: fileType });
 
   const wikipageText = buildBasePage({
     version,
     galleryPics,
     region,
     name: baseData.baseName,
-    image: image?.name ?? '',
+    image: mainImage.name,
     platform: platform ?? 'PC',
     mode: mode ?? 'Normal',
     builderlink: playerData.wikiName,
@@ -77,14 +89,6 @@ export async function submitCensus(description: string): Promise<void> {
     features: baseData.features,
     addInfo: baseData.addInfo,
   });
-
-  if (!image) return;
-
-  const fileType = image.type;
-  const mainImageName = image.name;
-  const fileExtension = mainImageName.split('.').at(-1);
-  const newImageName = `${escapeName(baseData.baseName)}-main.${fileExtension}`;
-  const mainImage = new File([image], newImageName, { type: fileType });
 
   const compressedFiles: File[] = [];
 
