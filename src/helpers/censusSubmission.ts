@@ -2,7 +2,7 @@ import { useWikiPageDataStore } from '@/stores/wikiPageDataStore';
 import { buildBasePage } from './baseTemplate';
 import { version } from '@/variables/version';
 import type { ExplicitBoolean } from '@/types/pageData';
-import { timezoneOffset } from '@/variables/dateTime';
+import { currentYearString, timezoneOffset } from '@/variables/dateTime';
 import { compressFile } from './fileCompression';
 import { paginate } from './array';
 import type { FileItem } from '@/types/file';
@@ -25,16 +25,22 @@ export async function submitCensus(): Promise<void> {
   const { baseData, playerData, imageData, region } = wikiPageData;
   const { image, gallery } = imageData;
   const { mode, platform } = baseData;
+  const { renewals } = playerData;
   const galleryEntries: [File, string][] = gallery.map((item) => [
     constructNewFile(item, baseData.baseName),
     item.desc,
   ]);
+
+  if (!renewals.includes(currentYearString)) renewals.push(currentYearString);
+
   const galleryPics = galleryEntries.map(([file, str]) => (str ? `${file.name}|${str}` : file.name)).join('\n');
   const galleryFiles = galleryEntries.map((item) => item[0]);
 
   const passBuilder = playerData.wikiName ? '' : playerData.player;
 
-  const socialWiki = playerData.social ? playerData.social : `{{profile|${playerData.wikiName}}}`;
+  const socialName = playerData.social.split('/').at(-1);
+
+  const socialWiki = playerData.social ? `[${playerData.social} ${socialName}]` : `{{profile|${playerData.wikiName}}}`;
   const passSocial = playerData.reddit ? '' : socialWiki;
 
   const wikipageText = buildBasePage({
@@ -65,7 +71,7 @@ export async function submitCensus(): Promise<void> {
     censusSocial: passSocial,
     censusFriend: playerData.friend,
     arrival: playerData.arrival,
-    renew: playerData.renewals.join(', '),
+    renew: renewals.join(', '),
     layout: baseData.layout,
     features: baseData.features,
     addInfo: baseData.addInfo,
