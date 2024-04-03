@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { isUpdatingPage, isMakingNewPage, isNewCitizen } from '@/variables/formMode';
+import { isMakingNewPage, isNewCitizen } from '@/variables/formMode';
 // import { parseTemplate } from '@/helpers/wikiTemplateParser';
 // import { useWikiPageDataStore } from '@/stores/wikiPageDataStore';
 // import { storeToRefs } from 'pinia';
 import { computed, ref } from 'vue';
 import BaseForm from '@/components/form/BaseForm.vue';
-import UpdateBase from '@/components/form/UpdateBase.vue';
 import { submitCensus } from '@/helpers/censusSubmission';
 import { useWikiPageDataStore } from '@/stores/wikiPageDataStore';
 import { useFormValidation } from '@/composables/useFormValidation';
