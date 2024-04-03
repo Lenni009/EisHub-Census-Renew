@@ -24,6 +24,9 @@ const page = computed(() => (hash.value === '#2' && isPageOneValid.value ? 2 : 1
 
 const isSending = ref(false);
 
+const localStorageKeyIsNotNew = isMakingNewPage ? 'newBase' : 'updateBase';
+const localStorageKey = isNewCitizen ? 'censusForm' : localStorageKeyIsNotNew;
+
 // const localStorageCensusData = localStorage.getItem('censusForm');
 
 // const wikiPageData = useWikiPageDataStore();
@@ -74,16 +77,10 @@ function scrollToTop() {
     class="questions"
     @submit.prevent="sendForm"
   >
-    <!--New citizen-->
-    <!--Existing citizen is creating a new census page-->
     <BaseForm
-      v-if="isNewCitizen || isMakingNewPage"
+      :local-storage-key
       :page
-      :local-storage-key="isNewCitizen ? 'censusForm' : 'newBase'"
     />
-
-    <!--Existing citizen making updates to their base page-->
-    <UpdateBase v-if="isUpdatingPage" />
 
     <div>
       <template v-if="page === 1">
