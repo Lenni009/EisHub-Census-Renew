@@ -5,7 +5,7 @@ import TimezoneQuestions from './TimezoneQuestions.vue';
 import { useWikiPageDataStore } from '@/stores/wikiPageDataStore';
 import { userExists } from '@/helpers/wikiApi';
 import { discordValidation } from '@/variables/formValidation';
-import { isMakingNewPage } from '@/variables/formMode';
+import { isNewCitizen } from '@/variables/formMode';
 
 const wikiPageData = useWikiPageDataStore();
 const { playerData, validation, isDiscordValid, isRedditValid, isFriendValid, isNameValid, isSocialValid } =
@@ -110,14 +110,16 @@ watchEffect(() => (friend.value = friend.value.toUpperCase()));
       Format must be as follows: XXXX-XXXX-XXXXX
     </p>
   </article>
-  <article v-if="!isMakingNewPage">
-    <p class="question required">Date of Arrival</p>
-    <p class="subtitle">When did you arrive in Eisvana space?</p>
-    <input
-      v-model.trim="playerData.arrival"
-      type="date"
-    />
-  </article>
+  <template v-if="isNewCitizen">
+    <article>
+      <p class="question required">Date of Arrival</p>
+      <p class="subtitle">When did you arrive in Eisvana space?</p>
+      <input
+        v-model.trim="playerData.arrival"
+        type="date"
+      />
+    </article>
 
-  <TimezoneQuestions v-if="!isMakingNewPage" />
+    <TimezoneQuestions />
+  </template>
 </template>

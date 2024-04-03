@@ -107,7 +107,7 @@ const sessionStorageData = sessionStorage.getItem('update');
 const sessionStorageDataJson: CensusEntry = JSON.parse(sessionStorageData ?? '{}');
 
 // if sessionstorage has our data, we use that to populate the store
-if (isMakingNewPage && sessionStorageData) {
+if (!isNewCitizen && sessionStorageData) {
   localStorageDataJson.playerData.arrival = new Date(sessionStorageDataJson.CensusArrival).toISOString().split('T')[0];
   localStorageDataJson.playerData.discord = sessionStorageDataJson.CensusDiscord;
   localStorageDataJson.playerData.reddit = sessionStorageDataJson.CensusReddit?.includes('reddit.com')
