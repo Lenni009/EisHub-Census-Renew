@@ -19,4 +19,4 @@ export const defaultSections: SectionObject[] = [
   },
 ];
 
-export const requiredSections = defaultSections.map((item) => item.heading);
+export const standardSections = defaultSections.map((item) => item.heading.toLowerCase());

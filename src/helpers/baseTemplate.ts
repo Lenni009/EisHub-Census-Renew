@@ -1,10 +1,10 @@
 import type { BasePageFields, SectionObject } from '@/types/pageData';
 import { civilized } from '@/variables/civilized';
-import { requiredSections } from '@/variables/wikiSections';
+import { standardSections } from '@/variables/wikiSections';
 
 function assembleBasePage(sectionArray: SectionObject[]) {
   const wikiSections: string[] = sectionArray.map((section, index) => {
-    if (!section.body && !requiredSections.includes(section.heading)) return '';
+    if (!section.body && !standardSections.includes(section.heading.toLowerCase())) return '';
     const heading = index ? `==${section.heading}==` : '';
     const wikiSection = `${heading}
     ${section.body}`;

@@ -157,12 +157,14 @@ export const useWikiPageDataStore = defineStore('wikiPageData', {
     },
 
     async getWikiText(sectionData: { line: string; index: string }, index: number) {
-      const itemInSectionData = this.sectionData.find((item) => item.heading === sectionData.line);
+      const lowerCaseHeading = sectionData.line.toLowerCase();
+      const itemInSectionData = defaultSections.find((item) => item.heading.toLowerCase() === lowerCaseHeading);
       const sectionObject: SectionObject = {
-        heading: sectionData.line,
+        heading: itemInSectionData?.heading ?? sectionData.line, // fixing potential spelling mistakes
         body: '',
         explanation: itemInSectionData?.explanation,
         loading: true,
+        required: itemInSectionData?.required,
       };
 
       const missingItems = index - this.sectionData.length;
