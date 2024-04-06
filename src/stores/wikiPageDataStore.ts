@@ -8,10 +8,11 @@ import {
 } from '@/helpers/formValidation';
 import { getPageSectionContentApiUrl, getPageSectionsApiUrl } from '@/helpers/wikiApi';
 import type { CensusEntry } from '@/types/censusQueryResponse';
-import type { BaseData, ImageData, PlayerData } from '@/types/pageData';
+import type { BaseData, ImageData, PlayerData, SectionObject } from '@/types/pageData';
 import { currentYearString, weekInMilliseconds } from '@/variables/dateTime';
 import { isMakingNewPage, isNewCitizen } from '@/variables/formMode';
 import { regionArray } from '@/variables/regions';
+import { defaultSections } from '@/variables/wikiSections';
 import { defineStore } from 'pinia';
 
 interface SectionObject {
@@ -45,8 +46,7 @@ interface WikiPageData {
 }
 
 const defaultStoreObject: WikiPageData = {
-  pageName: '',
-  sectionData: [{ name: 'Layout' }, { name: 'Features' }, { name: 'Additional Information' }],
+  sectionData: defaultSections,
   validation: {
     wikiUserExists: true,
   },
@@ -78,9 +78,6 @@ const defaultStoreObject: WikiPageData = {
     landingpad: false,
     terminal: false,
     type: '',
-    layout: '',
-    features: '',
-    addInfo: '',
   },
   imageData: {
     image: null,
@@ -134,7 +131,7 @@ if (!isNewCitizen && sessionStorageData) {
 }
 
 export const useWikiPageDataStore = defineStore('wikiPageData', {
-  state: (): WikiPageData => localStorageDataJson,
+  state: (): WikiPageData => structuredClone(localStorageDataJson),
 
   getters: {
     isDiscordValid: (state) => validateDiscord(state.playerData.discord),
@@ -180,8 +177,7 @@ export const useWikiPageDataStore = defineStore('wikiPageData', {
     },
 
     resetStore() {
-      this.$patch(defaultStoreObject);
-      this.imageData.gallery = []; // $patch apparently doesn't work well with arrays, so we need to replace it manually
+      this.$patch(structuredClone(defaultStoreObject));
     },
   },
 });

@@ -33,9 +33,6 @@ export interface BaseData {
   landingpad: boolean;
   terminal: boolean;
   type: string;
-  layout: string;
-  features: string;
-  addInfo: string;
 }
 
 export interface ImageData {
@@ -45,3 +42,43 @@ export interface ImageData {
 
 type AllProps = ImageData & PlayerData & BaseData;
 export type OptionalProps = keyof AllProps;
+
+export interface SectionObject {
+  heading: string;
+  body: string;
+  explanation?: string;
+  loading?: boolean;
+  required?: boolean;
+}
+
+export interface BasePageFields {
+  version: string;
+  name: string;
+  image: string;
+  builderlink?: string;
+  builder?: string;
+  region: string;
+  system: string;
+  planet: string;
+  moon: string;
+  axes: string;
+  glyphs: string;
+  type: string;
+  mode: Modes;
+  platform: Platforms;
+  farm: ExplicitBoolean;
+  geobay: ExplicitBoolean;
+  landingpad: ExplicitBoolean;
+  arena: ExplicitBoolean;
+  terminal: ExplicitBoolean;
+  racetrack: ExplicitBoolean;
+  censusPlayer: string;
+  censusReddit?: string;
+  censusSocial?: string;
+  censusDiscord?: string;
+  censusFriend?: string;
+  arrival: string;
+  renew: string;
+  galleryPics: string;
+  sections: SectionObject[];
+}

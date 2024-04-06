@@ -60,7 +60,7 @@ function buildFileItem(files: File[]) {
     @dragover.prevent
   >
     <span class="title-wrapper">
-      <span class="drop-title">Drop gallery files here</span>
+      <span class="drop-title text-bold">Drop gallery files here</span>
     </span>
     <input
       :class="{ error: errors.length || infoboxImageInGallery }"
@@ -103,7 +103,6 @@ function buildFileItem(files: File[]) {
   }
 
   .drop-title {
-    font-weight: bold;
     text-align: center;
   }
 

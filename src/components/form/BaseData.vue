@@ -7,7 +7,7 @@ import { reactive, toRefs } from 'vue';
 import Gallery from './Gallery.vue';
 
 const wikiPageData = useWikiPageDataStore();
-const { baseData, imageData, isAxesValid } = storeToRefs(wikiPageData);
+const { baseData, imageData, isAxesValid, sectionData } = storeToRefs(wikiPageData);
 const { landingpad, terminal, geobay, farm, racetrack, arena } = toRefs(baseData.value);
 const { image } = toRefs(imageData.value);
 
@@ -149,20 +149,23 @@ function uploadMainFile(e: Event) {
       type="text"
     />
   </article>
-  <article>
-    <p class="question required">Layout</p>
-    <p class="subtitle">What does the base look like?</p>
-    <textarea v-model.trim="baseData.layout"></textarea>
-  </article>
-  <article>
-    <p class="question">Features</p>
-    <p class="subtitle">List the basic features, such as crops, biodomes, landing pads, exocraft bays, etc.</p>
-    <textarea v-model.trim="baseData.features"></textarea>
-  </article>
-  <article>
-    <p class="question">Additional Information</p>
-    <p class="subtitle">Any nearby resources, tourist traps, other bases</p>
-    <textarea v-model.trim="baseData.addInfo"></textarea>
+  <article
+    v-for="item in sectionData"
+    :key="item.heading"
+  >
+    <p
+      :class="{ required: item.required }"
+      class="question"
+    >
+      {{ item.heading }}
+    </p>
+    <p
+      v-if="item.explanation"
+      class="subtitle"
+    >
+      {{ item.explanation }}
+    </p>
+    <textarea v-model.trim="item.body"></textarea>
   </article>
   <article>
     <p class="question">Main picture</p>

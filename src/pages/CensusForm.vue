@@ -22,6 +22,7 @@ addEventListener('hashchange', () => (hash.value = window.location.hash));
 const page = computed(() => (hash.value === '#2' && isPageOneValid.value ? 2 : 1));
 
 const isSending = ref(false);
+const successDialog = ref<HTMLDialogElement | null>(null);
 
 const localStorageKeyIsNotNew = isMakingNewPage ? 'newBase' : 'updateBase';
 const localStorageKey = isNewCitizen ? 'censusForm' : localStorageKeyIsNotNew;
@@ -50,7 +51,7 @@ async function sendForm() {
   const wikiPageDataStore = useWikiPageDataStore();
   const sessionStorageItem = sessionStorage.getItem('update');
   const sessionStorageData: CensusEntry = JSON.parse(sessionStorageItem ?? '{}');
-  const oldBaseName = sessionStorageData.Name;
+  const oldBaseName = sessionStorageData.Name ?? '';
   const messageExistingCitizen = isMakingNewPage
     ? `New Page for existing citizen. Old page: ${buildWikiEditLink(oldBaseName)}`
     : 'Updated Base Page';
@@ -62,8 +63,12 @@ async function sendForm() {
   localStorage.removeItem('newBase');
   localStorage.removeItem('lastUpdated');
   sessionStorage.removeItem('update');
+  window.location.hash = '';
   isSending.value = false;
+  successDialog.value?.showModal();
 }
+
+const closeModal = () => successDialog.value?.close();
 
 function scrollToTop() {
   if (isPageOneValid.value) scrollTo(0, 0);
@@ -103,6 +108,26 @@ function scrollToTop() {
         <p v-if="allMissingProps.length">Missing Data: {{ allMissingProps.join(', ') }}</p>
       </template>
     </div>
+
+    <dialog
+      ref="successDialog"
+      @click.self="closeModal"
+    >
+      <article>
+        <header>
+          <form method="dialog">
+            <button
+              aria-label="Close"
+              class="close"
+            ></button>
+          </form>
+          <p class="text-bold">Thank you for registering!</p>
+        </header>
+        <p>
+          We're excited to have you join us in Eisvana!<br />We'll let you know when your submission has been processed.
+        </p>
+      </article>
+    </dialog>
   </form>
 
   <!--

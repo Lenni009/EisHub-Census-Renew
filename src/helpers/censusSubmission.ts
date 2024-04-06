@@ -23,7 +23,7 @@ function constructNewFile(fileObj: FileItem, baseName: string): File {
 
 export async function submitCensus(description: string): Promise<void> {
   const wikiPageData = useWikiPageDataStore();
-  const { baseData, playerData, imageData, region } = wikiPageData;
+  const { baseData, playerData, imageData, region, sectionData } = wikiPageData;
   const { image, gallery } = imageData;
   const { mode, platform } = baseData;
   const { renewals } = playerData;
@@ -85,9 +85,7 @@ export async function submitCensus(description: string): Promise<void> {
     censusFriend: playerData.friend,
     arrival: playerData.arrival,
     renew: renewals.join(', '),
-    layout: baseData.layout,
-    features: baseData.features,
-    addInfo: baseData.addInfo,
+    sections: sectionData,
   });
 
   const compressedFiles: File[] = [];

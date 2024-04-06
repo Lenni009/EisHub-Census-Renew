@@ -27,6 +27,7 @@ export function useFormValidation() {
     isNameValid,
     isFriendValid,
     isAxesValid,
+    sectionData,
   } = storeToRefs(wikiPageDataStore);
   const { wikiUserExists } = toRefs(validation.value);
 
@@ -49,11 +50,18 @@ export function useFormValidation() {
   const missingPageOneProps = computed(() => [...missingPlayerProps.value, ...missingPlayerValidationProps.value]);
   const isPageOneValid = computed(() => isPlayerDataValid.value && isPlayerValidationDataValid.value);
 
+  const sectionDataMissingProps = computed(() =>
+    sectionData.value.filter((item) => item.required && !item.body).map((item) => item.heading)
+  );
+  const isSectionDataValid = computed(() => !sectionDataMissingProps.value.length);
+
   const isPageTwoDataValid = computed(
-    () => isBaseDataValid.value && isImageDataValid.value && region.value && isAxesValid.value
+    () =>
+      isBaseDataValid.value && isSectionDataValid.value && isImageDataValid.value && region.value && isAxesValid.value
   );
   const missingPageTwoProps = computed(() => [
     ...missingBaseProps.value,
+    ...sectionDataMissingProps.value,
     ...missingImageProps.value,
     ...(region.value ? [] : ['region']),
     ...(isAxesValid.value ? [] : ['axes']),
@@ -81,7 +89,7 @@ function useValidationData(validationObj: PlayerDataValidation) {
   return { isDataValid, missingProps };
 }
 
-function useDataValidation(storeObj: Ref<ImageData> | Ref<PlayerData> | Ref<BaseData> | Ref<PlayerDataValidation>) {
+function useDataValidation(storeObj: Ref<ImageData> | Ref<PlayerData> | Ref<BaseData>) {
   const entries = computed(() => Object.entries(storeObj.value));
   const filteredEntries = computed(() =>
     entries.value.filter((item) => isFormProperty(item[0]) && !optionalProperties.includes(item[0]))

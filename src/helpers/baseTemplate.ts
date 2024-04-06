@@ -1,41 +1,25 @@
-import type { ExplicitBoolean, Modes, Platforms } from '@/types/pageData';
+import type { BasePageFields, SectionObject } from '@/types/pageData';
 import { civilized } from '@/variables/civilized';
+import { requiredSections } from '@/variables/wikiSections';
 
-interface BasePageFields {
-  version: string;
-  name: string;
-  image: string;
-  builderlink?: string;
-  builder?: string;
-  region: string;
-  system: string;
-  planet: string;
-  moon: string;
-  axes: string;
-  glyphs: string;
-  type: string;
-  mode: Modes;
-  platform: Platforms;
-  farm: ExplicitBoolean;
-  geobay: ExplicitBoolean;
-  landingpad: ExplicitBoolean;
-  arena: ExplicitBoolean;
-  terminal: ExplicitBoolean;
-  racetrack: ExplicitBoolean;
-  censusPlayer: string;
-  censusReddit?: string;
-  censusSocial?: string;
-  censusDiscord?: string;
-  censusFriend?: string;
-  arrival: string;
-  renew: string;
-  layout: string;
-  features: string;
-  addInfo: string;
-  galleryPics: string;
+function assembleBasePage(sectionArray: SectionObject[]) {
+  const wikiSections: string[] = sectionArray.map((section, index) => {
+    if (!section.body && !requiredSections.includes(section.heading)) return '';
+    const heading = index ? `==${section.heading}==` : '';
+    const wikiSection = `${heading}
+    ${section.body}`;
+
+    return wikiSection.trim();
+  });
+
+  const wikiPage = wikiSections.filter(Boolean).join('\n\n');
+
+  const multiWhiteSpaceRegex = / {2,}/g;
+  const doubleLineBreaksRegex = /\n{3,}/g;
+  return wikiPage.replace(doubleLineBreaksRegex, '\n\n').replace(multiWhiteSpaceRegex, ' ');
 }
 
-export function buildBasePage({
+function buildBaseIntroSection({
   version,
   name,
   image,
@@ -63,13 +47,10 @@ export function buildBasePage({
   censusFriend,
   arrival,
   renew,
-  layout,
-  features,
-  addInfo,
-  galleryPics,
-}: BasePageFields) {
-  const template = `
-{{Version|${version}}}
+}: BasePageFields): SectionObject {
+  return {
+    heading: '',
+    body: `{{Version|${version}}}
 {{Eisvana}}
 {{Base infobox
 | name = ${name}
@@ -104,26 +85,33 @@ export function buildBasePage({
 | censusrenewal = ${renew}
 | censusshow = Y
 }}
-'''${name}''' is a player base.
+'''${name}''' is a player base.`,
+  };
+}
 
-==Summary==
-'''${name}''' is a [[Habitable Base|player base]], located on the ${moon ? 'moon [[' + moon + ']] of the ' : ''}planet [[${planet}]] in the [[${system}]] system.
+function buildBaseSummarySection({ name, system, planet, moon }: BasePageFields): SectionObject {
+  return {
+    heading: 'Summary',
+    body: `'''${name}''' is a [[Habitable Base|player base]], located on the ${moon ? 'moon [[' + moon + ']] of the ' : ''}planet [[${planet}]] in the [[${system}]] system.`,
+  };
+}
 
-==Layout==
-${layout}
+function buildBaseGallerySection({ galleryPics }: BasePageFields): SectionObject {
+  return {
+    heading: 'Gallery',
+    body: `<gallery>${galleryPics ? '\n' + galleryPics : ''}
+    </gallery>`,
+  };
+}
 
-==Features==
-${features}
+export function buildBasePage(basePageFields: BasePageFields) {
+  const intro = buildBaseIntroSection(basePageFields);
+  const summary = buildBaseSummarySection(basePageFields);
+  const gallery = buildBaseGallerySection(basePageFields);
+  const { sections } = basePageFields;
 
-==Additional Information==
-${addInfo}
+  const sectionArray: SectionObject[] = [intro, summary, ...sections, gallery];
 
-==Gallery==
-<gallery>${galleryPics ? '\n' + galleryPics : ''}
-</gallery>
-`;
-
-  const multiWhiteSpaceRegex = / {2,}/g;
-  const doubleLineBreaksRegex = /\n{3,}/g;
-  return template.trim().replace(doubleLineBreaksRegex, '\n\n').replace(multiWhiteSpaceRegex, ' ');
+  const wikiText = assembleBasePage(sectionArray);
+  return wikiText;
 }
