@@ -140,6 +140,11 @@ export const useWikiPageDataStore = defineStore('wikiPageData', {
   },
 
   actions: {
+    async fetchSectionWikiText() {
+      const sectionData = await this.fetchAvailableSectionInfo();
+      sectionData.forEach(this.getWikiText);
+    },
+
     async fetchAvailableSectionInfo() {
       const url = getPageSectionsApiUrl(this.baseData.baseName);
       const apiResponse = await fetch(url);
@@ -149,11 +154,6 @@ export const useWikiPageDataStore = defineStore('wikiPageData', {
       const firstLevelSections = usedSections.filter((section) => section.toclevel === 1);
       const relevantSectionInfo = firstLevelSections.map(({ line, index }) => ({ line, index }));
       return relevantSectionInfo;
-    },
-
-    async fetchSectionWikiText() {
-      const sectionData = await this.fetchAvailableSectionInfo();
-      sectionData.forEach(this.getWikiText);
     },
 
     async getWikiText(sectionData: { line: string; index: string }, index: number) {
