@@ -1,19 +1,20 @@
 <script setup lang="ts">
-import { isMakingNewPage, isNewCitizen } from '@/variables/formMode';
+import { isMakingNewPage, isNewCitizen, isUpdatingPage } from '@/variables/formMode';
 // import { parseTemplate } from '@/helpers/wikiTemplateParser';
 // import { useWikiPageDataStore } from '@/stores/wikiPageDataStore';
 // import { storeToRefs } from 'pinia';
-import { computed, ref } from 'vue';
+import { onMounted, computed, ref } from 'vue';
 import BaseForm from '@/components/form/BaseForm.vue';
 import { submitCensus } from '@/helpers/censusSubmission';
 import { useWikiPageDataStore } from '@/stores/wikiPageDataStore';
 import { useFormValidation } from '@/composables/useFormValidation';
 import type { CensusEntry } from '@/types/censusQueryResponse';
 import { buildWikiEditLink } from '@/helpers/wikiLinkConstructor';
-// import { onMounted } from 'vue';
 
 const { isAllDataValid, allMissingProps, isPageOneValid, missingPageOneProps } = useFormValidation();
 const hash = ref(window.location.hash);
+
+const wikiPageDataStore = useWikiPageDataStore();
 
 if (hash.value && !isPageOneValid.value) window.location.hash = '';
 
@@ -26,6 +27,11 @@ const successDialog = ref<HTMLDialogElement | null>(null);
 
 const localStorageKeyIsNotNew = isMakingNewPage ? 'newBase' : 'updateBase';
 const localStorageKey = isNewCitizen ? 'censusForm' : localStorageKeyIsNotNew;
+
+onMounted(() => {
+  if (!isUpdatingPage) return;
+  wikiPageDataStore.fetchSectionWikiText();
+});
 
 // const localStorageCensusData = localStorage.getItem('censusForm');
 
@@ -48,7 +54,6 @@ const localStorageKey = isNewCitizen ? 'censusForm' : localStorageKeyIsNotNew;
 
 async function sendForm() {
   isSending.value = true;
-  const wikiPageDataStore = useWikiPageDataStore();
   const sessionStorageItem = sessionStorage.getItem('update');
   const sessionStorageData: CensusEntry = JSON.parse(sessionStorageItem ?? '{}');
   const oldBaseName = sessionStorageData.Name ?? '';

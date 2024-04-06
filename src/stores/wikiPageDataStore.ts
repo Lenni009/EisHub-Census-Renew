@@ -10,19 +10,12 @@ import { getPageSectionContentApiUrl, getPageSectionsApiUrl } from '@/helpers/wi
 import type { CensusEntry } from '@/types/censusQueryResponse';
 import type { BaseData, ImageData, PlayerData, SectionObject } from '@/types/pageData';
 import { currentYearString, weekInMilliseconds } from '@/variables/dateTime';
-import { isMakingNewPage, isNewCitizen } from '@/variables/formMode';
+import { isMakingNewPage, isNewCitizen, isUpdatingPage } from '@/variables/formMode';
 import { regionArray } from '@/variables/regions';
 import { defaultSections } from '@/variables/wikiSections';
 import { defineStore } from 'pinia';
 
-interface SectionObject {
-  name: string;
-  index?: number;
-  text?: string;
-  loading?: boolean;
-}
-
-interface SectionQueryObject {
+interface SectionQueryResponseObject {
   toclevel: number;
   level: string;
   line: string;
@@ -37,7 +30,6 @@ interface Validation {
 }
 
 interface WikiPageData {
-  pageName: string;
   sectionData: SectionObject[];
   validation: Validation;
   playerData: PlayerData;
@@ -128,6 +120,10 @@ if (!isNewCitizen && sessionStorageData) {
   localStorageDataJson.playerData.social = isRedditUrl ? '' : censusRedditUrlOrEmpty;
 
   localStorageDataJson.playerData.wikiName = sessionStorageDataJson.Builderlink ?? '';
+
+  if (isUpdatingPage) {
+    localStorageDataJson.baseData.baseName = sessionStorageDataJson.Name ?? '';
+  }
 }
 
 export const useWikiPageDataStore = defineStore('wikiPageData', {
@@ -144,36 +140,46 @@ export const useWikiPageDataStore = defineStore('wikiPageData', {
   },
 
   actions: {
-    async fetchWikiText() {
-      this.sectionData.forEach((item: SectionObject) => (item.loading = true));
-
-      const pageSectionsApiUrl = getPageSectionsApiUrl(this.pageName);
-
-      const sectionRes = await fetch(pageSectionsApiUrl);
-      const { parse } = await sectionRes.json();
-
-      this.sectionData.forEach((obj: SectionObject) => {
-        const idx = parse.sections.find((item: SectionQueryObject) => item.line === obj.name)?.index;
-        if (idx) obj.index = parseInt(idx);
-      });
-
-      this.sectionData.forEach(this.getWikiTexts);
+    async fetchAvailableSectionInfo() {
+      const url = getPageSectionsApiUrl(this.baseData.baseName);
+      const apiResponse = await fetch(url);
+      const { parse } = await apiResponse.json();
+      const sectionArray: SectionQueryResponseObject[] = parse.sections;
+      const usedSections = sectionArray.slice(1, -1);
+      const firstLevelSections = usedSections.filter((section) => section.toclevel === 1);
+      const relevantSectionInfo = firstLevelSections.map(({ line, index }) => ({ line, index }));
+      return relevantSectionInfo;
     },
 
-    async getWikiTexts(section: SectionObject) {
-      try {
-        const { index } = section;
-        const pageSectionContentApiUrl = getPageSectionContentApiUrl(this.pageName, index ?? -1);
-        const res = await fetch(pageSectionContentApiUrl);
-        const { parse } = await res.json();
-        const parsedWikitext = parse.wikitext['*'];
-        section.text = parsedWikitext.split('\n').slice(1).join('\n');
-      } catch (e) {
-        console.error('Something went wrong:', e);
-        section.text = '';
-      } finally {
-        section.loading = false;
+    async fetchSectionWikiText() {
+      const sectionData = await this.fetchAvailableSectionInfo();
+      sectionData.forEach(this.getWikiText);
+    },
+
+    async getWikiText(sectionData: { line: string; index: string }, index: number) {
+      const itemInSectionData = this.sectionData.find((item) => item.heading === sectionData.line);
+      const sectionObject: SectionObject = {
+        heading: sectionData.line,
+        body: '',
+        explanation: itemInSectionData?.explanation,
+        loading: true,
+      };
+
+      const missingItems = index - this.sectionData.length;
+
+      for (let i = missingItems; i > 0; i--) {
+        this.sectionData.push({ heading: '', body: '' });
       }
+
+      this.sectionData = this.sectionData.with(index, sectionObject);
+
+      const url = getPageSectionContentApiUrl(this.baseData.baseName, parseInt(sectionData.index));
+      const apiResponse = await fetch(url);
+      const { parse } = await apiResponse.json();
+      const sectionWikitext: string = parse.wikitext['*'];
+
+      sectionObject.body = sectionWikitext.split('\n').slice(1).join('\n');
+      sectionObject.loading = false;
     },
 
     resetStore() {
