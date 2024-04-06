@@ -20,15 +20,22 @@ export interface SectionContentQueryObject extends SectionQueryObject {
 }
 
 export interface BasicCargoQueryData extends BasicQueryApiData {
-  limit: number;
   tables: string;
-  fields: string[];
+  limit: number;
+}
+
+export interface RawCensusQueryWhereObject extends BasicCargoQueryData {
   where: string;
 }
 
-export interface CensusQueryObject extends BasicCargoQueryData {
+export interface RawCensusQueryObject extends RawCensusQueryWhereObject {
+  fields: string[];
+}
+
+export interface CensusQueryObject extends RawCensusQueryObject {
   order_by: string;
   group_by: string;
+  offset: number;
 }
 
 export interface UserQueryObject extends BasicQueryApiData {

@@ -7,16 +7,20 @@ import LoadingError from './components/LoadingError.vue';
 import LoadingSpinner from './components/LoadingSpinner.vue';
 import ThemeSwitch from './components/ThemeSwitch.vue';
 import { computed } from 'vue';
+import { useCensusDataStore } from './stores/censusDataStore';
 
 const isEisvanaHost = window.location.host === 'census.eisvana.com';
 
 const requestData = useRequestStore();
-const { requestSent, requestSucceeded, requestFailed } = storeToRefs(requestData);
+const { requestSent, requestFailed } = storeToRefs(requestData);
+
+const censusDataStore = useCensusDataStore();
+const { censusData } = storeToRefs(censusDataStore);
 
 const routeData = useRouteDataStore();
 const { route, isFormRoute } = storeToRefs(routeData);
 
-const isLoading = computed(() => requestSent.value && !requestSucceeded.value && !requestFailed.value);
+const isLoading = computed(() => requestSent.value && !censusData.value.length && !requestFailed.value);
 
 const hasSearchParams = Boolean(window.location.search);
 </script>

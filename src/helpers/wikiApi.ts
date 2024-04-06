@@ -3,11 +3,14 @@ import type {
   BasicQueryData,
   CensusQueryObject,
   QueryObjects,
+  RawCensusQueryObject,
+  RawCensusQueryWhereObject,
   RawQueryObject,
   SectionContentQueryObject,
   SectionQueryObject,
   UserQueryObject,
 } from '@/types/queryObjects';
+import { limit } from '@/variables/apiLimit';
 import { apiPath } from '@/variables/wikiLink';
 
 // generic function to build a URL from an object
@@ -45,15 +48,25 @@ export const getPageSectionContentApiUrl = (pageName: string, section: number) =
   buildQueryUrl(getSectionContentQueryObject(pageName, section));
 
 // cargo
-const getCargoQueryRawObject = () => ({
+const getCargoQueryRawObject = (): BasicCargoQueryData => ({
   ...basicQueryData,
   action: 'cargoquery',
-  limit: 500,
   tables: 'Bases',
+  limit,
 });
 
-const getCensusQueryObject = (civilized: string): CensusQueryObject => ({
+const getCensusQueryObject = (civilized: string): RawCensusQueryWhereObject => ({
   ...getCargoQueryRawObject(),
+  where: `CensusShow IS NOT NULL AND Civilized="${civilized}"`,
+});
+
+const getCensusQueryCountObject = (civilized: string): RawCensusQueryObject => ({
+  ...getCensusQueryObject(civilized),
+  fields: ['Count(DISTINCT CensusPlayer)'],
+});
+
+const getCensusQueryDataObject = (civilized: string, offset: number): CensusQueryObject => ({
+  ...getCensusQueryObject(civilized),
   fields: [
     'Name',
     'CensusPlayer',
@@ -67,19 +80,21 @@ const getCensusQueryObject = (civilized: string): CensusQueryObject => ({
     'CensusRenewal',
     'Builderlink',
   ],
-  where: `CensusShow IS NOT NULL AND Civilized="${civilized}"`,
   order_by: 'CensusRenewal',
   group_by: 'CensusPlayer',
+  offset,
 });
 
-const getBaseQueryObject = (baseName: string): BasicCargoQueryData => ({
+const getBaseQueryObject = (baseName: string): RawCensusQueryObject => ({
   ...getCargoQueryRawObject(),
   fields: ['Type', 'Farm', 'Geobay', 'Landing_pad', 'Arena', 'Terminal', 'Racetrack'],
   where: `Name="${baseName}"`,
 });
 
 // exported functions to get cargo query URLs
-export const getCensusQueryUrl = (civilized: string) => buildQueryUrl(getCensusQueryObject(civilized));
+export const getCensusQueryDataUrl = (civilized: string, offset: number) =>
+  buildQueryUrl(getCensusQueryDataObject(civilized, offset));
+export const getCensusQueryCountUrl = (civilized: string) => buildQueryUrl(getCensusQueryCountObject(civilized));
 export const getBaseQueryUrl = (baseName: string) => buildQueryUrl(getBaseQueryObject(baseName));
 
 // check whether user exists on the wiki
