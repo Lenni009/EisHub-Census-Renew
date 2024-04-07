@@ -5,28 +5,13 @@ import MultipleChoice from './MultipleChoice.vue';
 import GlyphInput from './GlyphInput.vue';
 import { reactive, toRefs } from 'vue';
 import { isUpdatingPage } from '@/variables/formMode';
+import { platforms, modes } from '@/variables/saveData';
 import Gallery from './Gallery.vue';
 
 const wikiPageData = useWikiPageDataStore();
 const { baseData, imageData, isAxesValid, sectionData } = storeToRefs(wikiPageData);
 const { landingpad, terminal, geobay, farm, racetrack, arena } = toRefs(baseData.value);
 const { image } = toRefs(imageData.value);
-
-const platforms: Record<string, string> = {
-  PC: 'PC',
-  PS: 'PlayStation',
-  XB: 'Xbox',
-  NS: 'Switch',
-};
-
-const modes: Record<string, string> = {
-  Normal: 'Normal',
-  Relaxed: 'Relaxed',
-  Survival: 'Survival',
-  Permadeath: 'Permadeath',
-  Creative: 'Creative',
-  Custom: 'Custom',
-};
 
 const featureList = reactive([
   {

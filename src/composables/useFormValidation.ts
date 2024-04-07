@@ -1,5 +1,6 @@
+import { isFormProperty } from '@/helpers/typeGuards';
 import { useWikiPageDataStore } from '@/stores/wikiPageDataStore';
-import type { BaseData, PlayerData, ImageData, OptionalProps } from '@/types/pageData';
+import type { BaseData, PlayerData, ImageData } from '@/types/pageData';
 import { optionalProperties } from '@/variables/formValidation';
 import { storeToRefs } from 'pinia';
 import { computed, toRefs, type Ref, reactive } from 'vue';
@@ -100,10 +101,4 @@ function useDataValidation(storeObj: Ref<ImageData> | Ref<PlayerData> | Ref<Base
   const missingProps = computed(() => invalidValues.value.map((item) => item[0]));
   const isDataValid = computed(() => !invalidValues.value.length); // return true if everything is good, else return false
   return { isDataValid, missingProps };
-}
-
-function isFormProperty(str: string): str is OptionalProps {
-  const wikiPageDataStore = useWikiPageDataStore();
-  const { playerData, imageData, baseData } = storeToRefs(wikiPageDataStore);
-  return str in playerData.value || str in baseData.value || str in imageData.value;
 }

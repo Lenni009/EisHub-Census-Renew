@@ -7,11 +7,12 @@ import {
   validatePlayerName,
   validateReddit,
 } from '@/helpers/formValidation';
+import { isValidModeValue, isValidPlatformValue } from '@/helpers/typeGuards';
 import { apiCall, getFileQueryApiUrl, getPageSectionContentApiUrl, getPageSectionsApiUrl } from '@/helpers/wikiApi';
 import { parseWikiTemplate } from '@/helpers/wikiTemplateParser';
 import type { CensusEntry } from '@/types/censusQueryResponse';
 import type { FileItem } from '@/types/file';
-import type { BaseData, ImageData, Modes, Platforms, PlayerData, SectionObject } from '@/types/pageData';
+import type { BaseData, ImageData, PlayerData, SectionObject } from '@/types/pageData';
 import { currentYearString, weekInMilliseconds } from '@/variables/dateTime';
 import { isMakingNewPage, isNewCitizen, isUpdatingPage } from '@/variables/formMode';
 import { regionArray } from '@/variables/regions';
@@ -157,8 +158,8 @@ export const useWikiPageDataStore = defineStore('wikiPageData', {
       this.baseData.landingpad = infobox.landingpad === 'Yes';
       this.baseData.racetrack = infobox.racetrack === 'Yes';
       this.baseData.terminal = infobox.terminal === 'Yes';
-      this.baseData.platform = infobox.platform as Platforms; // TODO: remove assertion
-      this.baseData.mode = infobox.mode as Modes; // TODO: remove assertion
+      this.baseData.platform = isValidPlatformValue(infobox.platform) ? infobox.platform : undefined;
+      this.baseData.mode = isValidModeValue(infobox.mode) ? infobox.mode : undefined;
       this.baseData.system = infobox.system ?? '';
       this.baseData.planet = infobox.planet ?? '';
       this.baseData.moon = infobox.moon ?? '';
