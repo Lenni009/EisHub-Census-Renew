@@ -1,7 +1,9 @@
 import type {
   BasicCargoQueryData,
+  BasicQueryApiData,
   BasicQueryData,
   CensusQueryObject,
+  GalleryQueryObject,
   QueryObjects,
   RawCensusQueryObject,
   RawCensusQueryWhereObject,
@@ -25,9 +27,19 @@ const basicQueryData: BasicQueryData = {
 };
 
 // wikitext querying helper functions
-const getSectionQueryRawObject = (page: string): RawQueryObject => ({
+const getParseQueryRawObject: BasicQueryApiData = {
   ...basicQueryData,
   action: 'parse',
+};
+
+const getFileQueryObject = (summary: string): GalleryQueryObject => ({
+  ...getParseQueryRawObject,
+  prop: '',
+  summary,
+});
+
+const getSectionQueryRawObject = (page: string): RawQueryObject => ({
+  ...getParseQueryRawObject,
   page,
 });
 
@@ -46,6 +58,7 @@ const getSectionContentQueryObject = (pageName: string, section: number): Sectio
 export const getPageSectionsApiUrl = (pageName: string) => buildQueryUrl(getSectionQueryObject(pageName));
 export const getPageSectionContentApiUrl = (pageName: string, section: number) =>
   buildQueryUrl(getSectionContentQueryObject(pageName, section));
+export const getFileQueryApiUrl = (summary: string) => buildQueryUrl(getFileQueryObject(summary));
 
 // cargo
 const getCargoQueryRawObject = (): BasicCargoQueryData => ({
@@ -107,9 +120,14 @@ const getUserQueryObj = (user: string): UserQueryObject => ({
 
 export async function userExists(user: string) {
   const apiUrl = buildQueryUrl(getUserQueryObj(user));
-  const data = await fetch(apiUrl);
-  const jsonData = await data.json();
+  const data = await apiCall(apiUrl);
 
-  const userObj = jsonData.query.users[0];
+  const userObj = data.query.users[0];
   return Boolean(userObj.userid);
+}
+
+export async function apiCall(url: string): Promise<unknown> {
+  const data = await fetch(url);
+  const json = await data.json();
+  return json;
 }

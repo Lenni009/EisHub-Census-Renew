@@ -1,5 +1,5 @@
 import type { QueryEntry, CensusEntry } from '@/types/censusQueryResponse';
-import { getCensusQueryCountUrl, getCensusQueryDataUrl } from '@/helpers/wikiApi';
+import { apiCall, getCensusQueryCountUrl, getCensusQueryDataUrl } from '@/helpers/wikiApi';
 import { defineStore, storeToRefs } from 'pinia';
 import { useCensusDataStore } from './censusDataStore';
 import { civilized } from '@/variables/civilized';
@@ -29,8 +29,7 @@ export const useRequestStore = defineStore('requests', {
       try {
         this.requestSent = true;
         const censusCountQueryUrl = getCensusQueryCountUrl(civilized);
-        const countRes = await fetch(censusCountQueryUrl);
-        const { cargoquery } = await countRes.json();
+        const { cargoquery } = await apiCall(censusCountQueryUrl);
         const countString = Object.values(cargoquery[0].title)[0];
         const count = Number(countString);
         const requiredApiCalls = Math.ceil(count / limit);
@@ -38,8 +37,7 @@ export const useRequestStore = defineStore('requests', {
         const apiData = Array.from({ length: requiredApiCalls }).map(async (_item, index) => {
           const censusQueryUrl = getCensusQueryDataUrl(civilized, index * limit);
 
-          const res = await fetch(censusQueryUrl);
-          const data = await res.json();
+          const data = await apiCall(censusQueryUrl);
           censusData.value.push(
             ...data.cargoquery.map(
               ({

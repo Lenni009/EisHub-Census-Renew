@@ -42,11 +42,11 @@ function moveItem(fileItem: FileItem, direction: 'up' | 'down') {
     >
       <img
         :src="fileItem.url"
-        :alt="fileItem.file.name"
+        :alt="fileItem.file?.name ?? fileItem.desc"
       />
     </a>
     <div class="gallery-meta">
-      <p class="filename-wrapper"><span class="text-bold">Name: </span>{{ fileItem.file.name }}</p>
+      <p class="filename-wrapper"><span class="text-bold">Name: </span>{{ fileItem.file?.name ?? 'hi' }}</p>
       <div>
         <input
           type="text"

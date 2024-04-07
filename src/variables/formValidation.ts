@@ -1,4 +1,4 @@
-import type { OptionalProps } from "@/types/pageData";
+import type { OptionalProps } from '@/types/pageData';
 
 export const optionalProperties: OptionalProps[] = [
   'reddit',
@@ -8,8 +8,6 @@ export const optionalProperties: OptionalProps[] = [
   'activeTime',
   'moon',
   'type',
-  'features',
-  'addInfo',
 ];
 
 export const expectedGlyphLength = 12;

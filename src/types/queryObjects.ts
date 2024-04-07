@@ -3,8 +3,13 @@ export interface BasicQueryData {
   origin: string;
 }
 
-interface BasicQueryApiData extends BasicQueryData {
+export interface BasicQueryApiData extends BasicQueryData {
   action: string;
+}
+
+export interface GalleryQueryObject extends BasicQueryApiData {
+  summary: string;
+  prop: string;
 }
 
 export interface RawQueryObject extends BasicQueryApiData {
@@ -48,4 +53,5 @@ export type QueryObjects =
   | SectionContentQueryObject
   | BasicCargoQueryData
   | CensusQueryObject
-  | UserQueryObject;
+  | UserQueryObject
+  | GalleryQueryObject;

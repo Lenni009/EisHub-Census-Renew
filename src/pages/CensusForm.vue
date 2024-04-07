@@ -1,8 +1,5 @@
 <script setup lang="ts">
 import { isMakingNewPage, isNewCitizen, isUpdatingPage } from '@/variables/formMode';
-// import { parseTemplate } from '@/helpers/wikiTemplateParser';
-// import { useWikiPageDataStore } from '@/stores/wikiPageDataStore';
-// import { storeToRefs } from 'pinia';
 import { onMounted, computed, ref } from 'vue';
 import BaseForm from '@/components/form/BaseForm.vue';
 import { submitCensus } from '@/helpers/censusSubmission';
@@ -30,27 +27,8 @@ const localStorageKey = isNewCitizen ? 'censusForm' : localStorageKeyIsNotNew;
 
 onMounted(() => {
   if (!isUpdatingPage) return;
-  wikiPageDataStore.fetchSectionWikiText();
+  wikiPageDataStore.fetchBaseWikiData();
 });
-
-// const localStorageCensusData = localStorage.getItem('censusForm');
-
-// const wikiPageData = useWikiPageDataStore();
-// const { sectionData, pageName } = storeToRefs(wikiPageData);
-
-// pageName.value = 'Eisvana Research Outpost';
-
-// if (isUpdatingPage || isMakingNewPage) wikiPageData.fetchWikiText();
-// wikiPageData.fetchWikiText();
-
-// onMounted(async () => {
-//   const data = await fetch(
-//     'https://nomanssky.fandom.com/api.php?action=parse&format=json&origin=*&page=Eisvana%20Research%20Outpost&prop=sections%7Cwikitext&section=0'
-//   );
-//   const jsonData = await data.json();
-//   console.log(jsonData)
-//   parseTemplate(jsonData.parse.wikitext['*']);
-// });
 
 async function sendForm() {
   isSending.value = true;
@@ -134,21 +112,6 @@ function scrollToTop() {
       </article>
     </dialog>
   </form>
-
-  <!--
-<article
-    v-for="section in sectionData"
-    :key="section.name"
-  >
-    <label :for="section.name">
-      <span>{{ section.name }}</span>
-      <span :aria-busy="section.loading"></span>
-    </label>
-    <textarea
-      :id="section.name"
-      v-model="section.text"
-    ></textarea>
-  </article> -->
 </template>
 
 <style lang="scss">
