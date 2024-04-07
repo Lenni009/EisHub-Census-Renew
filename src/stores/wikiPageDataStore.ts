@@ -73,7 +73,12 @@ const defaultStoreObject: WikiPageData = {
     type: '',
   },
   imageData: {
-    image: null,
+    image: {
+      filename: '',
+      id: 0,
+      desc: '',
+      url: '',
+    },
     gallery: [],
   },
 };

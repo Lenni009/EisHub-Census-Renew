@@ -30,18 +30,22 @@ export async function submitCensus(description: string): Promise<void> {
   const { renewals } = playerData;
   if (!renewals.includes(currentYearString)) renewals.push(currentYearString);
 
-  const newGalleryFiles = gallery.filter((item) => item.file);
-  newGalleryFiles.forEach((item) => {
+  // this is necessary since TS doesn't understand that `.filter(Boolean)` removes `undefined` values
+  const compressedFiles: File[] = [];
+
+  // compressing one-by-one to avoid weird Firefox issues
+  gallery.forEach(async (item) => {
     const newFile = constructNewFile(item, baseData.baseName);
     if (!newFile) return;
-    item.file = newFile;
-    item.filename = newFile.name;
+    const compressedFile = await compressFile(newFile);
+    item.file = compressedFile;
+    item.filename = compressedFile.name;
+    compressedFiles.push(compressedFile);
   });
 
   const galleryPicLines = gallery
     .map(({ desc, file, filename }) => (desc ? `${file?.name ?? filename}|${desc}` : file?.name ?? filename))
     .join('\n');
-  const galleryFilesToCompress = newGalleryFiles.map(({ file }) => file);
 
   const passBuilder = playerData.wikiName ? '' : playerData.player;
 
@@ -56,17 +60,18 @@ export async function submitCensus(description: string): Promise<void> {
 
   if (!image) return;
 
-  const fileType = image.type;
-  const mainImageName = image.name;
+  const fileType = image.file?.type;
+  const mainImageName = image.file?.name ?? image.filename;
   const fileExtension = mainImageName.split('.').at(-1);
   const newImageName = `${escapeName(baseData.baseName)}-main.${fileExtension}`;
-  const mainImage = new File([image], newImageName, { type: fileType });
+  const mainImage = image.file ? new File([image.file], newImageName, { type: fileType }) : undefined;
+  const compressedMainImage = mainImage ? await compressFile(mainImage) : undefined;
 
   const wikipageText = buildBasePage({
     version,
     region,
     name: baseData.baseName,
-    image: mainImage.name,
+    image: compressedMainImage?.name ?? image.filename,
     platform: platform ?? 'PC',
     mode: mode ?? 'Normal',
     builderlink: playerData.wikiName,
@@ -94,23 +99,12 @@ export async function submitCensus(description: string): Promise<void> {
     sections: sectionData,
   });
 
-  const compressedFiles: File[] = [];
-
-  // compressing one-by-one to avoid weird Firefox issues
-  for (const file of [mainImage, ...galleryFilesToCompress]) {
-    if (!file) continue;
-    const compressedFile = await compressFile(file);
-    compressedFiles.push(compressedFile);
-  }
-
   const wikiTextFile = new File([wikipageText], `${baseData.baseName}.txt`, { type: 'text/plain' });
-  const compressedMainImage = compressedFiles.shift();
-
-  if (!compressedMainImage) return;
 
   // Discord's file limit is 10, so we make sure to only send 10 files at once
   const paginatedFiles = paginate(compressedFiles, maxFilePerMessage);
-  paginatedFiles.unshift([compressedMainImage, wikiTextFile]);
+  paginatedFiles.unshift([wikiTextFile]);
+  if (compressedMainImage) paginatedFiles[0].unshift(compressedMainImage);
 
   const formDataArray = paginatedFiles.map(constructFileFormData);
   formDataArray[0].append(
@@ -124,7 +118,7 @@ export async function submitCensus(description: string): Promise<void> {
           description,
           title: 'New Census Submission!',
           image: {
-            url: `attachment://${compressedMainImage.name}`,
+            url: `attachment://${compressedMainImage?.name ?? image.filename}`,
           },
           fields: [
             {
@@ -149,7 +143,7 @@ export async function submitCensus(description: string): Promise<void> {
       attachments: [
         {
           id: 0,
-          filename: compressedMainImage.name,
+          filename: compressedMainImage?.name ?? image.filename,
         },
       ],
     })

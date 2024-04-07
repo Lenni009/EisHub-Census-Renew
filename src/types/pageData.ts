@@ -36,7 +36,7 @@ export interface BaseData {
 }
 
 export interface ImageData {
-  image: File | null;
+  image: FileItem;
   gallery: FileItem[];
 }
 
