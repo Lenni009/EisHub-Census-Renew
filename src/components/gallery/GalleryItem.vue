@@ -46,7 +46,9 @@ function moveItem(fileItem: FileItem, direction: 'up' | 'down') {
       />
     </a>
     <div class="gallery-meta">
-      <p class="filename-wrapper"><span class="text-bold">Name: </span>{{ fileItem.file?.name ?? 'hi' }}</p>
+      <p class="filename-wrapper">
+        <span class="text-bold">Name: </span>{{ fileItem.file?.name ?? fileItem.filename }}
+      </p>
       <div>
         <input
           type="text"

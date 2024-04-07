@@ -1,3 +1,4 @@
+import { removeFilePrefix } from '@/helpers/fileRename';
 import {
   isValidHttpUrl,
   validateCoords,
@@ -10,7 +11,7 @@ import { apiCall, getFileQueryApiUrl, getPageSectionContentApiUrl, getPageSectio
 import { parseWikiTemplate } from '@/helpers/wikiTemplateParser';
 import type { CensusEntry } from '@/types/censusQueryResponse';
 import type { FileItem } from '@/types/file';
-import type { BaseData, ImageData, PlayerData, SectionObject } from '@/types/pageData';
+import type { BaseData, ImageData, Modes, Platforms, PlayerData, SectionObject } from '@/types/pageData';
 import { currentYearString, weekInMilliseconds } from '@/variables/dateTime';
 import { isMakingNewPage, isNewCitizen, isUpdatingPage } from '@/variables/formMode';
 import { regionArray } from '@/variables/regions';
@@ -147,7 +148,21 @@ export const useWikiPageDataStore = defineStore('wikiPageData', {
 
   actions: {
     async fetchBaseWikiData() {
-      const infobox = await this.fetchInfobox();
+      const [infobox] = await this.fetchInfobox();
+      this.baseData.axes = infobox.axes ?? '';
+      this.baseData.glyphs = infobox.glyphs ?? '';
+      this.baseData.arena = infobox.arena === 'Yes';
+      this.baseData.farm = infobox.farm === 'Yes';
+      this.baseData.geobay = infobox.geobay === 'Yes';
+      this.baseData.landingpad = infobox.landingpad === 'Yes';
+      this.baseData.racetrack = infobox.racetrack === 'Yes';
+      this.baseData.terminal = infobox.terminal === 'Yes';
+      this.baseData.platform = infobox.platform as Platforms; // TODO: remove assertion
+      this.baseData.mode = infobox.mode as Modes; // TODO: remove assertion
+      this.baseData.system = infobox.system ?? '';
+      this.baseData.planet = infobox.planet ?? '';
+      this.baseData.moon = infobox.moon ?? '';
+      this.baseData.type = infobox.type ?? '';
 
       const sectionData = await this.fetchAvailableSectionInfo();
       const gallerySectionData = sectionData.pop();
@@ -212,7 +227,16 @@ export const useWikiPageDataStore = defineStore('wikiPageData', {
       const picLines = gallerySectionText.split('\n').slice(2, -1); // remove gallery heading and gallery tags
       const picsAndDescs = picLines.map((item) => item.split('|'));
 
-      const requestItems = picsAndDescs.map((item) => `[[Media:${item[0]}|${item[1] ?? ' '}]]`);
+      const fileObjects: FileItem[] = picsAndDescs.map(([filename, desc], index) => ({
+        desc,
+        filename: removeFilePrefix(filename),
+        id: index * -1 - 1, // making index negative to distinguish preload from manually added items (0 -> -1, 5 -> -6)
+        url: '',
+      }));
+
+      const filenames = fileObjects.map((item) => item.filename);
+
+      const requestItems = filenames.map((name) => `[[Media:${name}]]`);
 
       const requestString = requestItems.join('');
 
@@ -226,20 +250,24 @@ export const useWikiPageDataStore = defineStore('wikiPageData', {
         'text/html'
       );
 
-      const links = galleryDom.querySelectorAll<HTMLAnchorElement>('a:not(.new)');
+      const links = galleryDom.querySelectorAll<HTMLAnchorElement>('a');
 
-      const fileItems: FileItem[] = Array.from(links).map((item, index) => ({
-        id: index * -1 - 1, // making index negative to distinguish preload from manually added items (0 -> -1, 5 -> -6)
-        desc: item.innerText,
-        url: item.href.split('/').slice(0, -2).join('/'),
-      }));
+      for (let i = 0; i < links.length; i++) {
+        const link = links[i];
+        const fileItem = fileObjects[i];
 
-      this.imageData.gallery = fileItems;
+        const isInternal = link.classList.contains('internal'); // filters out external and non-existing links
 
-      console.log(this.imageData.gallery);
+        // The raw link is in this format: https://static.wikia.nocookie.net/nomanssky_gamepedia/images/8/8e/20230927225359_1.jpg/revision/latest?cb=20230927213750
+        // For some reason, any direct programmatic requests to that URL fail.
+        // So we have to get rid of the /revision/latest?cb=... part in order for this to work.
+        // This is done by splitting at the slashes, then taking the last two parts away.
+        fileItem.url = isInternal ? link.href.split('/').slice(0, -2).join('/') : ''; // NoSonar see explanation for -2 above
+      }
 
-      // TODO: get pic URLs from API
-      // display them like normal pics
+      const validFileItems = fileObjects.filter((item) => item.url);
+      this.imageData.gallery = validFileItems;
+
       // don't send them with the submission
     },
 

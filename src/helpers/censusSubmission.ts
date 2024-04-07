@@ -15,7 +15,7 @@ const getExplicitBoolean = (bool: boolean): ExplicitBoolean => (bool ? 'Yes' : '
 
 function constructNewFile(fileObj: FileItem, baseName: string): File {
   const sanitisedBaseName = escapeName(baseName);
-  const fileName = fileObj.file.name;
+  const fileName = fileObj.file?.name ?? fileObj.filename;
   const fileExtension = fileName.split('.').at(-1);
   const newFileName = `${sanitisedBaseName}${fileObj.id}.${fileExtension}`;
   return new File([fileObj.file], newFileName, { type: fileObj.file.type });
@@ -27,7 +27,7 @@ export async function submitCensus(description: string): Promise<void> {
   const { image, gallery } = imageData;
   const { mode, platform } = baseData;
   const { renewals } = playerData;
-  const galleryEntries: [File, string][] = gallery.map((item) => [
+  const galleryEntries: [File | undefined, string][] = gallery.map((item) => [
     constructNewFile(item, baseData.baseName),
     item.desc,
   ]);
@@ -35,7 +35,8 @@ export async function submitCensus(description: string): Promise<void> {
   if (!renewals.includes(currentYearString)) renewals.push(currentYearString);
 
   const galleryPics = galleryEntries.map(([file, str]) => (str ? `${file.name}|${str}` : file.name)).join('\n');
-  const galleryFiles = galleryEntries.map((item) => item[0]);
+  const nonEmptyFileItems: [File, string][] = galleryEntries.filter(([file]) => file);
+  const galleryFiles = nonEmptyFileItems.map(([file]) => file);
 
   const passBuilder = playerData.wikiName ? '' : playerData.player;
 

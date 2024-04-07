@@ -43,6 +43,7 @@ function buildFileItem(files: File[]) {
       id: id++,
       desc: '',
       url: URL.createObjectURL(file),
+      filename: file.name,
       file,
     });
   }

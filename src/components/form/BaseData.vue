@@ -4,6 +4,7 @@ import { storeToRefs } from 'pinia';
 import MultipleChoice from './MultipleChoice.vue';
 import GlyphInput from './GlyphInput.vue';
 import { reactive, toRefs } from 'vue';
+import { isUpdatingPage } from '@/variables/formMode';
 import Gallery from './Gallery.vue';
 
 const wikiPageData = useWikiPageDataStore();
@@ -69,50 +70,52 @@ function uploadMainFile(e: Event) {
       type="text"
     />
   </article>
-  <article>
-    <p class="question required">What is the name of the system where your base is?</p>
-    <p class="subtitle">The name of the system can be seen by looking at the galaxy map in space.</p>
-    <input
-      v-model.trim="baseData.system"
-      type="text"
-    />
-  </article>
-  <article>
-    <p class="question required">
-      What is the name of the planet on which your base is or that is orbited by the moon on which your base is?
-    </p>
-    <input
-      v-model.trim="baseData.planet"
-      type="text"
-    />
-  </article>
-  <article>
-    <p class="question">If your base is on a moon (else leave empty): What is the name of the moon?</p>
-    <input
-      v-model.trim="baseData.moon"
-      type="text"
-    />
-  </article>
-  <article>
-    <p class="question required">What are the planetary coordinates of your base?</p>
-    <p class="subtitle">You can find the coordinates when you look through your visor. Example: -14.24, +121.12</p>
-    <input
-      v-model.trim.lazy="baseData.axes"
-      :aria-invalid="!isAxesValid || undefined"
-      type="text"
-    />
-    <p
-      v-if="!isAxesValid"
-      class="error"
-    >
-      Please give the coordinates like in the example above, including + and -
-    </p>
-  </article>
-  <article>
-    <p class="question required">What are the glyphs?</p>
-    <p class="subtitle">Glyphs can be found in photo mode</p>
-    <GlyphInput v-model.trim="baseData.glyphs" />
-  </article>
+  <template v-if="!isUpdatingPage">
+    <article>
+      <p class="question required">What is the name of the system where your base is?</p>
+      <p class="subtitle">The name of the system can be seen by looking at the galaxy map in space.</p>
+      <input
+        v-model.trim="baseData.system"
+        type="text"
+      />
+    </article>
+    <article>
+      <p class="question required">
+        What is the name of the planet on which your base is or that is orbited by the moon on which your base is?
+      </p>
+      <input
+        v-model.trim="baseData.planet"
+        type="text"
+      />
+    </article>
+    <article>
+      <p class="question">If your base is on a moon (else leave empty): What is the name of the moon?</p>
+      <input
+        v-model.trim="baseData.moon"
+        type="text"
+      />
+    </article>
+    <article>
+      <p class="question required">What are the planetary coordinates of your base?</p>
+      <p class="subtitle">You can find the coordinates when you look through your visor. Example: -14.24, +121.12</p>
+      <input
+        v-model.trim.lazy="baseData.axes"
+        :aria-invalid="!isAxesValid || undefined"
+        type="text"
+      />
+      <p
+        v-if="!isAxesValid"
+        class="error"
+      >
+        Please give the coordinates like in the example above, including + and -
+      </p>
+    </article>
+    <article>
+      <p class="question required">What are the glyphs?</p>
+      <p class="subtitle">Glyphs can be found in photo mode</p>
+      <GlyphInput v-model.trim="baseData.glyphs" />
+    </article>
+  </template>
   <article>
     <p class="question">Base Features: Check all that apply:</p>
     <div class="checkboxes">
@@ -125,22 +128,24 @@ function uploadMainFile(e: Event) {
       </label>
     </div>
   </article>
-  <article>
-    <p class="question required">On which platform was the base built?</p>
-    <MultipleChoice
-      v-model.trim="baseData.platform"
-      :items="platforms"
-      name="platform"
-    />
-  </article>
-  <article>
-    <p class="question required">On which Game Mode was the base built?</p>
-    <MultipleChoice
-      v-model.trim="baseData.mode"
-      :items="modes"
-      name="mode"
-    />
-  </article>
+  <template v-if="!isUpdatingPage">
+    <article>
+      <p class="question required">On which platform was the base built?</p>
+      <MultipleChoice
+        v-model.trim="baseData.platform"
+        :items="platforms"
+        name="platform"
+      />
+    </article>
+    <article>
+      <p class="question required">On which Game Mode was the base built?</p>
+      <MultipleChoice
+        v-model.trim="baseData.mode"
+        :items="modes"
+        name="mode"
+      />
+    </article>
+  </template>
   <article>
     <p class="question">What type of base is it? What is its purpose?</p>
     <p class="subtitle">Some examples are Artistic, Embassy, Farm, Industrial, Memorial and Residential.</p>
