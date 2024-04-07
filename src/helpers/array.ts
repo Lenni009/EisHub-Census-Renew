@@ -6,8 +6,8 @@ export function removeDuplicates<T>(arr: T[]): T[] {
 
 export function paginate<T>(arr: T[], size: number): T[][] {
   return arr.reduce((acc: T[][], val, i) => {
-    let idx = Math.floor(i / size);
-    let page = acc[idx] || (acc[idx] = []);
+    const idx = Math.floor(i / size);
+    const page = acc[idx] || (acc[idx] = []);
     page.push(val);
 
     return acc;
