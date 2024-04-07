@@ -13,7 +13,8 @@ import { buildWikiEditLink } from './wikiLinkConstructor';
 
 const getExplicitBoolean = (bool: boolean): ExplicitBoolean => (bool ? 'Yes' : 'No');
 
-function constructNewFile(fileObj: FileItem, baseName: string): File {
+function constructNewFile(fileObj: FileItem, baseName: string): File | undefined {
+  if (!fileObj.file) return;
   const sanitisedBaseName = escapeName(baseName);
   const fileName = fileObj.file?.name ?? fileObj.filename;
   const fileExtension = fileName.split('.').at(-1);
@@ -27,16 +28,20 @@ export async function submitCensus(description: string): Promise<void> {
   const { image, gallery } = imageData;
   const { mode, platform } = baseData;
   const { renewals } = playerData;
-  const galleryEntries: [File | undefined, string][] = gallery.map((item) => [
-    constructNewFile(item, baseData.baseName),
-    item.desc,
-  ]);
-
   if (!renewals.includes(currentYearString)) renewals.push(currentYearString);
 
-  const galleryPics = galleryEntries.map(([file, str]) => (str ? `${file.name}|${str}` : file.name)).join('\n');
-  const nonEmptyFileItems: [File, string][] = galleryEntries.filter(([file]) => file);
-  const galleryFiles = nonEmptyFileItems.map(([file]) => file);
+  const newGalleryFiles = gallery.filter((item) => item.file);
+  newGalleryFiles.forEach((item) => {
+    const newFile = constructNewFile(item, baseData.baseName);
+    if (!newFile) return;
+    item.file = newFile;
+    item.filename = newFile.name;
+  });
+
+  const galleryPicLines = gallery
+    .map(({ desc, file, filename }) => (desc ? `${file?.name ?? filename}|${desc}` : file?.name ?? filename))
+    .join('\n');
+  const galleryFilesToCompress = newGalleryFiles.map(({ file }) => file);
 
   const passBuilder = playerData.wikiName ? '' : playerData.player;
 
@@ -59,7 +64,6 @@ export async function submitCensus(description: string): Promise<void> {
 
   const wikipageText = buildBasePage({
     version,
-    galleryPics,
     region,
     name: baseData.baseName,
     image: mainImage.name,
@@ -86,13 +90,15 @@ export async function submitCensus(description: string): Promise<void> {
     censusFriend: playerData.friend,
     arrival: playerData.arrival,
     renew: renewals.join(', '),
+    galleryPics: galleryPicLines,
     sections: sectionData,
   });
 
   const compressedFiles: File[] = [];
 
   // compressing one-by-one to avoid weird Firefox issues
-  for (const file of [mainImage, ...galleryFiles]) {
+  for (const file of [mainImage, ...galleryFilesToCompress]) {
+    if (!file) continue;
     const compressedFile = await compressFile(file);
     compressedFiles.push(compressedFile);
   }
