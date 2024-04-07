@@ -26,10 +26,10 @@ function uploadFile(e: Event) {
 function addFiles(files: FileList) {
   const fileArray = Array.from(files);
 
-  infoboxImageInGallery.value = fileArray.map((file) => file.name).includes(image.value?.name ?? '');
+  infoboxImageInGallery.value = fileArray.map((file) => file.name).includes(image.value.file?.name ?? '');
 
   const validFiles = infoboxImageInGallery.value
-    ? fileArray.filter((file) => file.name !== image.value?.name)
+    ? fileArray.filter((file) => file.name !== image.value.file?.name)
     : fileArray;
 
   buildFileItem(validFiles);
@@ -52,9 +52,9 @@ function buildFileItem(files: File[]) {
 
 <template>
   <label
-    for="galleryUpload"
-    class="drop-container"
     :class="{ 'drag-active': dragActive }"
+    class="drop-container"
+    for="galleryUpload"
     @dragenter="dragActive = true"
     @dragleave="dragActive = false"
     @drop.prevent="dropFile"
@@ -77,51 +77,7 @@ function buildFileItem(files: File[]) {
     class="error-list"
   >
     <div v-if="infoboxImageInGallery">
-      {{ image?.name }} is already in the infobox and therefore wasn't added to the gallery.
+      {{ image.file?.name }} is already in the infobox and therefore wasn't added to the gallery.
     </div>
   </div>
 </template>
-
-<style scoped lang="scss">
-.drop-container {
-  display: flex;
-  gap: 0.5rem;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 200px;
-  border-radius: var(--pico-border-radius);
-  border: 2px dashed;
-  cursor: pointer;
-  container-type: inline-size;
-  transition:
-    background-color var(--pico-transition),
-    border var(--pico-transition);
-
-  &:hover,
-  &.drag-active {
-    border: 3px solid;
-  }
-
-  .drop-title {
-    text-align: center;
-  }
-
-  input[type='file'] {
-    height: auto;
-    padding: 5px;
-    border-radius: var(--pico-border-radius);
-    border: 1px solid;
-
-    &::file-selector-button {
-      padding: 10px 20px;
-    }
-  }
-}
-
-@container (width > 400px) {
-  input[type='file'] {
-    width: max-content;
-  }
-}
-</style>

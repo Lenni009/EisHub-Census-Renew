@@ -7,11 +7,11 @@ import { reactive, toRefs } from 'vue';
 import { isUpdatingPage } from '@/variables/formMode';
 import { platforms, modes } from '@/variables/saveData';
 import Gallery from './Gallery.vue';
+import ImageInput from './ImageInput.vue';
 
 const wikiPageData = useWikiPageDataStore();
-const { baseData, imageData, isAxesValid, sectionData } = storeToRefs(wikiPageData);
+const { baseData, isAxesValid, sectionData } = storeToRefs(wikiPageData);
 const { landingpad, terminal, geobay, farm, racetrack, arena } = toRefs(baseData.value);
-const { image } = toRefs(imageData.value);
 
 const featureList = reactive([
   {
@@ -39,12 +39,6 @@ const featureList = reactive([
     value: arena,
   },
 ]);
-
-function uploadMainFile(e: Event) {
-  const { target } = e;
-  if (!(target instanceof HTMLInputElement)) return;
-  image.value = target.files?.[0] ?? null; // target.files could be null, and since optional chaining returns undefined, we have to specify null as fallback ourselves. The image variable can also take null as value.
-}
 </script>
 
 <template>
@@ -158,13 +152,9 @@ function uploadMainFile(e: Event) {
     <textarea v-model.trim="item.body"></textarea>
   </article>
   <article>
-    <p class="question">Main picture</p>
+    <p class="question required">Main picture</p>
     <p class="subtitle">Picture clearly showing the entire base</p>
-    <input
-      accept="image/*"
-      type="file"
-      @change="uploadMainFile"
-    />
+    <ImageInput />
   </article>
   <article>
     <p class="question">Gallery</p>

@@ -2,6 +2,7 @@ import type { Ref } from 'vue';
 import { removeDuplicates } from './array';
 import { currentYearString } from '@/variables/dateTime';
 import type { LocalStorageData } from '@/types/localStorage';
+import { defaultFileItem } from '@/variables/imageData';
 
 // local storage keys are the years
 // local storage values are objects with the keys "requested" and "amount"
@@ -45,7 +46,7 @@ export function updateLocalStorage(requested: Ref<string[]>, tries: Ref<number>,
 }
 
 export function fileReplacer(key: string, value: unknown) {
-  if (value instanceof File) return null;
+  if (value instanceof File) return structuredClone(defaultFileItem);
   if (key === 'gallery') return [];
   return value;
 }

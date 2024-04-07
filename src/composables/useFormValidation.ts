@@ -19,7 +19,6 @@ export function useFormValidation() {
   const {
     validation,
     playerData,
-    imageData,
     baseData,
     region,
     isDiscordValid,
@@ -28,6 +27,7 @@ export function useFormValidation() {
     isNameValid,
     isFriendValid,
     isAxesValid,
+    isImageDataValid,
     sectionData,
   } = storeToRefs(wikiPageDataStore);
   const { wikiUserExists } = toRefs(validation.value);
@@ -44,7 +44,6 @@ export function useFormValidation() {
 
   const { isDataValid: isPlayerDataValid, missingProps: missingPlayerProps } = useDataValidation(playerData);
   const { isDataValid: isBaseDataValid, missingProps: missingBaseProps } = useDataValidation(baseData);
-  const { isDataValid: isImageDataValid, missingProps: missingImageProps } = useDataValidation(imageData);
   const { isDataValid: isPlayerValidationDataValid, missingProps: missingPlayerValidationProps } =
     useValidationData(playerDataValidation);
 
@@ -63,7 +62,7 @@ export function useFormValidation() {
   const missingPageTwoProps = computed(() => [
     ...missingBaseProps.value,
     ...sectionDataMissingProps.value,
-    ...missingImageProps.value,
+    ...(isImageDataValid.value ? [] : ['image']),
     ...(region.value ? [] : ['region']),
     ...(isAxesValid.value ? [] : ['axes']),
   ]);

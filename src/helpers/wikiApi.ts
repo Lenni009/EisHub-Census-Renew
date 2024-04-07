@@ -14,7 +14,7 @@ import type {
 } from '@/types/queryObjects';
 import { limit } from '@/variables/apiLimit';
 import { apiPath } from '@/variables/wikiLink';
-import { isQueryResponse } from './typeGuards';
+import { isParsedSummary, isQueryResponse } from './typeGuards';
 
 // generic function to build a URL from an object
 const buildQueryUrl = (queryObject: QueryObjects) =>
@@ -131,4 +131,17 @@ export async function apiCall(url: string): Promise<unknown> {
   const data = await fetch(url);
   const json = await data.json();
   return json;
+}
+
+export async function downloadFile(requestString: string) {
+  const apiResponse = await apiCall(getFileQueryApiUrl(requestString));
+  if (!isParsedSummary(apiResponse)) return;
+  const galleryItemLinks = apiResponse.parse.parsedsummary['*'];
+
+  const parser = new DOMParser();
+
+  const galleryDom = parser.parseFromString(typeof galleryItemLinks === 'string' ? galleryItemLinks : '', 'text/html');
+  const links = galleryDom.querySelectorAll<HTMLAnchorElement>('a');
+
+  return links;
 }

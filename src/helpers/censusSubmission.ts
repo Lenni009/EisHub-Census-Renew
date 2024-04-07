@@ -58,8 +58,6 @@ export async function submitCensus(description: string): Promise<void> {
 
   const passSocial = !playerData.social && !playerData.wikiName ? '' : socialLinkOrEmpty;
 
-  if (!image) return;
-
   const fileType = image.file?.type;
   const mainImageName = image.file?.name ?? image.filename;
   const fileExtension = mainImageName.split('.').at(-1);

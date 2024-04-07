@@ -1,3 +1,4 @@
+import { getMediaLink, getWorkingImageLink } from '@/helpers/fileDownload';
 import { removeFilePrefix } from '@/helpers/fileRename';
 import {
   isValidHttpUrl,
@@ -7,14 +8,8 @@ import {
   validatePlayerName,
   validateReddit,
 } from '@/helpers/formValidation';
-import {
-  isParsedSummary,
-  isSectionQueryResponse,
-  isValidModeValue,
-  isValidPlatformValue,
-  isWikitext,
-} from '@/helpers/typeGuards';
-import { apiCall, getFileQueryApiUrl, getPageSectionContentApiUrl, getPageSectionsApiUrl } from '@/helpers/wikiApi';
+import { isSectionQueryResponse, isValidModeValue, isValidPlatformValue, isWikitext } from '@/helpers/typeGuards';
+import { apiCall, downloadFile, getPageSectionContentApiUrl, getPageSectionsApiUrl } from '@/helpers/wikiApi';
 import { parseWikiTemplate } from '@/helpers/wikiTemplateParser';
 import type { CensusEntry } from '@/types/censusQueryResponse';
 import type { FileItem } from '@/types/file';
@@ -22,6 +17,7 @@ import type { BaseData, ImageData, PlayerData, SectionObject } from '@/types/pag
 import type { SimplifiedSectionQueryResponseSectionObject } from '@/types/queryResponse';
 import { currentYearString, weekInMilliseconds } from '@/variables/dateTime';
 import { isMakingNewPage, isNewCitizen, isUpdatingPage } from '@/variables/formMode';
+import { defaultFileItem } from '@/variables/imageData';
 import { regionArray } from '@/variables/regions';
 import { defaultSections } from '@/variables/wikiSections';
 import { defineStore } from 'pinia';
@@ -73,12 +69,7 @@ const defaultStoreObject: WikiPageData = {
     type: '',
   },
   imageData: {
-    image: {
-      filename: '',
-      id: 0,
-      desc: '',
-      url: '',
-    },
+    image: structuredClone(defaultFileItem),
     gallery: [],
   },
 };
@@ -142,6 +133,7 @@ export const useWikiPageDataStore = defineStore('wikiPageData', {
     isNameValid: (state) => validatePlayerName(state.playerData.player),
     isFriendValid: (state) => validateFriendCode(state.playerData.friend),
     isAxesValid: (state) => validateCoords(state.baseData.axes),
+    isImageDataValid: (state) => Boolean(state.imageData.image.filename),
     region: (state) => regionArray.find((item) => item[0] === state.baseData.glyphs.slice(4))?.[1] ?? '',
   },
 
@@ -162,10 +154,13 @@ export const useWikiPageDataStore = defineStore('wikiPageData', {
       this.baseData.planet = infobox.planet ?? '';
       this.baseData.moon = infobox.moon ?? '';
       this.baseData.type = infobox.type ?? '';
+      this.imageData.image.filename = infobox.image;
 
       const sectionData = await this.fetchAvailableSectionInfo();
       const gallerySectionData = sectionData?.pop();
       sectionData?.forEach(this.fetchWikiText);
+
+      await this.fetchImageData(infobox.image);
 
       if (gallerySectionData) await this.fetchGalleryData(gallerySectionData);
     },
@@ -238,22 +233,13 @@ export const useWikiPageDataStore = defineStore('wikiPageData', {
 
       const filenames = fileObjects.map((item) => item.filename);
 
-      const requestItems = filenames.map((name) => `[[Media:${name}]]`);
+      const requestItems = filenames.map(getMediaLink);
 
       const requestString = requestItems.join('');
 
-      const apiResponse = await apiCall(getFileQueryApiUrl(requestString));
-      if (!isParsedSummary(apiResponse)) return;
-      const galleryItemLinks = apiResponse.parse.parsedsummary['*'];
+      const links = await downloadFile(requestString);
 
-      const parser = new DOMParser();
-
-      const galleryDom = parser.parseFromString(
-        typeof galleryItemLinks === 'string' ? galleryItemLinks : '',
-        'text/html'
-      );
-
-      const links = galleryDom.querySelectorAll<HTMLAnchorElement>('a');
+      if (!links) return;
 
       for (let i = 0; i < links.length; i++) {
         const link = links[i];
@@ -261,17 +247,22 @@ export const useWikiPageDataStore = defineStore('wikiPageData', {
 
         const isInternal = link.classList.contains('internal'); // filters out external and non-existing links
 
-        // The raw link is in this format: https://static.wikia.nocookie.net/nomanssky_gamepedia/images/8/8e/20230927225359_1.jpg/revision/latest?cb=20230927213750
-        // For some reason, any direct programmatic requests to that URL fail.
-        // So we have to get rid of the /revision/latest?cb=... part in order for this to work.
-        // This is done by splitting at the slashes, then taking the last two parts away.
-        fileItem.url = isInternal ? link.href.split('/').slice(0, -2).join('/') : ''; // NoSonar see explanation for -2 above
+        fileItem.url = isInternal ? getWorkingImageLink(link.href) : '';
       }
 
       const validFileItems = fileObjects.filter((item) => item.url);
       this.imageData.gallery = validFileItems;
+    },
 
-      // don't send them with the submission
+    async fetchImageData(imageName: string) {
+      const mediaLink = getMediaLink(imageName);
+      const files = await downloadFile(mediaLink);
+      if (!files) return;
+      const file = files[0];
+
+      const isInternal = file.classList.contains('internal'); // filters out external and non-existing links
+
+      this.imageData.image.url = isInternal ? getWorkingImageLink(file.href) : '';
     },
 
     resetStore() {
