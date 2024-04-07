@@ -14,6 +14,7 @@ import type {
 } from '@/types/queryObjects';
 import { limit } from '@/variables/apiLimit';
 import { apiPath } from '@/variables/wikiLink';
+import { isQueryResponse } from './typeGuards';
 
 // generic function to build a URL from an object
 const buildQueryUrl = (queryObject: QueryObjects) =>
@@ -121,7 +122,7 @@ const getUserQueryObj = (user: string): UserQueryObject => ({
 export async function userExists(user: string) {
   const apiUrl = buildQueryUrl(getUserQueryObj(user));
   const data = await apiCall(apiUrl);
-
+  if (!isQueryResponse(data)) return false;
   const userObj = data.query.users[0];
   return Boolean(userObj.userid);
 }

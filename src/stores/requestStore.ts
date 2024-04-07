@@ -1,4 +1,4 @@
-import type { QueryEntry, CensusEntry } from '@/types/censusQueryResponse';
+import type { CargoQueryEntry, CensusEntry } from '@/types/censusQueryResponse';
 import { apiCall, getCensusQueryCountUrl, getCensusQueryDataUrl } from '@/helpers/wikiApi';
 import { defineStore, storeToRefs } from 'pinia';
 import { useCensusDataStore } from './censusDataStore';
@@ -6,6 +6,8 @@ import { civilized } from '@/variables/civilized';
 import { currentYearString } from '@/variables/dateTime';
 import { useRenewDataStore } from './renewDataStore';
 import { limit } from '@/variables/apiLimit';
+import { isCargoResponse } from '@/helpers/typeGuards';
+import type { CargoQueryResponse } from '@/types/queryResponse';
 
 interface RequestStore {
   requestSent: boolean;
@@ -29,15 +31,18 @@ export const useRequestStore = defineStore('requests', {
       try {
         this.requestSent = true;
         const censusCountQueryUrl = getCensusQueryCountUrl(civilized);
-        const { cargoquery } = await apiCall(censusCountQueryUrl);
-        const countString = Object.values(cargoquery[0].title)[0];
-        const count = Number(countString);
+        const apiResponse = await apiCall(censusCountQueryUrl);
+        if (!isCargoResponse<CargoQueryResponse>(apiResponse)) return;
+        const countString = Object.values(apiResponse.cargoquery[0].title)[0];
+        if (!countString) return;
+        const count = parseInt(countString);
         const requiredApiCalls = Math.ceil(count / limit);
         censusData.value = [];
         const apiData = Array.from({ length: requiredApiCalls }).map(async (_item, index) => {
           const censusQueryUrl = getCensusQueryDataUrl(civilized, index * limit);
 
           const data = await apiCall(censusQueryUrl);
+          if (!isCargoResponse<CargoQueryEntry>(data)) return;
           censusData.value.push(
             ...data.cargoquery.map(
               ({
@@ -54,7 +59,7 @@ export const useRequestStore = defineStore('requests', {
                   System,
                   Builderlink,
                 },
-              }: QueryEntry): CensusEntry => {
+              }): CensusEntry => {
                 const censusRenewalArray = CensusRenewal?.split(',')?.map((item) => item.trim()) ?? [];
                 return {
                   renewals: censusRenewalArray,

@@ -5,7 +5,7 @@ export const platforms: Record<string, Platforms> = {
   PS: 'PlayStation',
   XB: 'Xbox',
   NS: 'Switch',
-};
+} as const;
 
 export const modes: Record<string, Modes> = {
   Normal: 'Normal',
@@ -14,4 +14,4 @@ export const modes: Record<string, Modes> = {
   Permadeath: 'Permadeath',
   Creative: 'Creative',
   Custom: 'Custom',
-};
+} as const;

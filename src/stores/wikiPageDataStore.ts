@@ -7,31 +7,24 @@ import {
   validatePlayerName,
   validateReddit,
 } from '@/helpers/formValidation';
-import { isValidModeValue, isValidPlatformValue } from '@/helpers/typeGuards';
+import {
+  isParsedSummary,
+  isSectionQueryResponse,
+  isValidModeValue,
+  isValidPlatformValue,
+  isWikitext,
+} from '@/helpers/typeGuards';
 import { apiCall, getFileQueryApiUrl, getPageSectionContentApiUrl, getPageSectionsApiUrl } from '@/helpers/wikiApi';
 import { parseWikiTemplate } from '@/helpers/wikiTemplateParser';
 import type { CensusEntry } from '@/types/censusQueryResponse';
 import type { FileItem } from '@/types/file';
 import type { BaseData, ImageData, PlayerData, SectionObject } from '@/types/pageData';
+import type { SimplifiedSectionQueryResponseSectionObject } from '@/types/queryResponse';
 import { currentYearString, weekInMilliseconds } from '@/variables/dateTime';
 import { isMakingNewPage, isNewCitizen, isUpdatingPage } from '@/variables/formMode';
 import { regionArray } from '@/variables/regions';
 import { defaultSections } from '@/variables/wikiSections';
 import { defineStore } from 'pinia';
-
-interface SimplifiedSectionQueryResponseObject {
-  line: string;
-  index: string;
-}
-
-interface SectionQueryResponseObject extends SimplifiedSectionQueryResponseObject {
-  toclevel: number;
-  level: string;
-  number: string;
-  fromtitle: string;
-  byteoffset: number;
-  anchor: string;
-}
 
 interface Validation {
   wikiUserExists: boolean;
@@ -166,26 +159,27 @@ export const useWikiPageDataStore = defineStore('wikiPageData', {
       this.baseData.type = infobox.type ?? '';
 
       const sectionData = await this.fetchAvailableSectionInfo();
-      const gallerySectionData = sectionData.pop();
-      sectionData.forEach(this.fetchWikiText);
+      const gallerySectionData = sectionData?.pop();
+      sectionData?.forEach(this.fetchWikiText);
 
       if (gallerySectionData) await this.fetchGalleryData(gallerySectionData);
     },
 
     async fetchAvailableSectionInfo() {
       const url = getPageSectionsApiUrl(this.baseData.baseName);
-      const { parse } = await apiCall(url);
-      const sectionArray: SectionQueryResponseObject[] = parse.sections;
+      const apiResponse = await apiCall(url);
+      if (!isSectionQueryResponse(apiResponse)) return;
+      const sectionArray = apiResponse.parse.sections;
       const usedSections = sectionArray.slice(1);
       const firstLevelSections = usedSections.filter((section) => section.toclevel === 1);
-      const relevantSectionInfo: SimplifiedSectionQueryResponseObject[] = firstLevelSections.map(({ line, index }) => ({
+      const relevantSectionInfo = firstLevelSections.map(({ line, index }) => ({
         line,
         index,
       }));
       return relevantSectionInfo;
     },
 
-    async fetchWikiText(sectionData: SimplifiedSectionQueryResponseObject, index: number) {
+    async fetchWikiText(sectionData: SimplifiedSectionQueryResponseSectionObject, index: number) {
       const lowerCaseHeading = sectionData.line.toLowerCase();
       const itemInSectionData = defaultSections.find((item) => item.heading.toLowerCase() === lowerCaseHeading);
       const sectionObject: SectionObject = {
@@ -206,25 +200,27 @@ export const useWikiPageDataStore = defineStore('wikiPageData', {
 
       const sectionWikitext = await this.fetchSectionWikiText(parseInt(sectionData.index));
 
-      sectionObject.body = sectionWikitext.split('\n').slice(1).join('\n');
+      sectionObject.body = sectionWikitext?.split('\n').slice(1).join('\n') ?? '';
       sectionObject.loading = false;
     },
 
     async fetchInfobox() {
       const sectionWikitext = await this.fetchSectionWikiText(0);
-      const infoboxObject = parseWikiTemplate(sectionWikitext, 'Base infobox');
+      const infoboxObject = parseWikiTemplate(sectionWikitext ?? '', 'Base infobox');
       return infoboxObject;
     },
 
     async fetchSectionWikiText(section: number) {
       const url = getPageSectionContentApiUrl(this.baseData.baseName, section);
-      const { parse } = await apiCall(url);
-      const sectionWikitext: string = parse.wikitext['*'];
+      const apiResponse = await apiCall(url);
+      if (!isWikitext(apiResponse)) return;
+      const sectionWikitext = apiResponse.parse.wikitext['*'];
       return sectionWikitext;
     },
 
-    async fetchGalleryData(gallerySectionData: SimplifiedSectionQueryResponseObject) {
+    async fetchGalleryData(gallerySectionData: SimplifiedSectionQueryResponseSectionObject) {
       const gallerySectionText = await this.fetchSectionWikiText(parseInt(gallerySectionData.index));
+      if (!gallerySectionText) return;
       const picLines = gallerySectionText.split('\n').slice(2, -1); // remove gallery heading and gallery tags
       const picsAndDescs = picLines.map((item) => item.split('|'));
 
@@ -241,8 +237,9 @@ export const useWikiPageDataStore = defineStore('wikiPageData', {
 
       const requestString = requestItems.join('');
 
-      const { parse } = await apiCall(getFileQueryApiUrl(requestString));
-      const galleryItemLinks = parse.parsedsummary['*'];
+      const apiResponse = await apiCall(getFileQueryApiUrl(requestString));
+      if (!isParsedSummary(apiResponse)) return;
+      const galleryItemLinks = apiResponse.parse.parsedsummary['*'];
 
       const parser = new DOMParser();
 

@@ -20,7 +20,7 @@ export interface CensusEntry extends RawCensusEntry {
 }
 
 // returned from query
-interface QueryCensusEntry extends RawCensusEntry {
+export interface QueryCensusEntry extends RawCensusEntry {
   CensusRenewal: string;
   CensusArrival: string;
 }
@@ -28,4 +28,8 @@ interface QueryCensusEntry extends RawCensusEntry {
 // API query returns an array of these
 export interface QueryEntry {
   title: QueryCensusEntry;
+}
+
+export interface CargoQueryEntry {
+  cargoquery: QueryEntry[];
 }
