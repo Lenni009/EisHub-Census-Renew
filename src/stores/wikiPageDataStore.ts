@@ -140,7 +140,15 @@ export const useWikiPageDataStore = defineStore('wikiPageData', {
 
   actions: {
     async fetchBaseWikiData() {
+      // this function uses async methods, but doesn't await them to improve performance.
+      // the individual methods handle the required awaiting on their own.
+      this.handleInfoboxLoading();
+      this.handleGalleryLoading();
+    },
+
+    async handleInfoboxLoading() {
       const [infobox] = await this.fetchInfobox();
+      this.fetchImageData(infobox.image);
       this.baseData.axes = infobox.axes ?? '';
       this.baseData.glyphs = infobox.glyphs ?? '';
       this.baseData.arena = infobox.arena === 'Yes';
@@ -160,14 +168,15 @@ export const useWikiPageDataStore = defineStore('wikiPageData', {
         infobox.portalglyphs.length === expectedGlyphLength
           ? infobox.portalglyphs
           : parseWikiTemplate(infobox.portalglyphs.toLowerCase(), 'gl/small')[0]['0'].toUpperCase();
+    },
 
+    async handleGalleryLoading() {
+      // same as above, there are multiple async methods here, but only the initial section data is awaited, since the other two depend on it
       const sectionData = await this.fetchAvailableSectionInfo();
+
       const gallerySectionData = sectionData?.pop();
+      if (gallerySectionData) this.fetchGalleryData(gallerySectionData);
       sectionData?.forEach(this.fetchWikiText);
-
-      await this.fetchImageData(infobox.image);
-
-      if (gallerySectionData) await this.fetchGalleryData(gallerySectionData);
     },
 
     async fetchAvailableSectionInfo() {
