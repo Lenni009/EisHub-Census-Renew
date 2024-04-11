@@ -4,10 +4,9 @@ import { version } from '@/variables/version';
 import type { ExplicitBoolean } from '@/types/pageData';
 import { currentYearString, timezoneOffset } from '@/variables/dateTime';
 import { compressFile } from './fileCompression';
-import { paginate } from './array';
+import { paginateFiles } from './array';
 import type { FileItem } from '@/types/file';
 import { formWebhook } from '@/variables/env';
-import { maxFilePerMessage } from '@/variables/fileLimits';
 import { escapeName } from './nameEscape';
 import { buildWikiEditLink } from './wikiLinkConstructor';
 import type { DiscordWebhookPayload } from '@/types/discordWebhook';
@@ -101,7 +100,7 @@ export async function submitCensus(description: string): Promise<void> {
   const wikiTextFile = new File([wikipageText], `${baseData.baseName}.txt`, { type: 'text/plain' });
 
   // Discord's file limit is 10, so we make sure to only send 10 files at once
-  const paginatedFiles = paginate(compressedFiles, maxFilePerMessage);
+  const paginatedFiles = paginateFiles(compressedFiles);
   paginatedFiles.unshift([wikiTextFile]);
   if (compressedMainImage) paginatedFiles[0].unshift(compressedMainImage);
 
