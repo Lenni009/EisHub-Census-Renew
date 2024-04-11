@@ -8,6 +8,7 @@ import { isUpdatingPage } from '@/variables/formMode';
 import { platforms, modes } from '@/variables/saveData';
 import Gallery from './Gallery.vue';
 import ImageInput from './ImageInput.vue';
+import LoadingSpinner from '../LoadingSpinner.vue';
 
 const wikiPageData = useWikiPageDataStore();
 const { baseData, isAxesValid, sectionData } = storeToRefs(wikiPageData);
@@ -137,12 +138,15 @@ const featureList = reactive([
     v-for="item in sectionData"
     :key="item.heading"
   >
-    <p
-      :class="{ required: item.required }"
-      class="question"
-    >
-      {{ item.heading }}
-    </p>
+    <div class="async-section-title-wrapper">
+      <p
+        :class="{ required: item.required }"
+        class="question"
+      >
+        {{ item.heading }}
+      </p>
+      <LoadingSpinner />
+    </div>
     <p
       v-if="item.explanation"
       class="subtitle"
@@ -164,6 +168,11 @@ const featureList = reactive([
 </template>
 
 <style scoped lang="scss">
+.async-section-title-wrapper {
+  display: flex;
+  gap: 0.5rem;
+}
+
 .checkboxes {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
