@@ -25,8 +25,11 @@ jobs:
       - name: Build App
         run: |
           npm ci
-          echo -n 'VITE_DISCORD_WEBHOOK=' > .env
-          echo '${{ secrets.DISCORD_WEBHOOK }}' | base64 | tr -d "\n\r" >> .env
+          echo -n 'VITE_DISCORD_RENEW_WEBHOOK=' > .env
+          echo '${{ secrets.DISCORD_RENEW_WEBHOOK }}' | base64 | tr -d "\n\r" >> .env
+          echo >> .env
+          echo -n 'VITE_DISCORD_FORM_WEBHOOK=' > .env
+          echo '${{ secrets.DISCORD_FORM_WEBHOOK }}' | base64 | tr -d "\n\r" >> .env
           npm run build
           cd dist
           touch .nojekyll
