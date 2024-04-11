@@ -71,7 +71,6 @@ function scrollToTop() {
 const buttonText = computed(() => {
   if (isSending.value) return '';
   if (isFailed.value) return 'Failed!';
-  if (isSuccess.value) return 'Sent!';
   return 'Submit';
 });
 
@@ -88,7 +87,7 @@ wikiPageDataStore.$subscribe((_, state) => {
     class="questions"
     @submit.prevent="sendForm"
   >
-    <template v-if="!isSuccess || !isNewCitizen">
+    <template v-if="!isSuccess">
       <BaseForm :page />
 
       <div>
@@ -124,13 +123,21 @@ wikiPageDataStore.$subscribe((_, state) => {
       </div>
     </template>
 
-    <article v-else>
+    <article v-else-if="isNewCitizen">
       <header>
         <p class="text-bold thank-you">Thank you for registering!</p>
       </header>
       <p>
         We're excited to have you join us in Eisvana!<br />We'll let you know when your submission has been processed.
       </p>
+      <p>You can now close this window.</p>
+    </article>
+
+    <article v-else>
+      <header>
+        <p class="text-bold thank-you">Thank you for updating census entry!</p>
+      </header>
+      <p>We'll let you know when your submission has been processed.</p>
       <p>You can now close this window.</p>
     </article>
   </form>
