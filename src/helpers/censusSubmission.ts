@@ -10,6 +10,7 @@ import { formWebhook } from '@/variables/env';
 import { maxFilePerMessage } from '@/variables/fileLimits';
 import { escapeName } from './nameEscape';
 import { buildWikiEditLink } from './wikiLinkConstructor';
+import type { DiscordWebhookPayload } from '@/types/discordWebhook';
 
 const getExplicitBoolean = (bool: boolean): ExplicitBoolean => (bool ? 'Yes' : 'No');
 
@@ -36,7 +37,7 @@ export async function submitCensus(description: string): Promise<void> {
   // compressing one-by-one to avoid weird Firefox issues
   for (const item of gallery) {
     const newFile = constructNewFile(item, baseData.baseName);
-    if (!newFile) return;
+    if (!newFile) continue;
     const compressedFile = await compressFile(newFile);
     item.file = compressedFile;
     item.filename = compressedFile.name;
@@ -97,6 +98,8 @@ export async function submitCensus(description: string): Promise<void> {
     sections: sectionData,
   });
 
+  console.log('built page');
+
   const wikiTextFile = new File([wikipageText], `${baseData.baseName}.txt`, { type: 'text/plain' });
 
   // Discord's file limit is 10, so we make sure to only send 10 files at once
@@ -105,47 +108,52 @@ export async function submitCensus(description: string): Promise<void> {
   if (compressedMainImage) paginatedFiles[0].unshift(compressedMainImage);
 
   const formDataArray = paginatedFiles.map(constructFileFormData);
-  formDataArray[0].append(
-    'payload_json',
-    JSON.stringify({
-      allowed_mentions: {
-        parse: [],
-      },
-      embeds: [
-        {
-          description,
-          title: 'New Census Submission!',
-          image: {
-            url: `attachment://${compressedMainImage?.name ?? image.filename}`,
+
+  const payload: DiscordWebhookPayload = {
+    allowed_mentions: {
+      parse: [],
+    },
+    embeds: [
+      {
+        description,
+        title: 'New Census Submission!',
+        image: {
+          url: `attachment://${compressedMainImage?.name ?? image.filename}`,
+        },
+        fields: [
+          {
+            name: 'Player',
+            value: playerData.player,
           },
-          fields: [
-            {
-              name: 'Player',
-              value: playerData.player,
-            },
-            {
-              name: 'Wikipage',
-              value: buildWikiEditLink(baseData.baseName),
-            },
-            {
-              name: 'Timezone',
-              value: playerData.shareTimezone ? timezoneOffset : 'not disclosed',
-            },
-            {
-              name: 'Active Time',
-              value: playerData.activeTime || 'not disclosed',
-            },
-          ],
-        },
-      ],
-      attachments: [
-        {
-          id: 0,
-          filename: compressedMainImage?.name ?? image.filename,
-        },
-      ],
-    })
-  );
+          {
+            name: 'Wikipage',
+            value: buildWikiEditLink(baseData.baseName).toString(),
+          },
+          {
+            name: 'Timezone',
+            value: playerData.shareTimezone ? timezoneOffset : 'not disclosed',
+          },
+          {
+            name: 'Active Time',
+            value: playerData.activeTime || 'not disclosed',
+          },
+        ],
+      },
+    ],
+    attachments: [
+      {
+        id: 0,
+        filename: compressedMainImage?.name ?? image.filename,
+      },
+    ],
+  };
+
+  if (!compressedMainImage) {
+    delete payload.embeds[0].image;
+    delete payload.attachments;
+  }
+
+  formDataArray[0].append('payload_json', JSON.stringify(payload));
 
   const promises = formDataArray.map(sendFormData);
   await Promise.all(promises);
