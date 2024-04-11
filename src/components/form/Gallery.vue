@@ -51,18 +51,16 @@ const togglePreview = () => (isPreviewHidden.value = !isPreviewHidden.value);
       {{ isPreviewHidden ? 'Show' : 'Hide' }}
     </button>
   </div>
-  <div v-show="!isPreviewHidden">
-    <div
-      v-show="gallery.length"
-      ref="filePreview"
-      class="gallery-preview"
-    >
-      <GalleryItem
-        v-for="fileItem in gallery"
-        :key="fileItem.id"
-        :file-item="fileItem"
-      />
-    </div>
+  <div
+    v-show="gallery.length && !isPreviewHidden"
+    ref="filePreview"
+    class="gallery-preview"
+  >
+    <GalleryItem
+      v-for="fileItem in gallery"
+      :key="fileItem.id"
+      :file-item="fileItem"
+    />
   </div>
 </template>
 
