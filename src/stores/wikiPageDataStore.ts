@@ -17,6 +17,7 @@ import type { BaseData, ImageData, PlayerData, SectionObject } from '@/types/pag
 import type { SimplifiedSectionQueryResponseSectionObject } from '@/types/queryResponse';
 import { currentYearString, weekInMilliseconds } from '@/variables/dateTime';
 import { isMakingNewPage, isNewCitizen, isUpdatingPage } from '@/variables/formMode';
+import { expectedGlyphLength } from '@/variables/formValidation';
 import { defaultFileItem } from '@/variables/imageData';
 import { regionArray } from '@/variables/regions';
 import { defaultSections } from '@/variables/wikiSections';
@@ -155,6 +156,10 @@ export const useWikiPageDataStore = defineStore('wikiPageData', {
       this.baseData.moon = infobox.moon ?? '';
       this.baseData.type = infobox.type ?? '';
       this.imageData.image.filename = infobox.image;
+      this.baseData.glyphs =
+        infobox.portalglyphs.length === expectedGlyphLength
+          ? infobox.portalglyphs
+          : parseWikiTemplate(infobox.portalglyphs.toLowerCase(), 'gl/small')[0]['0'].toUpperCase();
 
       const sectionData = await this.fetchAvailableSectionInfo();
       const gallerySectionData = sectionData?.pop();
