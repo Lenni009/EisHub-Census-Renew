@@ -135,7 +135,7 @@ wikiPageDataStore.$subscribe((_, state) => {
 
     <article v-else>
       <header>
-        <p class="text-bold thank-you">Thank you for updating census entry!</p>
+        <p class="text-bold thank-you">Thank you for updating your census entry!</p>
       </header>
       <p>We'll let you know when your submission has been processed.</p>
       <p>You can now close this window.</p>
