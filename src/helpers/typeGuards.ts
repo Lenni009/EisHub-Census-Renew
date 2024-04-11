@@ -16,7 +16,7 @@ export function isFormProperty(str: string): str is OptionalProps {
 }
 
 export function isValidPlatformValue(platform: string): platform is Platforms {
-  const platformArray = Object.values(platforms);
+  const platformArray = Object.keys(platforms);
   return Boolean(platformArray.filter((item) => item === platform).length);
 }
 
