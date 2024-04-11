@@ -24,7 +24,7 @@ const page = computed(() => (hash.value === '#2' && isPageOneValid.value ? 2 : 1
 const hasUpdated = ref(false);
 const isSending = ref(false);
 const isFailed = ref(false);
-const successDialog = ref<HTMLDialogElement | null>(null);
+const isSuccess = ref(false);
 
 const localStorageKeyIsNotNew = isMakingNewPage ? 'newBase' : 'updateBase';
 const localStorageKey = isNewCitizen ? 'censusForm' : localStorageKeyIsNotNew;
@@ -53,7 +53,7 @@ async function sendForm() {
     localStorage.removeItem('lastUpdated');
     sessionStorage.removeItem('update');
     window.location.hash = '';
-    successDialog.value?.showModal();
+    isSuccess.value = true;
   } catch (e) {
     isFailed.value = true;
     console.error('Something went wrong:', e);
@@ -65,8 +65,6 @@ async function sendForm() {
   }
 }
 
-const closeModal = () => successDialog.value?.close();
-
 function scrollToTop() {
   if (isPageOneValid.value) scrollTo(0, 0);
 }
@@ -74,6 +72,7 @@ function scrollToTop() {
 const buttonText = computed(() => {
   if (isSending.value) return '';
   if (isFailed.value) return 'Failed!';
+  if (isSuccess.value) return 'Sent!';
   return 'Submit';
 });
 
@@ -90,53 +89,45 @@ wikiPageDataStore.$subscribe((_, state) => {
     class="questions"
     @submit.prevent="sendForm"
   >
-    <BaseForm :page />
+    <template v-if="!isSuccess">
+      <BaseForm :page />
 
-    <div>
-      <template v-if="page === 1">
-        <a
-          :href="isPageOneValid ? '#2' : undefined"
-          :aria-disabled="!isPageOneValid"
-          role="button"
-          @click="scrollToTop"
-        >
-          Continue
-        </a>
-        <p v-if="missingPageOneProps.length">Missing Data: {{ missingPageOneProps.join(', ') }}</p>
-      </template>
-      <template v-if="page === 2">
-        <button
-          :aria-busy="isSending"
-          :class="{ 'is-danger': isFailed }"
-          :disabled="!isAllDataValid || (isUpdatingPage && !hasUpdated)"
-          class="submit-button"
-          type="submit"
-        >
-          {{ buttonText }}
-        </button>
-        <p v-if="allMissingProps.length">Missing Data: {{ allMissingProps.join(', ') }}</p>
-      </template>
-    </div>
+      <div>
+        <template v-if="page === 1">
+          <a
+            :href="isPageOneValid ? '#2' : undefined"
+            :aria-disabled="!isPageOneValid"
+            role="button"
+            @click="scrollToTop"
+          >
+            Continue
+          </a>
+          <p v-if="missingPageOneProps.length">Missing Data: {{ missingPageOneProps.join(', ') }}</p>
+        </template>
+        <template v-if="page === 2">
+          <button
+            :aria-busy="isSending"
+            :class="{ 'is-danger': isFailed }"
+            :disabled="!isAllDataValid || (isUpdatingPage && !hasUpdated)"
+            class="submit-button"
+            type="submit"
+          >
+            {{ buttonText }}
+          </button>
+          <p v-if="allMissingProps.length">Missing Data: {{ allMissingProps.join(', ') }}</p>
+        </template>
+      </div>
+    </template>
 
-    <dialog
-      ref="successDialog"
-      @click.self="closeModal"
-    >
-      <article>
-        <header>
-          <form method="dialog">
-            <button
-              aria-label="Close"
-              class="close"
-            ></button>
-          </form>
-          <p class="text-bold">Thank you for registering!</p>
-        </header>
-        <p>
-          We're excited to have you join us in Eisvana!<br />We'll let you know when your submission has been processed.
-        </p>
-      </article>
-    </dialog>
+    <article v-else-if="isNewCitizen">
+      <header>
+        <p class="text-bold thank-you">Thank you for registering!</p>
+      </header>
+      <p>
+        We're excited to have you join us in Eisvana!<br />We'll let you know when your submission has been processed.
+      </p>
+      <p>You can now close this window.</p>
+    </article>
   </form>
 </template>
 
@@ -195,5 +186,9 @@ a:not([href]) {
 
 button.submit-button[type='submit'] {
   width: auto;
+}
+
+.thank-you {
+  margin: 0;
 }
 </style>
