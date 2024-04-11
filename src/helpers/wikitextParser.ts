@@ -11,7 +11,7 @@ export function parseExternalUserLink(link: string): LinkObj {
 }
 
 export function parseWikiUserLink(link: string): LinkObj {
-  const syntaxRemoved = link.slice(2, -2);  // NoSonar this is to strip the [[]] link syntax
+  const syntaxRemoved = link.slice(2, -2); // NoSonar this is to strip the [[]] link syntax
   const linkParts = syntaxRemoved.split('|');
   return {
     link: `${wikiLink}${linkParts[0]}`,
