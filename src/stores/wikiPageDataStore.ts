@@ -185,6 +185,7 @@ export const useWikiPageDataStore = defineStore('wikiPageData', {
     },
 
     async fetchWikiText(sectionData: SimplifiedSectionQueryResponseSectionObject, index: number) {
+      const sectionWikitext = this.fetchSectionWikiText(parseInt(sectionData.index));
       const lowerCaseHeading = sectionData.line.toLowerCase();
       const itemInSectionData = defaultSections.find((item) => item.heading.toLowerCase() === lowerCaseHeading);
       const sectionObject: SectionObject = {
@@ -203,10 +204,8 @@ export const useWikiPageDataStore = defineStore('wikiPageData', {
 
       this.sectionData = this.sectionData.with(index, sectionObject);
 
-      const sectionWikitext = await this.fetchSectionWikiText(parseInt(sectionData.index));
-
       const sectionObjectInData = this.sectionData[index];
-      sectionObjectInData.body = sectionWikitext?.split('\n').slice(1).join('\n') ?? '';
+      sectionObjectInData.body = (await sectionWikitext)?.split('\n').slice(1).join('\n') ?? '';
       sectionObjectInData.loading = false;
     },
 
