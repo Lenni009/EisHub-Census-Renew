@@ -1,3 +1,18 @@
+@font-face {
+  font-family: 'NMS-Glyphs-Mono';
+  src:
+    local('NMS-Glyphs-Mono'),
+    url('../assets/NMS-Glyphs-Mono.ttf') format('truetype');
+}
+
+:root {
+  --invert: 0;
+}
+
+[data-theme='dark'] {
+  --invert: 100;
+}
+
 .container {
   margin-block-start: 1rem;
   margin-block-end: 5rem;
@@ -6,4 +21,66 @@
 html,
 body {
   scrollbar-gutter: stable;
+  scroll-behavior: smooth;
+}
+
+.title {
+  margin-block-end: 2rem;
+  text-align: center;
+}
+
+.text-bold {
+  font-weight: bold;
+}
+
+.is-danger {
+  background-color: indianred;
+  border: 1px solid firebrick;
+
+  &:focus {
+    --pico-primary-focus: var(--pico-form-element-invalid-border-color);
+  }
+}
+
+.questions label.drop-container {
+  display: flex;
+  gap: 0.5rem;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  border-radius: var(--pico-border-radius);
+  border: 2px dashed;
+  cursor: pointer;
+  background-size: cover;
+  container-type: inline-size;
+  transition:
+    background-color var(--pico-transition),
+    border var(--pico-transition);
+
+  &:hover,
+  &.drag-active {
+    border: 3px solid;
+  }
+
+  .drop-title {
+    text-align: center;
+  }
+
+  input[type='file'] {
+    height: auto;
+    padding: 5px;
+    border-radius: var(--pico-border-radius);
+    border: 1px solid;
+
+    &::file-selector-button {
+      padding: 10px 20px;
+    }
+  }
+}
+
+@container (width > 400px) {
+  input[type='file'] {
+    width: max-content;
+  }
 }

@@ -1,71 +1,69 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import UserTable from './components/UserTable.vue';
-
-const filter = ref<string>('');
-
-const missingWebhook = !import.meta.env.VITE_DISCORD_WEBHOOK;
-
-const tooManyTries = ref(false);
+import { useRequestStore } from './stores/requestStore';
+import { storeToRefs } from 'pinia';
+import { useRouteDataStore } from './stores/routeDataStore';
+import Router from './components/Router.vue';
+import LoadingError from './components/LoadingError.vue';
+import LoadingSpinner from './components/LoadingSpinner.vue';
+import ThemeSwitch from './components/ThemeSwitch.vue';
+import { computed } from 'vue';
+import { useCensusDataStore } from './stores/censusDataStore';
 
 const isEisvanaHost = window.location.host === 'census.eisvana.com';
+
+const requestData = useRequestStore();
+const { requestSent, requestFailed } = storeToRefs(requestData);
+
+const censusDataStore = useCensusDataStore();
+const { censusData } = storeToRefs(censusDataStore);
+
+const routeData = useRouteDataStore();
+const { route, isFormRoute } = storeToRefs(routeData);
+
+const isLoading = computed(() => requestSent.value && !censusData.value.length && !requestFailed.value);
+
+const hasSearchParams = Boolean(window.location.search);
 </script>
 
 <template>
   <header class="header">
     <nav>
-      <a :href="isEisvanaHost ? 'https://eisvana.com' : '..'">&larr; View other pages</a>
+      <ul>
+        <li class="navigation-items">
+          <div>
+            <a :href="isEisvanaHost && !route ? 'https://eisvana.com' : '..'">&larr; Back to main page</a>
+          </div>
+          <div v-if="isFormRoute && hasSearchParams">
+            <a href="./table.html">&larr; Table</a>
+          </div>
+        </li>
+      </ul>
+      <ul>
+        <li>
+          <ThemeSwitch />
+        </li>
+      </ul>
     </nav>
-    <h1 class="title">Eisvana Census Renewal</h1>
   </header>
 
   <main>
-    <p
-      v-if="missingWebhook"
-      class="warning"
-    >
-      No Webhook URL found, no message will be sent!
-    </p>
-    <template v-if="!tooManyTries">
-      <input
-        id="searchBar"
-        name="searchBar"
-        placeholder="Search Name"
-        type="text"
-        v-model="filter"
-      />
-      <UserTable
-        :filter="filter"
-        @exceeded="tooManyTries = true"
-      />
-    </template>
-    <p
-      v-else
-      class="tries-exceeded-error"
-    >
-      You have requested too many renewals. Please contact Lenni on Discord for help.
-    </p>
+    <Suspense>
+      <div>
+        <Router />
+        <LoadingSpinner v-if="isLoading" />
+        <LoadingError v-if="requestFailed" />
+      </div>
+
+      <template #fallback>
+        <LoadingSpinner />
+      </template>
+    </Suspense>
   </main>
 </template>
 
 <style scoped lang="scss">
-.header {
-  margin-block-start: 2rem;
-}
-
-.title {
-  margin-block-end: 2rem;
-  text-align: center;
-}
-
-.warning {
-  background-color: red;
-  color: white;
-  border-radius: var(--pico-border-radius);
-  padding: 0.5rem;
-}
-
-.tries-exceeded-error {
-  text-align: center;
+.navigation-items {
+  display: flex;
+  flex-direction: column;
 }
 </style>
