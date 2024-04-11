@@ -52,7 +52,6 @@ async function sendForm() {
     localStorage.removeItem('newBase');
     localStorage.removeItem('lastUpdated');
     sessionStorage.removeItem('update');
-    window.location.hash = '';
     isSuccess.value = true;
   } catch (e) {
     isFailed.value = true;
@@ -105,6 +104,12 @@ wikiPageDataStore.$subscribe((_, state) => {
           <p v-if="missingPageOneProps.length">Missing Data: {{ missingPageOneProps.join(', ') }}</p>
         </template>
         <template v-if="page === 2">
+          <a
+            class="secondary"
+            href="#"
+            role="button"
+            >Back</a
+          >
           <button
             :aria-busy="isSending"
             :class="{ 'is-danger': isFailed }"
@@ -186,6 +191,8 @@ a:not([href]) {
 
 button.submit-button[type='submit'] {
   width: auto;
+  margin: 0;
+  margin-inline-start: 0.5rem;
 }
 
 .thank-you {
