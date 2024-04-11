@@ -46,7 +46,7 @@ export function updateLocalStorage(requested: Ref<string[]>, tries: Ref<number>,
 }
 
 export function fileReplacer(key: string, value: unknown) {
-  if (value instanceof File) return structuredClone(defaultFileItem);
+  if (key === 'image') return structuredClone(defaultFileItem);
   if (key === 'gallery') return [];
   return value;
 }
