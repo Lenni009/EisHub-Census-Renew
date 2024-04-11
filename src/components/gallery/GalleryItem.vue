@@ -35,8 +35,8 @@ function moveItem(fileItem: FileItem, direction: 'up' | 'down') {
 <template>
   <article class="gallery-item">
     <a
-      class="gallery-media"
       :href="fileItem.url"
+      class="gallery-media"
       target="_blank"
       rel="noopener noreferrer"
     >
