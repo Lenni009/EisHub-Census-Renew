@@ -7,7 +7,7 @@ function assembleBasePage(sectionArray: SectionObject[]) {
     if (!section.body && !standardSections.includes(section.heading.toLowerCase())) return '';
     const heading = index ? `==${section.heading}==` : '';
     const wikiSection = `${heading}
-    ${section.body}`;
+${section.body}`;
 
     return wikiSection.trim();
   });
@@ -100,7 +100,7 @@ function buildBaseGallerySection({ galleryPics }: BasePageFields): SectionObject
   return {
     heading: 'Gallery',
     body: `<gallery>${galleryPics ? '\n' + galleryPics : ''}
-    </gallery>`,
+</gallery>`,
   };
 }
 
