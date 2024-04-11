@@ -10,6 +10,7 @@ import { formWebhook } from '@/variables/env';
 import { escapeName } from './nameEscape';
 import { buildWikiEditLink } from './wikiLinkConstructor';
 import type { DiscordWebhookPayload } from '@/types/discordWebhook';
+import { isNewCitizen } from '@/variables/formMode';
 
 const getExplicitBoolean = (bool: boolean): ExplicitBoolean => (bool ? 'Yes' : 'No');
 
@@ -149,6 +150,8 @@ export async function submitCensus(description: string): Promise<void> {
     delete payload.embeds[0].image;
     delete payload.attachments;
   }
+
+  if (!isNewCitizen) payload.embeds[0].fields = payload.embeds[0].fields.slice(0, -2); // NoSonar the last two items are the timezone fields, which are only needed for new citizens
 
   formDataArray[0].append('payload_json', JSON.stringify(payload));
 
