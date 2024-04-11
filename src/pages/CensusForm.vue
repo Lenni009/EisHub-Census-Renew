@@ -32,7 +32,7 @@ const localStorageKey = isNewCitizen ? 'censusForm' : localStorageKeyIsNotNew;
 onMounted(async () => {
   if (!isUpdatingPage) return;
   await wikiPageDataStore.fetchBaseWikiData();
-  wikiPageDataStore.$subscribe(() => (hasUpdated.value = true));
+  wikiPageDataStore.$subscribe(() => (hasUpdated.value ||= true));
 });
 
 async function sendForm() {
