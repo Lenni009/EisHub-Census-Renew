@@ -8,6 +8,7 @@ import { useFormValidation } from '@/composables/useFormValidation';
 import type { CensusEntry } from '@/types/censusQueryResponse';
 import { buildWikiEditLink } from '@/helpers/wikiLinkConstructor';
 import { delay } from '@/variables/delay';
+import { fileReplacer } from '@/helpers/localStorage';
 
 const { isAllDataValid, allMissingProps, isPageOneValid, missingPageOneProps } = useFormValidation();
 const hash = ref(window.location.hash);
@@ -20,6 +21,7 @@ addEventListener('hashchange', () => (hash.value = window.location.hash));
 
 const page = computed(() => (hash.value === '#2' && isPageOneValid.value ? 2 : 1));
 
+const hasUpdated = ref(false);
 const isSending = ref(false);
 const isFailed = ref(false);
 const successDialog = ref<HTMLDialogElement | null>(null);
@@ -27,9 +29,10 @@ const successDialog = ref<HTMLDialogElement | null>(null);
 const localStorageKeyIsNotNew = isMakingNewPage ? 'newBase' : 'updateBase';
 const localStorageKey = isNewCitizen ? 'censusForm' : localStorageKeyIsNotNew;
 
-onMounted(() => {
+onMounted(async () => {
   if (!isUpdatingPage) return;
-  wikiPageDataStore.fetchBaseWikiData();
+  await wikiPageDataStore.fetchBaseWikiData();
+  wikiPageDataStore.$subscribe(() => (hasUpdated.value = true));
 });
 
 async function sendForm() {
@@ -73,6 +76,12 @@ const buttonText = computed(() => {
   if (isFailed.value) return 'Failed!';
   return 'Submit';
 });
+
+// persist the whole state to the local storage whenever it changes
+wikiPageDataStore.$subscribe((_, state) => {
+  localStorage.setItem(localStorageKey, JSON.stringify(state, fileReplacer));
+  localStorage.setItem('lastUpdated', Date.now().toString());
+});
 </script>
 
 <template>
@@ -81,10 +90,7 @@ const buttonText = computed(() => {
     class="questions"
     @submit.prevent="sendForm"
   >
-    <BaseForm
-      :local-storage-key
-      :page
-    />
+    <BaseForm :page />
 
     <div>
       <template v-if="page === 1">
@@ -102,7 +108,7 @@ const buttonText = computed(() => {
         <button
           :aria-busy="isSending"
           :class="{ 'is-danger': isFailed }"
-          :disabled="!isAllDataValid"
+          :disabled="!isAllDataValid || (isUpdatingPage && !hasUpdated)"
           class="submit-button"
           type="submit"
         >
