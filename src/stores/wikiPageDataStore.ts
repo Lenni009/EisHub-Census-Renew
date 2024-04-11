@@ -142,13 +142,13 @@ export const useWikiPageDataStore = defineStore('wikiPageData', {
     async fetchBaseWikiData() {
       // this function uses async methods, but doesn't await them to improve performance.
       // the individual methods handle the required awaiting on their own.
-      this.handleInfoboxLoading();
-      this.handleGalleryLoading();
+      const promises = [this.handleInfoboxLoading(), this.handleGalleryLoading()];
+      await Promise.all(promises);
     },
 
     async handleInfoboxLoading() {
       const [infobox] = await this.fetchInfobox();
-      this.fetchImageData(infobox.image);
+      const imageDataPromise = this.fetchImageData(infobox.image);
       this.baseData.axes = infobox.axes ?? '';
       this.baseData.glyphs = infobox.glyphs ?? '';
       this.baseData.arena = infobox.arena === 'Yes';
@@ -168,15 +168,25 @@ export const useWikiPageDataStore = defineStore('wikiPageData', {
         infobox.portalglyphs.length === expectedGlyphLength
           ? infobox.portalglyphs
           : parseWikiTemplate(infobox.portalglyphs.toLowerCase(), 'gl/small')[0]['0'].toUpperCase();
+      await imageDataPromise;
     },
 
     async handleGalleryLoading() {
       // same as above, there are multiple async methods here, but only the initial section data is awaited, since the other two depend on it
-      const sectionData = await this.fetchAvailableSectionInfo();
+      const sectionData = this.fetchAvailableSectionInfo();
 
-      const gallerySectionData = sectionData?.pop();
-      if (gallerySectionData) this.fetchGalleryData(gallerySectionData);
-      sectionData?.forEach(this.fetchWikiText);
+      const promises: Promise<void>[] = [];
+
+      // squeezing every last drop of performance by doing any unnecessary stuff first, then awaiting the promise
+      const resolvedSectionData = await sectionData;
+      if (!resolvedSectionData) return;
+
+      const gallerySectionData = resolvedSectionData.pop();
+      if (gallerySectionData) promises.push(this.fetchGalleryData(gallerySectionData));
+      promises.push(...resolvedSectionData.map(this.fetchWikiText));
+
+      // enable other methods to await this function and its sub-functions' completions
+      await Promise.all(promises);
     },
 
     async fetchAvailableSectionInfo() {
