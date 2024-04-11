@@ -205,8 +205,9 @@ export const useWikiPageDataStore = defineStore('wikiPageData', {
 
       const sectionWikitext = await this.fetchSectionWikiText(parseInt(sectionData.index));
 
-      sectionObject.body = sectionWikitext?.split('\n').slice(1).join('\n') ?? '';
-      sectionObject.loading = false;
+      const sectionObjectInData = this.sectionData[index];
+      sectionObjectInData.body = sectionWikitext?.split('\n').slice(1).join('\n') ?? '';
+      sectionObjectInData.loading = false;
     },
 
     async fetchInfobox() {

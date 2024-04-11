@@ -145,7 +145,7 @@ const featureList = reactive([
       >
         {{ item.heading }}
       </p>
-      <LoadingSpinner />
+      <LoadingSpinner v-if="item.loading" />
     </div>
     <p
       v-if="item.explanation"
