@@ -1,5 +1,3 @@
-<script setup lang="ts"></script>
-
 <template>
   <div class="title-group">
     <h1>Eisvana Census</h1>
