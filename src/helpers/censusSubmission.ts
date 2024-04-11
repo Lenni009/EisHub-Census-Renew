@@ -34,14 +34,14 @@ export async function submitCensus(description: string): Promise<void> {
   const compressedFiles: File[] = [];
 
   // compressing one-by-one to avoid weird Firefox issues
-  gallery.forEach(async (item) => {
+  for (const item of gallery) {
     const newFile = constructNewFile(item, baseData.baseName);
     if (!newFile) return;
     const compressedFile = await compressFile(newFile);
     item.file = compressedFile;
     item.filename = compressedFile.name;
     compressedFiles.push(compressedFile);
-  });
+  }
 
   const galleryPicLines = gallery
     .map(({ desc, file, filename }) => (desc ? `${file?.name ?? filename}|${desc}` : file?.name ?? filename))
