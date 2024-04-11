@@ -7,6 +7,7 @@ import { useWikiPageDataStore } from '@/stores/wikiPageDataStore';
 import { useFormValidation } from '@/composables/useFormValidation';
 import type { CensusEntry } from '@/types/censusQueryResponse';
 import { buildWikiEditLink } from '@/helpers/wikiLinkConstructor';
+import { delay } from '@/variables/delay';
 
 const { isAllDataValid, allMissingProps, isPageOneValid, missingPageOneProps } = useFormValidation();
 const hash = ref(window.location.hash);
@@ -20,6 +21,7 @@ addEventListener('hashchange', () => (hash.value = window.location.hash));
 const page = computed(() => (hash.value === '#2' && isPageOneValid.value ? 2 : 1));
 
 const isSending = ref(false);
+const isFailed = ref(false);
 const successDialog = ref<HTMLDialogElement | null>(null);
 
 const localStorageKeyIsNotNew = isMakingNewPage ? 'newBase' : 'updateBase';
@@ -39,16 +41,25 @@ async function sendForm() {
     ? `New Page for existing citizen. Old page: ${buildWikiEditLink(oldBaseName)}`
     : 'Updated Base Page';
   const message = isNewCitizen ? 'New Citizen' : messageExistingCitizen;
-  await submitCensus(message);
-  wikiPageDataStore.resetStore();
-  localStorage.removeItem('censusForm');
-  localStorage.removeItem('updateBase');
-  localStorage.removeItem('newBase');
-  localStorage.removeItem('lastUpdated');
-  sessionStorage.removeItem('update');
-  window.location.hash = '';
-  isSending.value = false;
-  successDialog.value?.showModal();
+  try {
+    await submitCensus(message);
+    wikiPageDataStore.resetStore();
+    localStorage.removeItem('censusForm');
+    localStorage.removeItem('updateBase');
+    localStorage.removeItem('newBase');
+    localStorage.removeItem('lastUpdated');
+    sessionStorage.removeItem('update');
+    window.location.hash = '';
+    successDialog.value?.showModal();
+  } catch (e) {
+    isFailed.value = true;
+    console.error('Something went wrong:', e);
+  } finally {
+    isSending.value = false;
+    setTimeout(() => {
+      isFailed.value = false;
+    }, delay);
+  }
 }
 
 const closeModal = () => successDialog.value?.close();
@@ -56,6 +67,12 @@ const closeModal = () => successDialog.value?.close();
 function scrollToTop() {
   if (isPageOneValid.value) scrollTo(0, 0);
 }
+
+const buttonText = computed(() => {
+  if (isSending.value) return '';
+  if (isFailed.value) return 'Failed!';
+  return 'Submit';
+});
 </script>
 
 <template>
@@ -84,9 +101,12 @@ function scrollToTop() {
       <template v-if="page === 2">
         <button
           :aria-busy="isSending"
+          :class="{ 'is-danger': isFailed }"
           :disabled="!isAllDataValid"
+          class="submit-button"
+          type="submit"
         >
-          {{ isSending ? '' : 'Submit' }}
+          {{ buttonText }}
         </button>
         <p v-if="allMissingProps.length">Missing Data: {{ allMissingProps.join(', ') }}</p>
       </template>
@@ -165,5 +185,9 @@ a:not([href]) {
     font-size: smaller;
     margin: 0;
   }
+}
+
+button.submit-button[type='submit'] {
+  width: auto;
 }
 </style>

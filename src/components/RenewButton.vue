@@ -7,6 +7,7 @@ import { renewCensus } from '@/helpers/renewMessage';
 import { renewWebhook } from '@/variables/env';
 import { useRenewDataStore } from '@/stores/renewDataStore';
 import { storeToRefs } from 'pinia';
+import { delay } from '@/variables/delay';
 
 const props = defineProps<{
   userObject: CensusEntry;
@@ -50,7 +51,7 @@ async function requestRenewal() {
     setTimeout(() => {
       isSuccess.value = false;
       isFailed.value = false;
-    }, 1500); // NoSonar wait 1.5 seconds
+    }, delay);
   }
 }
 
