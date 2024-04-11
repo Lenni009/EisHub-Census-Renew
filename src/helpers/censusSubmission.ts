@@ -98,8 +98,6 @@ export async function submitCensus(description: string): Promise<void> {
     sections: sectionData,
   });
 
-  console.log('built page');
-
   const wikiTextFile = new File([wikipageText], `${baseData.baseName}.txt`, { type: 'text/plain' });
 
   // Discord's file limit is 10, so we make sure to only send 10 files at once
