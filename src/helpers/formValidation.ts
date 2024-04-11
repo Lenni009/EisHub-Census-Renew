@@ -1,7 +1,7 @@
 import { discordValidation } from '@/variables/formValidation';
 
 export function isValidHttpUrl(string: string) {
-  if (!string) return true;
+  if (!string) return false;
   try {
     const url = new URL(string);
     return url.protocol === 'http:' || url.protocol === 'https:';

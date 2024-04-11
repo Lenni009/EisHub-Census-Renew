@@ -95,11 +95,18 @@ const sessionStorageDataJson: CensusEntry = JSON.parse(sessionStorageData ?? '{}
 
 // if sessionstorage has our data, we use that to populate the store
 if (!isNewCitizen && sessionStorageData) {
+  const redditHosts = ['reddit.com', 'www.reddit.com', 'old.reddit.com'];
   localStorageDataJson.playerData.arrival = new Date(sessionStorageDataJson.CensusArrival).toISOString().split('T')[0];
   localStorageDataJson.playerData.discord = sessionStorageDataJson.CensusDiscord;
-  localStorageDataJson.playerData.reddit = sessionStorageDataJson.CensusReddit?.includes('reddit.com')
-    ? sessionStorageDataJson.CensusReddit.split(' ')[1].slice(0, -1)
-    : '';
+
+  const assumeRedditLink = (sessionStorageDataJson.CensusReddit ?? '').slice(1, -1).split(' ')[0];
+
+  const redditHost = isValidHttpUrl(assumeRedditLink ?? '') ? new URL(assumeRedditLink).host : '';
+  const redditLinkIsReddit = redditHosts.includes(redditHost);
+  localStorageDataJson.playerData.reddit =
+    sessionStorageDataJson.CensusReddit && redditLinkIsReddit
+      ? sessionStorageDataJson.CensusReddit.split(' ')[1].slice(0, -1)
+      : '';
   localStorageDataJson.playerData.player = sessionStorageDataJson.CensusPlayer;
   localStorageDataJson.playerData.friend = sessionStorageDataJson.CensusFriend ?? '';
   localStorageDataJson.playerData.renewals = sessionStorageDataJson.renewals;
@@ -112,7 +119,8 @@ if (!isNewCitizen && sessionStorageData) {
   const censusReddit = sessionStorageDataJson.CensusReddit ?? '';
   const censusRedditLink = censusReddit.startsWith('[') ? censusReddit.slice(1, -1).split(' ')[0] : censusReddit;
   const isCensusRedditUrl = isValidHttpUrl(censusRedditLink);
-  const isRedditUrl = isCensusRedditUrl && censusReddit.includes('reddit.com');
+  const censusRedditUrlHost = isCensusRedditUrl ? new URL(censusRedditLink).host : '';
+  const isRedditUrl = isCensusRedditUrl && redditHosts.includes(censusRedditUrlHost);
 
   const censusRedditUrlOrEmpty = isCensusRedditUrl ? censusRedditLink : '';
   localStorageDataJson.playerData.social = isRedditUrl ? '' : censusRedditUrlOrEmpty;
@@ -130,7 +138,7 @@ export const useWikiPageDataStore = defineStore('wikiPageData', {
   getters: {
     isDiscordValid: (state) => validateDiscord(state.playerData.discord),
     isRedditValid: (state) => validateReddit(state.playerData.reddit),
-    isSocialValid: (state) => isValidHttpUrl(state.playerData.social),
+    isSocialValid: (state) => !state.playerData.social || isValidHttpUrl(state.playerData.social),
     isNameValid: (state) => validatePlayerName(state.playerData.player),
     isFriendValid: (state) => validateFriendCode(state.playerData.friend),
     isAxesValid: (state) => validateCoords(state.baseData.axes),
