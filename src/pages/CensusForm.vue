@@ -89,7 +89,7 @@ wikiPageDataStore.$subscribe((_, state) => {
     class="questions"
     @submit.prevent="sendForm"
   >
-    <template v-if="!isSuccess">
+    <template v-if="!isSuccess || !isNewCitizen">
       <BaseForm :page />
 
       <div>
@@ -119,7 +119,7 @@ wikiPageDataStore.$subscribe((_, state) => {
       </div>
     </template>
 
-    <article v-else-if="isNewCitizen">
+    <article v-else>
       <header>
         <p class="text-bold thank-you">Thank you for registering!</p>
       </header>
