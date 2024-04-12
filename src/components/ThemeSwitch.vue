@@ -8,8 +8,6 @@ function switchTheme(theme: string | undefined = undefined) {
   const computedNewTheme = currentTheme === 'dark' ? 'light' : 'dark';
   const newTheme = theme ?? computedNewTheme;
 
-  // Add a delay before changing the theme
-  setTimeout(() => {
     document.documentElement.dataset.theme = newTheme;
     // Add the transition class after the theme has changed
     document.documentElement.classList.add('theme-transition');
@@ -17,7 +15,6 @@ function switchTheme(theme: string | undefined = undefined) {
     setTimeout(() => {
       document.documentElement.classList.remove('theme-transition');
     }, 500); // 500ms is the duration of the transition defined in CSS
-  }, 10);
 }
 </script>
 

@@ -201,7 +201,6 @@ article {
       transition: background-color var(--pico-transition), border-color var(--pico-transition);
     }
     input {
-      text-wrap: balance;
       transition: background-color var(--pico-transition), border-color var(--pico-transition);
     }
   }
