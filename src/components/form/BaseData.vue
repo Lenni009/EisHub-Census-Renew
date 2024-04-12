@@ -167,7 +167,7 @@ const featureList = reactive([
   </article>
 </template>
 
-<style lang="scss">
+<style scoped lang="scss">
 .async-section-title-wrapper {
   display: flex;
   gap: 0.5rem;
