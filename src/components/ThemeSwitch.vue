@@ -17,7 +17,7 @@ function switchTheme(theme: string | undefined = undefined) {
     setTimeout(() => {
       document.documentElement.classList.remove('theme-transition');
     }, 500); // 500ms is the duration of the transition defined in CSS
-  }, 500);
+  }, 10);
 }
 </script>
 
