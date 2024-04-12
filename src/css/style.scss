@@ -18,10 +18,14 @@
   margin-block-end: 5rem;
 }
 
-html,
-body {
+html {
   scrollbar-gutter: stable;
-  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+   scroll-behavior: smooth;
+  }
 }
 
 .title {
