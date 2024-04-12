@@ -24,21 +24,21 @@ html {
 
 @media (prefers-reduced-motion: no-preference) {
   html {
-   scroll-behavior: smooth;
+    scroll-behavior: smooth;
   }
-article,
-header,
-footer,
-hr,
-p,
-h1,
-html {
-  transition:
-    background-color var(--pico-transition),
-    border-color var(--pico-transition),
-    color var(--pico-transition),
-    box-shadow var(--pico-transition);
-}
+  article,
+  header,
+  footer,
+  hr,
+  p,
+  h1,
+  html {
+    transition:
+      background-color var(--pico-transition),
+      border-color var(--pico-transition),
+      color var(--pico-transition),
+      box-shadow var(--pico-transition);
+  }
 }
 
 .title {
@@ -58,5 +58,3 @@ html {
     --pico-primary-focus: var(--pico-form-element-invalid-border-color);
   }
 }
-
-
