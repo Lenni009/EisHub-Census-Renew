@@ -45,14 +45,17 @@
     justify-content: space-between;
     width: 30%;
     min-width: min(100%, 300px);
+    transition: background-color var(--pico-transition), border-color var(--pico-transition);
 
     header,
     footer {
       text-align: center;
+      transition: background-color var(--pico-transition), border-color var(--pico-transition);
     }
 
     p {
       text-wrap: balance;
+      transition: background-color var(--pico-transition), border-color var(--pico-transition);
     }
   }
 }
