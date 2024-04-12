@@ -30,6 +30,19 @@ html {
   html {
    scroll-behavior: smooth;
   }
+article,
+header,
+footer,
+hr,
+p,
+h1,
+html {
+  transition:
+    background-color var(--pico-transition),
+    border-color var(--pico-transition),
+    color var(--pico-transition),
+    box-shadow var(--pico-transition);
+}
 }
 
 .title {
@@ -50,16 +63,4 @@ html {
   }
 }
 
-article,
-header,
-footer,
-hr,
-p,
-h1,
-html {
-  transition:
-    background-color var(--pico-transition),
-    border-color var(--pico-transition),
-    color var(--pico-transition),
-    box-shadow var(--pico-transition);
-}
+
