@@ -13,8 +13,8 @@ function switchTheme(theme: string | undefined = undefined) {
 
 <template>
   <button
-    role="button"
     class="themeswitcher"
+    type="button"
     @click="switchTheme()"
   >
     Switch Theme

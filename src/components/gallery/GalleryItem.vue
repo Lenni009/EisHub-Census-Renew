@@ -37,8 +37,8 @@ function moveItem(fileItem: FileItem, direction: 'up' | 'down') {
     <a
       :href="fileItem.url"
       class="gallery-media"
-      target="_blank"
       rel="noopener noreferrer"
+      target="_blank"
     >
       <img
         :src="fileItem.url"
@@ -51,9 +51,9 @@ function moveItem(fileItem: FileItem, direction: 'up' | 'down') {
       </p>
       <div>
         <input
-          type="text"
-          placeholder="Description"
           v-model.trim="fileItem.desc"
+          placeholder="Description"
+          type="text"
         />
       </div>
     </div>
@@ -61,38 +61,41 @@ function moveItem(fileItem: FileItem, direction: 'up' | 'down') {
       <button
         class="delete-icon is-clickable"
         title="Remove picture from gallery"
+        type="button"
         @click="removeItem(fileItem)"
       >
         ❌
       </button>
       <img
+        alt="Move via drag'n'drop"
         class="handle"
         src="../../assets/arrow.svg"
         title="Move picture up or down"
-        alt="Move via drag'n'drop"
       />
       <button
         class="button move-button"
-        title="Move up"
         data-move="up"
+        title="Move up"
+        type="button"
         @click="moveItem(fileItem, 'up')"
       >
         <svg
-          width="36"
           height="36"
+          width="36"
         >
           <path d="M2 25h32L18 9 2 25Z"></path>
         </svg>
       </button>
       <button
         class="button move-button"
-        title="Move down"
         data-move="down"
+        title="Move down"
+        type="button"
         @click="moveItem(fileItem, 'down')"
       >
         <svg
-          width="36"
           height="36"
+          width="36"
         >
           <path d="M2 11h32L18 27 2 11Z"></path>
         </svg>

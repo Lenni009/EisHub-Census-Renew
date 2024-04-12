@@ -60,3 +60,48 @@ function onDrop(e: DragEvent) {
     {{ image.file?.name }} is already in the infobox and therefore wasn't added to the gallery.
   </div>
 </template>
+
+<style scoped lang="scss">
+.drop-container {
+  display: flex;
+  gap: 0.5rem;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  border-radius: var(--pico-border-radius);
+  border: 2px dashed;
+  cursor: pointer;
+  background-size: cover;
+  container-type: inline-size;
+  transition:
+    background-color var(--pico-transition),
+    border var(--pico-transition);
+
+  &:hover,
+  &.drag-active {
+    border: 3px solid;
+  }
+
+  .drop-title {
+    text-align: center;
+  }
+
+  input[type='file'] {
+    height: auto;
+    padding: 5px;
+    border-radius: var(--pico-border-radius);
+    border: 1px solid;
+
+    &::file-selector-button {
+      padding: 10px 20px;
+    }
+  }
+}
+
+@container (width > 400px) {
+  input[type='file'] {
+    width: max-content;
+  }
+}
+</style>
