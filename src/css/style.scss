@@ -49,3 +49,17 @@ html {
     --pico-primary-focus: var(--pico-form-element-invalid-border-color);
   }
 }
+
+article,
+header,
+footer,
+hr,
+p,
+h1,
+html {
+  transition:
+    background-color var(--pico-transition),
+    border-color var(--pico-transition),
+    color var(--pico-transition),
+    box-shadow var(--pico-transition);
+}
