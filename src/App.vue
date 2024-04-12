@@ -65,5 +65,9 @@ const hasSearchParams = Boolean(window.location.search);
 .navigation-items {
   display: flex;
   flex-direction: column;
+
+  &::before {
+    content: unset;
+  }
 }
 </style>
