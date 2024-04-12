@@ -104,19 +104,6 @@ const tooltipText = computed(() => {
   justify-content: space-between;
   max-width: 450px;
   gap: 0.75rem;
-  min-width: min(100%, 300px);
-  transition: background-color var(--pico-transition), border-color var(--pico-transition);
-
-  header,
-  footer {
-    text-align: center;
-    transition: background-color var(--pico-transition), border-color var(--pico-transition);
-  }
-
-  p {
-    text-wrap: balance;
-    transition: background-color var(--pico-transition), border-color var(--pico-transition);
-  }
 
   .table-items {
     display: flex;

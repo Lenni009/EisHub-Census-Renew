@@ -184,24 +184,4 @@ const featureList = reactive([
     gap: 0.5rem;
   }
 }
-
-article {
-    justify-content: space-between;
-    min-width: min(100%, 300px);
-    transition: background-color var(--pico-transition), border-color var(--pico-transition);
-
-    header,
-    footer {
-      text-align: center;
-      transition: background-color var(--pico-transition), border-color var(--pico-transition);
-    }
-
-    p {
-      text-wrap: balance;
-      transition: background-color var(--pico-transition), border-color var(--pico-transition);
-    }
-    input {
-      transition: background-color var(--pico-transition), border-color var(--pico-transition);
-    }
-  }
 </style>
