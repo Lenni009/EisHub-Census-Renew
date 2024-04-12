@@ -151,4 +151,3 @@ const tooltipText = computed(() => {
   }
 }
 </style>
-@/variables/date
