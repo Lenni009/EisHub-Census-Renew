@@ -89,37 +89,41 @@ const closeModal = () => {
       </div>
     </div>
 
-    <div class="action-buttons">
-      <div :data-tooltip="tooltipText">
-        <RenewButton
-          :user-object="entry"
-          button-text="Renew"
-          button-text-failed="Failed!"
-          button-text-success="Renewed!"
-        />
-      </div>
-      <a
-        :href="`./form.html?update=${encodePlayerName(entry.CensusPlayer)}`"
-        data-tooltip="Update Census Base"
-        role="button"
-        @click="storeData"
-        >Update</a
-      >
-      <button
-        data-tooltip="Change Census Base"
-        type="button"
-        @click="openModal"
-      >
-        Change
-      </button>
-      <a
-        :href="`./form.html?new=${encodePlayerName(entry.CensusPlayer)}`"
-        data-tooltip="New Census Base"
-        role="button"
-        @click="storeData"
-        >New</a
-      >
-    </div>
+    <details>
+      <summary>Actions</summary>
+      <article class="action-buttons">
+        <div :data-tooltip="tooltipText">
+          <RenewButton
+            :user-object="entry"
+            button-text="Renew"
+            button-text-failed="Failed!"
+            button-text-success="Renewed!"
+          />
+        </div>
+        <a
+          :href="`./form.html?update=${encodePlayerName(entry.CensusPlayer)}`"
+          data-tooltip="Update Census Base"
+          role="button"
+          @click="storeData"
+          >Update</a
+        >
+        <button
+          :disabled="modalShown"
+          data-tooltip="Change Census Base"
+          type="button"
+          @click="openModal"
+        >
+          Change
+        </button>
+        <a
+          :href="`./form.html?new=${encodePlayerName(entry.CensusPlayer)}`"
+          data-tooltip="New Census Base"
+          role="button"
+          @click="storeData"
+          >New</a
+        >
+      </article>
+    </details>
   </article>
   <dialog
     ref="changeBaseModal"
@@ -165,22 +169,34 @@ const closeModal = () => {
     }
   }
 
-  .action-buttons {
-    display: grid;
-    grid-template-columns: repeat(2, auto);
-    gap: 0.5rem;
+  details {
+    container-type: inline-size;
 
-    > * {
+    &,
+    summary {
       margin: 0;
-      width: 100%;
-      flex-grow: 1;
     }
 
-    [data-tooltip] {
-      border: none;
+    .action-buttons {
+      position: absolute;
+      display: grid;
+      grid-template-columns: repeat(2, auto);
+      gap: 0.5rem;
+      margin-block-start: 0.25rem;
+      width: 100cqw;
 
-      &:has([disabled]) {
-        cursor: not-allowed;
+      > * {
+        margin: 0;
+        width: 100%;
+        flex-grow: 1;
+      }
+
+      [data-tooltip] {
+        border: none;
+
+        &:has([disabled]) {
+          cursor: not-allowed;
+        }
       }
     }
   }
