@@ -105,11 +105,19 @@ const getBaseQueryObject = (baseName: string): RawCensusQueryObject => ({
   where: `Name="${baseName}"`,
 });
 
+const getPlayerBasesQueryObject = (player: string, civilized: string): RawCensusQueryObject => ({
+  ...getCargoQueryRawObject(),
+  fields: ['Name'],
+  where: `CensusPlayer="${player}" AND Civilized="${civilized}"`,
+});
+
 // exported functions to get cargo query URLs
 export const getCensusQueryDataUrl = (civilized: string, offset: number) =>
   buildQueryUrl(getCensusQueryDataObject(civilized, offset));
 export const getCensusQueryCountUrl = (civilized: string) => buildQueryUrl(getCensusQueryCountObject(civilized));
 export const getBaseQueryUrl = (baseName: string) => buildQueryUrl(getBaseQueryObject(baseName));
+export const getPlayerBasesQueryUrl = (player: string, civilized: string) =>
+  buildQueryUrl(getPlayerBasesQueryObject(player, civilized));
 
 // check whether user exists on the wiki
 const getUserQueryObj = (user: string): UserQueryObject => ({

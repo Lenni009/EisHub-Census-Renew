@@ -3,6 +3,7 @@ import { removeDuplicates } from './array';
 import { currentYearString } from '@/variables/dateTime';
 import type { LocalStorageData } from '@/types/localStorage';
 import { defaultFileItem } from '@/variables/imageData';
+import type { CensusEntry } from '@/types/censusQueryResponse';
 
 // local storage keys are the years
 // local storage values are objects with the keys "requested" and "amount"
@@ -43,6 +44,10 @@ export function updateLocalStorage(requested: Ref<string[]>, tries: Ref<number>,
 
   const localStorageJson = JSON.stringify(localStorageObj);
   localStorage.setItem(currentYearString, localStorageJson);
+}
+
+export function storeEntry(items: CensusEntry) {
+  sessionStorage.setItem('update', JSON.stringify(items));
 }
 
 export function fileReplacer(key: string, value: unknown) {

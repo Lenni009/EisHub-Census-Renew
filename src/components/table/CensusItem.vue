@@ -8,6 +8,7 @@ import ChangeCensusBase from './ChangeCensusBase.vue';
 import { currentYearString } from '@/variables/dateTime';
 import { useRenewDataStore } from '@/stores/renewDataStore';
 import { storeToRefs } from 'pinia';
+import { storeEntry } from '@/helpers/localStorage';
 
 const props = defineProps<{
   entry: CensusEntry;
@@ -18,10 +19,6 @@ const modalShown = ref(false);
 
 const renewDataStore = useRenewDataStore();
 const { triesExceeded } = storeToRefs(renewDataStore);
-
-function storeData() {
-  sessionStorage.setItem('update', JSON.stringify(props.entry));
-}
 
 const tooltipText = computed(() => {
   if (props.entry.renewed) return 'Already renewed';
@@ -40,6 +37,9 @@ const closeModal = () => {
   changeBaseModal.value?.close();
   modalShown.value = false;
 };
+
+const playerBases = ref<string[]>();
+const setPlayerBases = (items: string[]) => (playerBases.value = items);
 </script>
 
 <template>
@@ -106,14 +106,14 @@ const closeModal = () => {
           :href="`./form.html?update=${encodePlayerName(entry.CensusPlayer)}`"
           data-tooltip="Update Census Base"
           role="button"
-          @click="storeData"
+          @click="storeEntry(entry)"
           >Update</a
         >
         <a
           :href="`./form.html?new=${encodePlayerName(entry.CensusPlayer)}`"
           data-tooltip="New Census Base"
           role="button"
-          @click="storeData"
+          @click="storeEntry(entry)"
           >New</a
         >
       </article>
@@ -125,8 +125,10 @@ const closeModal = () => {
   >
     <ChangeCensusBase
       v-if="modalShown"
-      :player="entry.CensusPlayer"
+      :entry
+      :items="playerBases"
       @close="closeModal"
+      @ready="setPlayerBases"
     />
   </dialog>
 </template>

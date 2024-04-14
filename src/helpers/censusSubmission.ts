@@ -11,6 +11,7 @@ import { escapeName } from './nameEscape';
 import { buildWikiEditLink } from './wikiLinkConstructor';
 import type { DiscordWebhookPayload } from '@/types/discordWebhook';
 import { isNewCitizen } from '@/variables/formMode';
+import type { CensusEntry } from '@/types/censusQueryResponse';
 
 const getExplicitBoolean = (bool: boolean): ExplicitBoolean => (bool ? 'Yes' : 'No');
 
@@ -125,7 +126,7 @@ export async function submitCensus(description: string): Promise<void> {
           },
           {
             name: 'Wikipage',
-            value: buildWikiEditLink(baseData.baseName).toString(),
+            value: buildWikiEditLink(baseData.baseName),
           },
           {
             name: 'Timezone',
@@ -165,6 +166,39 @@ function constructFileFormData(fileArray: File[]): FormData {
   fileArray.forEach((file, index) => formData.append(`files[${index}]`, file));
 
   return formData;
+}
+
+export async function sendBaseChangeRequest(entry: CensusEntry, newBase: string) {
+  const formData = new FormData();
+  formData.append(
+    'payload_json',
+    JSON.stringify({
+      allowed_mentions: {
+        parse: [],
+      },
+      embeds: [
+        {
+          title: 'Census Base Change',
+          fields: [
+            {
+              name: 'Player',
+              value: entry.CensusPlayer,
+            },
+            {
+              name: 'Old Base',
+              value: buildWikiEditLink(entry.Name),
+            },
+            {
+              name: 'New Base',
+              value: buildWikiEditLink(newBase),
+            },
+          ],
+        },
+      ],
+    })
+  );
+
+  sendFormData(formData);
 }
 
 async function sendFormData(formData: FormData) {
