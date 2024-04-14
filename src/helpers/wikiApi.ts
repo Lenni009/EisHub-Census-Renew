@@ -105,10 +105,12 @@ const getBaseQueryObject = (baseName: string): RawCensusQueryObject => ({
   where: `Name="${baseName}"`,
 });
 
+// TODO: type this properly
 const getPlayerBasesQueryObject = (player: string, civilized: string): RawCensusQueryObject => ({
   ...getCargoQueryRawObject(),
   fields: ['Name'],
   where: `CensusPlayer="${player}" AND Civilized="${civilized}"`,
+  order_by: 'Bases.CensusShow DESC',
 });
 
 // exported functions to get cargo query URLs
