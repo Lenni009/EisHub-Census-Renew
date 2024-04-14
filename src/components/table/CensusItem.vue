@@ -38,6 +38,8 @@ const ChangeCensusBase = defineAsyncComponent({
 });
 
 const openModal = () => {
+  const activeElement = document.activeElement;
+  if (activeElement instanceof HTMLElement) activeElement.blur();
   modalShown.value = true;
   changeBaseModal.value?.showModal();
 };
@@ -90,7 +92,7 @@ const closeModal = () => {
     </div>
 
     <details>
-      <summary>Actions</summary>
+      <summary role="button">Actions</summary>
       <article class="action-buttons">
         <div :data-tooltip="tooltipText">
           <RenewButton
@@ -101,7 +103,6 @@ const closeModal = () => {
           />
         </div>
         <button
-          :disabled="modalShown"
           data-tooltip="Change Census Base"
           type="button"
           @click="openModal"
