@@ -2,15 +2,20 @@
 import type { CensusEntry } from '@/types/censusQueryResponse';
 import { encodePlayerName } from '@/helpers/nameTranscode';
 import LinkItem from './LinkItem.vue';
-import { computed } from 'vue';
+import { computed, defineAsyncComponent, ref } from 'vue';
 import RenewButton from '../RenewButton.vue';
 import { currentYearString } from '@/variables/dateTime';
 import { useRenewDataStore } from '@/stores/renewDataStore';
 import { storeToRefs } from 'pinia';
+import LoadingSpinner from '../LoadingSpinner.vue';
+import LoadingError from '../LoadingError.vue';
 
 const props = defineProps<{
   entry: CensusEntry;
 }>();
+
+const changeBaseModal = ref<HTMLDialogElement | null>(null);
+const modalShown = ref(false);
 
 const renewDataStore = useRenewDataStore();
 const { triesExceeded } = storeToRefs(renewDataStore);
@@ -25,6 +30,21 @@ const tooltipText = computed(() => {
   if (triesExceeded.value) return 'Too Many Requests';
   return `Request Renewal for ${currentYearString}`;
 });
+
+const ChangeCensusBase = defineAsyncComponent({
+  loader: () => import('./ChangeCensusBase.vue'),
+  loadingComponent: LoadingSpinner,
+  errorComponent: LoadingError,
+});
+
+const openModal = () => {
+  modalShown.value = true;
+  changeBaseModal.value?.showModal();
+};
+const closeModal = () => {
+  changeBaseModal.value?.close();
+  modalShown.value = false;
+};
 </script>
 
 <template>
@@ -85,6 +105,13 @@ const tooltipText = computed(() => {
         @click="storeData"
         >Update</a
       >
+      <button
+        data-tooltip="Change Census Base"
+        type="button"
+        @click="openModal"
+      >
+        Change
+      </button>
       <a
         :href="`./form.html?new=${encodePlayerName(entry.CensusPlayer)}`"
         data-tooltip="New Census Base"
@@ -94,6 +121,16 @@ const tooltipText = computed(() => {
       >
     </div>
   </article>
+  <dialog
+    ref="changeBaseModal"
+    @click.self="closeModal"
+  >
+    <ChangeCensusBase
+      v-if="modalShown"
+      :player="entry.CensusPlayer"
+      @close="closeModal"
+    />
+  </dialog>
 </template>
 
 <style scoped lang="scss">
@@ -109,6 +146,7 @@ const tooltipText = computed(() => {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem 1rem;
+    margin-block-end: auto;
 
     & > * {
       flex-grow: 1;
@@ -128,9 +166,15 @@ const tooltipText = computed(() => {
   }
 
   .action-buttons {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(2, auto);
     gap: 0.5rem;
-    justify-content: space-around;
+
+    > * {
+      margin: 0;
+      width: 100%;
+      flex-grow: 1;
+    }
 
     [data-tooltip] {
       border: none;

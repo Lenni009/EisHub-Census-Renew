@@ -155,10 +155,6 @@ a:not([href]) {
   max-width: 800px;
   margin-inline: auto;
 
-  article {
-    container-type: inline-size;
-  }
-
   label {
     display: flex;
     align-items: end;

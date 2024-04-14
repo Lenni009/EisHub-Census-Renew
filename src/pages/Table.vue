@@ -100,12 +100,12 @@ const filteredEntries = computed(() => currentRevisionEntries.value.filter(filte
       margin: 0;
     }
   }
-}
 
-.census-items {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
+  .census-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
 }
 
 .v-enter-active {
