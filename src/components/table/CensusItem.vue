@@ -100,13 +100,6 @@ const closeModal = () => {
             button-text-success="Renewed!"
           />
         </div>
-        <a
-          :href="`./form.html?update=${encodePlayerName(entry.CensusPlayer)}`"
-          data-tooltip="Update Census Base"
-          role="button"
-          @click="storeData"
-          >Update</a
-        >
         <button
           :disabled="modalShown"
           data-tooltip="Change Census Base"
@@ -115,6 +108,13 @@ const closeModal = () => {
         >
           Change
         </button>
+        <a
+          :href="`./form.html?update=${encodePlayerName(entry.CensusPlayer)}`"
+          data-tooltip="Update Census Base"
+          role="button"
+          @click="storeData"
+          >Update</a
+        >
         <a
           :href="`./form.html?new=${encodePlayerName(entry.CensusPlayer)}`"
           data-tooltip="New Census Base"
