@@ -180,9 +180,9 @@ const closeModal = () => {
     .action-buttons {
       position: absolute;
       display: grid;
-      grid-template-columns: repeat(2, auto);
+      grid-template-columns: repeat(auto-fill, minmax(max(45%, 100px), 1fr));
       gap: 0.5rem;
-      margin-block-start: 0.25rem;
+      margin-block-start: 0.6rem;
       width: 100cqw;
 
       > * {
