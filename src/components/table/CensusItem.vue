@@ -2,13 +2,12 @@
 import type { CensusEntry } from '@/types/censusQueryResponse';
 import { encodePlayerName } from '@/helpers/nameTranscode';
 import LinkItem from './LinkItem.vue';
-import { computed, defineAsyncComponent, ref } from 'vue';
+import { computed, ref } from 'vue';
 import RenewButton from '../RenewButton.vue';
+import ChangeCensusBase from './ChangeCensusBase.vue';
 import { currentYearString } from '@/variables/dateTime';
 import { useRenewDataStore } from '@/stores/renewDataStore';
 import { storeToRefs } from 'pinia';
-import LoadingSpinner from '../LoadingSpinner.vue';
-import LoadingError from '../LoadingError.vue';
 
 const props = defineProps<{
   entry: CensusEntry;
@@ -29,12 +28,6 @@ const tooltipText = computed(() => {
   if (props.entry.renewRequested) return 'Renewal Requested';
   if (triesExceeded.value) return 'Too Many Requests';
   return `Request Renewal for ${currentYearString}`;
-});
-
-const ChangeCensusBase = defineAsyncComponent({
-  loader: () => import('./ChangeCensusBase.vue'),
-  loadingComponent: LoadingSpinner,
-  errorComponent: LoadingError,
 });
 
 const openModal = () => {
