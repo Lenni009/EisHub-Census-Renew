@@ -17,7 +17,7 @@ interface RouterObj {
 const router: Record<string, RouterObj> = {
   form: { component: 'CensusForm', requiresData: false },
   renew: { component: 'Renew', requiresData: true },
-  table: { component: 'Table', requiresData: true },
+  table: { component: 'CensusTable', requiresData: true },
   index: { component: 'Home', requiresData: false },
 };
 
