@@ -168,7 +168,7 @@ function constructFileFormData(fileArray: File[]): FormData {
   return formData;
 }
 
-export async function sendBaseChangeRequest(entry: CensusEntry, newBase: string) {
+export async function sendBaseChangeRequest(entry: CensusEntry, newBase: string, reason: string = 'No reason given') {
   const formData = new FormData();
   formData.append(
     'payload_json',
@@ -191,6 +191,10 @@ export async function sendBaseChangeRequest(entry: CensusEntry, newBase: string)
             {
               name: 'New Base',
               value: buildWikiEditLink(newBase),
+            },
+            {
+              name: 'Reason',
+              value: reason,
             },
           ],
         },

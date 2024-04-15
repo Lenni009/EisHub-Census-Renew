@@ -19,8 +19,10 @@ const props = defineProps<{
 const activeBase = computed(() => props.entry.Name);
 
 const items = ref<string[]>(props.items ?? []);
-const selectedBase = ref(activeBase.value);
 const isError = ref(false);
+
+const selectedBase = ref(activeBase.value);
+const reason = ref('');
 
 const emit = defineEmits<{
   close: [];
@@ -46,7 +48,7 @@ onMounted(async () => {
 
 function submit() {
   if (selectedBase.value === activeBase.value) return;
-  sendBaseChangeRequest(props.entry, selectedBase.value);
+  sendBaseChangeRequest(props.entry, selectedBase.value, reason.value);
 }
 </script>
 
@@ -65,31 +67,39 @@ function submit() {
         >Create New Base</a
       >
     </div>
-    <div
-      v-else-if="items.length"
-      v-for="item in items"
-      class="base-item"
-    >
-      <label
-        :for="item"
-        class="base-selector"
+    <template v-else-if="items.length">
+      <div
+        v-for="item in items"
+        class="base-item"
       >
-        <input
-          v-model="selectedBase"
-          :id="item"
-          :value="item"
-          name="bases"
-          type="radio"
-        />
-        <span>{{ item }}</span>
-      </label>
-      <a
-        :href="buildWikiPageLink(item)"
-        rel="noopener noreferrer"
-        target="_blank"
-        >View Wiki Page</a
-      >
-    </div>
+        <label
+          :for="item"
+          class="base-selector"
+        >
+          <input
+            v-model="selectedBase"
+            :id="item"
+            :value="item"
+            name="bases"
+            type="radio"
+          />
+          <span>{{ item }}</span>
+        </label>
+        <a
+          :href="buildWikiPageLink(item)"
+          rel="noopener noreferrer"
+          target="_blank"
+          >View Wiki Page</a
+        >
+      </div>
+      <input
+        v-model="reason"
+        aria-label="Reason"
+        class="reason-input"
+        placeholder="Reason"
+        type="text"
+      />
+    </template>
     <LoadingSpinner v-else-if="!isError" />
     <p v-else>Something went wrong!</p>
     <footer v-if="items.length > 1">
@@ -111,6 +121,11 @@ footer button {
 
 .new-base-wrapper {
   text-align: center;
+}
+
+.reason-input {
+  margin: 0;
+  margin-block-start: 0.5rem;
 }
 
 .base-item {
