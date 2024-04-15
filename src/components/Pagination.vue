@@ -31,30 +31,38 @@ watchEffect(() => emit('change', paginatedEntries.value));
 <template>
   <div
     v-show="availablePages > 1"
-    class="page-select"
+    class="page-select-wrapper"
   >
-    <button
+    <div
       v-for="n in availablePages"
-      :class="{ outline: currentPage !== n }"
-      role="button"
-      @click="currentPage = n"
+      class="page-select-item"
     >
-      {{ n }}
-    </button>
+      <button
+        :class="{ outline: currentPage !== n }"
+        role="button"
+        @click="currentPage = n"
+      >
+        {{ n }}
+      </button>
+    </div>
   </div>
 </template>
 
 <style scoped lang="scss">
-.page-select {
+.page-select-wrapper {
   display: flex;
   gap: 0.5rem;
   margin-block-end: 1rem;
 
-  button {
+  .page-select-item {
     aspect-ratio: 1;
     display: flex;
-    align-items: center;
-    justify-content: center;
+
+    button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
   }
 }
 </style>
