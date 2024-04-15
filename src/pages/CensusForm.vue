@@ -30,6 +30,7 @@ const localStorageKeyIsNotNew = isMakingNewPage ? 'newBase' : 'updateBase';
 const localStorageKey = isNewCitizen ? 'censusForm' : localStorageKeyIsNotNew;
 
 onMounted(async () => {
+  wikiPageDataStore.fetchVersionTemplate();
   if (!isUpdatingPage) return;
   await wikiPageDataStore.fetchBaseWikiData();
   wikiPageDataStore.$subscribe(() => (hasUpdated.value ||= true));

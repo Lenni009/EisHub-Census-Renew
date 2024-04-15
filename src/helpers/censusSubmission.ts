@@ -1,6 +1,5 @@
 import { useWikiPageDataStore } from '@/stores/wikiPageDataStore';
 import { buildBasePage } from './baseTemplate';
-import { version } from '@/variables/version';
 import type { ExplicitBoolean } from '@/types/pageData';
 import { currentYearString, timezoneOffset } from '@/variables/dateTime';
 import { compressFile } from './fileCompression';
@@ -26,7 +25,7 @@ function constructNewFile(fileObj: FileItem, baseName: string): File | undefined
 
 export async function submitCensus(description: string): Promise<void> {
   const wikiPageData = useWikiPageDataStore();
-  const { baseData, playerData, imageData, region, sectionData } = wikiPageData;
+  const { version, baseData, playerData, imageData, region, sectionData } = wikiPageData;
   const { image, gallery } = imageData;
   const { mode, platform } = baseData;
   const { renewals } = playerData;

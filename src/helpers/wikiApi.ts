@@ -15,7 +15,7 @@ import type {
 } from '@/types/queryObjects';
 import { limit } from '@/variables/apiLimit';
 import { apiPath } from '@/variables/wikiLink';
-import { isParsedSummary, isQueryResponse } from './typeGuards';
+import { isParsedSummary, isQueryResponse, isWikitext } from './typeGuards';
 
 // generic function to build a URL from an object
 const buildQueryUrl = (queryObject: QueryObjects) =>
@@ -154,4 +154,12 @@ export async function downloadFile(requestString: string) {
   const links = galleryDom.querySelectorAll<HTMLAnchorElement>('a');
 
   return links;
+}
+
+export async function fetchSectionWikiText(pageName: string, section: number) {
+  const url = getPageSectionContentApiUrl(pageName, section);
+  const apiResponse = await apiCall(url);
+  if (!isWikitext(apiResponse)) return;
+  const sectionWikitext = apiResponse.parse.wikitext['*'];
+  return sectionWikitext;
 }
