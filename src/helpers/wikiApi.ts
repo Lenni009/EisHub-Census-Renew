@@ -4,6 +4,7 @@ import type {
   BasicQueryData,
   CensusQueryObject,
   GalleryQueryObject,
+  OrderedRawCensusQueryObject,
   QueryObjects,
   RawCensusQueryObject,
   RawCensusQueryWhereObject,
@@ -105,12 +106,11 @@ const getBaseQueryObject = (baseName: string): RawCensusQueryObject => ({
   where: `Name="${baseName}"`,
 });
 
-// TODO: type this properly
-const getPlayerBasesQueryObject = (player: string, civilized: string): RawCensusQueryObject => ({
+const getPlayerBasesQueryObject = (player: string, civilized: string): OrderedRawCensusQueryObject => ({
   ...getCargoQueryRawObject(),
   fields: ['Name'],
-  where: `CensusPlayer="${player}" AND Civilized="${civilized}"`,
-  order_by: 'Bases.CensusShow DESC',
+  where: `CensusPlayer LIKE "${player.replaceAll('#', '_')}" AND Civilized="${civilized}"`,
+  order_by: 'CensusShow DESC',
 });
 
 // exported functions to get cargo query URLs
