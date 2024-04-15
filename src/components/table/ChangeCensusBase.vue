@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
 import LoadingSpinner from '../LoadingSpinner.vue';
+import NewBaseButton from './NewBaseButton.vue';
 import { apiCall, getPlayerBasesQueryUrl } from '@/helpers/wikiApi';
 import { civilized } from '@/variables/civilized';
 import { isCargoResponse } from '@/helpers/typeGuards';
 import type { CargoQueryBaseNameResponse } from '@/types/queryResponse';
 import type { CensusEntry } from '@/types/censusQueryResponse';
-import { storeEntry } from '@/helpers/localStorage';
-import { encodePlayerName } from '@/helpers/nameTranscode';
 import { sendBaseChangeRequest } from '@/helpers/censusSubmission';
 import { buildWikiPageLink } from '@/helpers/wikiLinkConstructor';
 
@@ -60,12 +59,10 @@ function submit() {
       class="new-base-wrapper"
     >
       <p>There's currently only one base on the wiki.</p>
-      <a
-        :href="`./form.html?new=${encodePlayerName(entry.CensusPlayer)}`"
-        role="button"
-        @click="storeEntry(entry)"
-        >Create New Base</a
-      >
+      <NewBaseButton
+        :entry
+        text="Create New Base"
+      />
     </div>
     <template v-else-if="items.length">
       <div

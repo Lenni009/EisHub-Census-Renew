@@ -4,6 +4,7 @@ import { encodePlayerName } from '@/helpers/nameTranscode';
 import LinkItem from './LinkItem.vue';
 import { computed, ref } from 'vue';
 import RenewButton from '../RenewButton.vue';
+import NewBaseButton from './NewBaseButton.vue';
 import ChangeCensusBase from './ChangeCensusBase.vue';
 import { currentYearString } from '@/variables/dateTime';
 import { useRenewDataStore } from '@/stores/renewDataStore';
@@ -109,13 +110,11 @@ const setPlayerBases = (items: string[]) => (playerBases.value = items);
           @click="storeEntry(entry)"
           >Update</a
         >
-        <a
-          :href="`./form.html?new=${encodePlayerName(entry.CensusPlayer)}`"
+        <NewBaseButton
+          :entry
           data-tooltip="New Census Base"
-          role="button"
-          @click="storeEntry(entry)"
-          >New</a
-        >
+          text="New"
+        />
       </article>
     </details>
   </article>
