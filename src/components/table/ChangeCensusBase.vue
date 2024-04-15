@@ -56,7 +56,7 @@ function submit() {
     <header class="text-bold">Change Census Base for {{ entry.CensusPlayer }}</header>
     <div
       v-if="items.length === 1"
-      class="new-base-wrapper"
+      class="text-center"
     >
       <p>There's currently only one base on the wiki.</p>
       <NewBaseButton
@@ -114,10 +114,6 @@ function submit() {
 <style scoped lang="scss">
 footer button {
   margin: 0;
-}
-
-.new-base-wrapper {
-  text-align: center;
 }
 
 .reason-input {

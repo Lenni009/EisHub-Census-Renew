@@ -19,12 +19,18 @@ watchEffect(() => (friend.value = friend.value.toUpperCase()));
 
 <template>
   <article>
-    <p class="question required">What is your Discord name?</p>
+    <p
+      class="question required"
+      id="discord-name"
+    >
+      What is your Discord name?
+    </p>
     <p class="subtitle">Please enter your username, not your display name.</p>
     <input
       v-model.trim="playerData.discord"
       :aria-invalid="!isDiscordValid || undefined"
       :pattern="discordValidation"
+      aria-labelledby="discord-name"
       type="text"
     />
     <p
@@ -35,10 +41,16 @@ watchEffect(() => (friend.value = friend.value.toUpperCase()));
     </p>
   </article>
   <article>
-    <p class="question">What is your Reddit name?</p>
+    <p
+      class="question"
+      id="reddit-name"
+    >
+      What is your Reddit name?
+    </p>
     <input
       v-model.trim="playerData.reddit"
       :aria-invalid="!isRedditValid || undefined"
+      aria-labelledby="reddit-name"
       type="text"
     />
     <p
@@ -49,7 +61,12 @@ watchEffect(() => (friend.value = friend.value.toUpperCase()));
     </p>
   </article>
   <article v-if="!playerData.reddit">
-    <p class="question">Social media link if you don't have Reddit</p>
+    <p
+      class="question"
+      id="social-name"
+    >
+      Social media link if you don't have Reddit
+    </p>
     <p class="subtitle">
       If you don't have Reddit, do you have a different social media account that you'd like to have on the census
       (Facebook, Instagram, etc.)? Please put the full link here.
@@ -57,6 +74,7 @@ watchEffect(() => (friend.value = friend.value.toUpperCase()));
     <input
       v-model.trim="playerData.social"
       :aria-invalid="!isSocialValid || undefined"
+      aria-labelledby="social-name"
       type="text"
     />
     <p
@@ -67,10 +85,16 @@ watchEffect(() => (friend.value = friend.value.toUpperCase()));
     </p>
   </article>
   <article>
-    <p class="question">If you have a NMS Fandom wiki account, what's its name? (else leave empty)</p>
+    <p
+      class="question"
+      id="wiki-name"
+    >
+      If you have a NMS Fandom wiki account, what's its name? (else leave empty)
+    </p>
     <input
       v-model.trim.lazy="playerData.wikiName"
       :aria-invalid="!wikiUserExists || undefined"
+      aria-labelledby="wiki-name"
       type="text"
     />
     <p
@@ -81,11 +105,17 @@ watchEffect(() => (friend.value = friend.value.toUpperCase()));
     </p>
   </article>
   <article>
-    <p class="question required">What is your ingame name?</p>
+    <p
+      class="question required"
+      id="ingame-name"
+    >
+      What is your ingame name?
+    </p>
     <p class="subtitle">Found on the top left in your inventory/pause menu. Exclude any game titles.</p>
     <input
       v-model.trim="playerData.player"
       :aria-invalid="!isNameValid || undefined"
+      aria-labelledby="ingame-name"
       type="text"
     />
     <p
@@ -96,11 +126,17 @@ watchEffect(() => (friend.value = friend.value.toUpperCase()));
     </p>
   </article>
   <article>
-    <p class="question">No Man's Sky Friend Code</p>
+    <p
+      class="question"
+      id="friend-code"
+    >
+      No Man's Sky Friend Code
+    </p>
     <p class="subtitle">Please enter your friend code in the following format: "XXXX-XXXX-XXXXX" including dashes.</p>
     <input
       v-model.trim.lazy="playerData.friend"
       :aria-invalid="!isFriendValid || undefined"
+      aria-labelledby="friend-code"
       type="text"
     />
     <p
@@ -112,10 +148,16 @@ watchEffect(() => (friend.value = friend.value.toUpperCase()));
   </article>
   <template v-if="isNewCitizen">
     <article>
-      <p class="question required">Date of Arrival</p>
+      <p
+        class="question required"
+        id="arrival-date"
+      >
+        Date of Arrival
+      </p>
       <p class="subtitle">When did you arrive in Eisvana space?</p>
       <input
         v-model.trim="playerData.arrival"
+        aria-labelledby="arrival-date"
         type="date"
       />
     </article>

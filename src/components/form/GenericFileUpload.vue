@@ -45,9 +45,7 @@ function onDrop(e: DragEvent) {
     @drop.prevent="onDrop"
     @dragover.prevent
   >
-    <span class="title-wrapper">
-      <span class="drop-title text-bold">{{ caption }}</span>
-    </span>
+    <span class="text-center text-bold">{{ caption }}</span>
     <input
       :id
       :multiple
@@ -81,10 +79,6 @@ function onDrop(e: DragEvent) {
   &:hover,
   &.drag-active {
     border: 3px solid;
-  }
-
-  .drop-title {
-    text-align: center;
   }
 
   input[type='file'] {

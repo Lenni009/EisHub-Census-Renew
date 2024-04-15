@@ -33,7 +33,7 @@ defineExpose({
             class="close"
           ></button>
         </form>
-        <p class="confirm-heading">Confirm renewal of {{ userName }}?</p>
+        <p class="text-center">Confirm renewal of {{ userName }}?</p>
       </header>
       <form
         method="dialog"
@@ -56,10 +56,6 @@ defineExpose({
     margin-bottom: 0;
     flex-grow: 1;
   }
-}
-
-.confirm-heading {
-  text-align: center;
 }
 
 .close-button-wrapper {

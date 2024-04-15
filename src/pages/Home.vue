@@ -1,3 +1,31 @@
+<script setup lang="ts">
+const cards: {
+  header: string;
+  body: string;
+  link: string;
+  linkText: string;
+}[] = [
+  {
+    header: 'Table',
+    body: "Eisvana's Census table, including past census data and management functions.",
+    link: './table.html',
+    linkText: 'Table',
+  },
+  {
+    header: 'Form',
+    body: 'New to Eisvana? Fill out the census form here!',
+    link: './form.html',
+    linkText: 'Form',
+  },
+  {
+    header: 'Renew',
+    body: 'Renew your census entry here if you are not on the census anymore!',
+    link: './renew.html',
+    linkText: 'Renew',
+  },
+];
+</script>
+
 <template>
   <div class="title-group">
     <h1>Eisvana Census</h1>
@@ -5,20 +33,12 @@
   </div>
 
   <div class="link-list">
-    <article>
-      <header class="text-bold">Table</header>
-      <p>Eisvana's Census table, including past census data and management functions.</p>
-      <footer><a href="./table.html">Table</a></footer>
-    </article>
-    <article>
-      <header class="text-bold">Form</header>
-      <p>New to Eisvana? Fill out the census form here!</p>
-      <footer><a href="./form.html">Form</a></footer>
-    </article>
-    <article>
-      <header class="text-bold">Renew</header>
-      <p>Renew your census entry here if you are not on the census anymore!</p>
-      <footer><a href="./renew.html">Renew</a></footer>
+    <article v-for="card in cards">
+      <header class="text-bold text-center">{{ card.header }}</header>
+      <p>{{ card.body }}</p>
+      <footer class="text-center">
+        <a :href="card.link">{{ card.linkText }}</a>
+      </footer>
     </article>
   </div>
 </template>
@@ -45,11 +65,6 @@
     justify-content: space-between;
     width: 30%;
     min-width: min(100%, 300px);
-
-    header,
-    footer {
-      text-align: center;
-    }
 
     p {
       text-wrap: balance;
