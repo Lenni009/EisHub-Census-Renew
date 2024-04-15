@@ -67,11 +67,15 @@ watchEffect(() => {
       <div>
         <input
           v-model.trim="searchTerm"
+          aria-label="Search Name"
           type="search"
         />
       </div>
       <div>
-        <select v-model.trim="revision">
+        <select
+          v-model.trim="revision"
+          aria-label="Select Revision"
+        >
           <option value="">All</option>
           <option
             v-for="revision in availableRevisions"
