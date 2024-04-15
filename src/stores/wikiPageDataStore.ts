@@ -8,8 +8,8 @@ import {
   validatePlayerName,
   validateReddit,
 } from '@/helpers/formValidation';
-import { isSectionQueryResponse, isValidModeValue, isValidPlatformValue, isWikitext } from '@/helpers/typeGuards';
-import { apiCall, downloadFile, getPageSectionContentApiUrl, getPageSectionsApiUrl } from '@/helpers/wikiApi';
+import { isSectionQueryResponse, isValidModeValue, isValidPlatformValue } from '@/helpers/typeGuards';
+import { apiCall, downloadFile, fetchSectionWikiText, getPageSectionsApiUrl } from '@/helpers/wikiApi';
 import { parseWikiTemplate } from '@/helpers/wikiTemplateParser';
 import type { CensusEntry } from '@/types/censusQueryResponse';
 import type { FileItem } from '@/types/file';
@@ -28,6 +28,7 @@ interface Validation {
 }
 
 interface WikiPageData {
+  version: string;
   sectionData: SectionObject[];
   validation: Validation;
   playerData: PlayerData;
@@ -36,6 +37,7 @@ interface WikiPageData {
 }
 
 const defaultStoreObject: WikiPageData = {
+  version: '',
   sectionData: defaultSections,
   validation: {
     wikiUserExists: true,
@@ -147,6 +149,12 @@ export const useWikiPageDataStore = defineStore('wikiPageData', {
   },
 
   actions: {
+    async fetchVersionTemplate() {
+      const section = await fetchSectionWikiText('Template:Base preload', 0);
+      const version = parseWikiTemplate(section ?? '', 'Version')[0]['1'];  // unnamed parameters are 1-indexed
+      this.version = version;
+    },
+
     async fetchBaseWikiData() {
       // this function uses async methods, but doesn't await them to improve performance.
       // the individual methods handle the required awaiting on their own.
@@ -175,7 +183,7 @@ export const useWikiPageDataStore = defineStore('wikiPageData', {
       this.baseData.glyphs =
         infobox.portalglyphs.length === expectedGlyphLength
           ? infobox.portalglyphs
-          : parseWikiTemplate(infobox.portalglyphs.toLowerCase(), 'gl/small')[0]['0'].toUpperCase();
+          : parseWikiTemplate(infobox.portalglyphs.toLowerCase(), 'gl/small')[0]['1'].toUpperCase();
       await imageDataPromise;
     },
 
@@ -212,7 +220,7 @@ export const useWikiPageDataStore = defineStore('wikiPageData', {
     },
 
     async fetchWikiText(sectionData: SimplifiedSectionQueryResponseSectionObject, index: number) {
-      const sectionWikitext = this.fetchSectionWikiText(parseInt(sectionData.index));
+      const sectionWikitext = this.fetchBaseSectionWikiText(parseInt(sectionData.index));
       const lowerCaseHeading = sectionData.line.toLowerCase();
       const itemInSectionData = defaultSections.find((item) => item.heading.toLowerCase() === lowerCaseHeading);
       const sectionObject: SectionObject = {
@@ -237,23 +245,20 @@ export const useWikiPageDataStore = defineStore('wikiPageData', {
     },
 
     async fetchInfobox() {
-      const sectionWikitext = await this.fetchSectionWikiText(0);
+      const sectionWikitext = await this.fetchBaseSectionWikiText(0);
       const infoboxObject = parseWikiTemplate(sectionWikitext ?? '', 'Base infobox');
       return infoboxObject;
     },
 
-    async fetchSectionWikiText(section: number) {
-      const url = getPageSectionContentApiUrl(this.baseData.baseName, section);
-      const apiResponse = await apiCall(url);
-      if (!isWikitext(apiResponse)) return;
-      const sectionWikitext = apiResponse.parse.wikitext['*'];
-      return sectionWikitext;
+    async fetchBaseSectionWikiText(section: number) {
+      return await fetchSectionWikiText(this.baseData.baseName, section);
     },
 
     async fetchGalleryData(gallerySectionData: SimplifiedSectionQueryResponseSectionObject) {
-      const gallerySectionText = await this.fetchSectionWikiText(parseInt(gallerySectionData.index));
+      const gallerySectionText = await this.fetchBaseSectionWikiText(parseInt(gallerySectionData.index));
       if (!gallerySectionText) return;
       const picLines = gallerySectionText.split('\n').slice(2, -1); // remove gallery heading and gallery tags
+      if (!picLines.length) return;
       const picsAndDescs = picLines.map((item) => item.split('|'));
 
       const fileObjects: FileItem[] = picsAndDescs.map(([filename, desc], index) => ({

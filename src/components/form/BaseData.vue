@@ -44,43 +44,71 @@ const featureList = reactive([
 
 <template>
   <article>
-    <p class="question required">What is the name of your base?</p>
+    <p
+      class="question required"
+      id="base-name"
+    >
+      What is the name of your base?
+    </p>
     <input
       v-model.trim="baseData.baseName"
+      aria-labelledby="base-name"
       type="text"
     />
   </article>
   <template v-if="!isUpdatingPage">
     <article>
-      <p class="question required">What is the name of the system where your base is?</p>
+      <p
+        class="question required"
+        id="system-name"
+      >
+        What is the name of the system where your base is?
+      </p>
       <p class="subtitle">The name of the system can be seen by looking at the galaxy map in space.</p>
       <input
         v-model.trim="baseData.system"
+        aria-labelledby="system-name"
         type="text"
       />
     </article>
     <article>
-      <p class="question required">
+      <p
+        class="question required"
+        id="planet-name"
+      >
         What is the name of the planet on which your base is or that is orbited by the moon on which your base is?
       </p>
       <input
         v-model.trim="baseData.planet"
+        aria-labelledby="planet-name"
         type="text"
       />
     </article>
     <article>
-      <p class="question">If your base is on a moon (else leave empty): What is the name of the moon?</p>
+      <p
+        class="question"
+        id="moon-name"
+      >
+        If your base is on a moon (else leave empty): What is the name of the moon?
+      </p>
       <input
         v-model.trim="baseData.moon"
+        aria-labelledby="moon-name"
         type="text"
       />
     </article>
     <article>
-      <p class="question required">What are the planetary coordinates of your base?</p>
+      <p
+        class="question required"
+        id="geo-coords"
+      >
+        What are the planetary coordinates of your base?
+      </p>
       <p class="subtitle">You can find the coordinates when you look through your visor. Example: -14.24, +121.12</p>
       <input
         v-model.trim.lazy="baseData.axes"
         :aria-invalid="!isAxesValid || undefined"
+        aria-labelledby="geo-coords"
         type="text"
       />
       <p
@@ -91,7 +119,12 @@ const featureList = reactive([
       </p>
     </article>
     <article>
-      <p class="question required">What are the glyphs?</p>
+      <p
+        class="question required"
+        id="glyph-input"
+      >
+        What are the glyphs?
+      </p>
       <p class="subtitle">Glyphs can be found in photo mode</p>
       <GlyphInput v-model.trim="baseData.glyphs" />
     </article>
@@ -127,10 +160,16 @@ const featureList = reactive([
     </article>
   </template>
   <article>
-    <p class="question">What type of base is it? What is its purpose?</p>
+    <p
+      class="question"
+      id="base-type"
+    >
+      What type of base is it? What is its purpose?
+    </p>
     <p class="subtitle">Some examples are Artistic, Embassy, Farm, Industrial, Memorial and Residential.</p>
     <input
       v-model.trim="baseData.type"
+      aria-labelledby="base-type"
       type="text"
     />
   </article>
@@ -153,7 +192,10 @@ const featureList = reactive([
     >
       {{ item.explanation }}
     </p>
-    <textarea v-model.trim="item.body"></textarea>
+    <textarea
+      v-model.trim="item.body"
+      :aria-label="item.heading"
+    ></textarea>
   </article>
   <article>
     <p class="question required">Main picture</p>

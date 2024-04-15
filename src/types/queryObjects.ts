@@ -37,8 +37,11 @@ export interface RawCensusQueryObject extends RawCensusQueryWhereObject {
   fields: string[];
 }
 
-export interface CensusQueryObject extends RawCensusQueryObject {
+export interface OrderedRawCensusQueryObject extends RawCensusQueryObject {
   order_by: string;
+}
+
+export interface CensusQueryObject extends OrderedRawCensusQueryObject {
   group_by: string;
   offset: number;
 }

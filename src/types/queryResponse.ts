@@ -56,3 +56,11 @@ export interface CargoQueryResponse {
     title: Record<string, string | null>;
   }[];
 }
+
+export interface CargoQueryBaseNameResponse {
+  cargoquery: {
+    title: {
+      Name: string;
+    };
+  }[];
+}

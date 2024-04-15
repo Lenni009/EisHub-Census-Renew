@@ -30,6 +30,7 @@ const localStorageKeyIsNotNew = isMakingNewPage ? 'newBase' : 'updateBase';
 const localStorageKey = isNewCitizen ? 'censusForm' : localStorageKeyIsNotNew;
 
 onMounted(async () => {
+  wikiPageDataStore.fetchVersionTemplate();
   if (!isUpdatingPage) return;
   await wikiPageDataStore.fetchBaseWikiData();
   wikiPageDataStore.$subscribe(() => (hasUpdated.value ||= true));
@@ -154,10 +155,6 @@ a:not([href]) {
   flex-direction: column;
   max-width: 800px;
   margin-inline: auto;
-
-  article {
-    container-type: inline-size;
-  }
 
   label {
     display: flex;

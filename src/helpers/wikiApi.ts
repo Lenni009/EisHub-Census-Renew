@@ -4,6 +4,7 @@ import type {
   BasicQueryData,
   CensusQueryObject,
   GalleryQueryObject,
+  OrderedRawCensusQueryObject,
   QueryObjects,
   RawCensusQueryObject,
   RawCensusQueryWhereObject,
@@ -14,7 +15,7 @@ import type {
 } from '@/types/queryObjects';
 import { limit } from '@/variables/apiLimit';
 import { apiPath } from '@/variables/wikiLink';
-import { isParsedSummary, isQueryResponse } from './typeGuards';
+import { isParsedSummary, isQueryResponse, isWikitext } from './typeGuards';
 
 // generic function to build a URL from an object
 const buildQueryUrl = (queryObject: QueryObjects) =>
@@ -105,11 +106,20 @@ const getBaseQueryObject = (baseName: string): RawCensusQueryObject => ({
   where: `Name="${baseName}"`,
 });
 
+const getPlayerBasesQueryObject = (player: string, civilized: string): OrderedRawCensusQueryObject => ({
+  ...getCargoQueryRawObject(),
+  fields: ['Name'],
+  where: `CensusPlayer LIKE "${player.replaceAll('#', '_')}" AND Civilized="${civilized}"`,
+  order_by: 'CensusShow DESC',
+});
+
 // exported functions to get cargo query URLs
 export const getCensusQueryDataUrl = (civilized: string, offset: number) =>
   buildQueryUrl(getCensusQueryDataObject(civilized, offset));
 export const getCensusQueryCountUrl = (civilized: string) => buildQueryUrl(getCensusQueryCountObject(civilized));
 export const getBaseQueryUrl = (baseName: string) => buildQueryUrl(getBaseQueryObject(baseName));
+export const getPlayerBasesQueryUrl = (player: string, civilized: string) =>
+  buildQueryUrl(getPlayerBasesQueryObject(player, civilized));
 
 // check whether user exists on the wiki
 const getUserQueryObj = (user: string): UserQueryObject => ({
@@ -144,4 +154,12 @@ export async function downloadFile(requestString: string) {
   const links = galleryDom.querySelectorAll<HTMLAnchorElement>('a');
 
   return links;
+}
+
+export async function fetchSectionWikiText(pageName: string, section: number) {
+  const url = getPageSectionContentApiUrl(pageName, section);
+  const apiResponse = await apiCall(url);
+  if (!isWikitext(apiResponse)) return;
+  const sectionWikitext = apiResponse.parse.wikitext['*'];
+  return sectionWikitext;
 }

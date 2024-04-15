@@ -4,12 +4,15 @@ import { storeToRefs } from 'pinia';
 import { computed, ref, watchEffect } from 'vue';
 import CensusItem from '@/components/table/CensusItem.vue';
 import type { CensusEntry } from '@/types/censusQueryResponse';
+import { tablePageSize } from '@/variables/paginationData';
+import Pagination from '../components/Pagination.vue';
 
 const censusDataStore = useCensusDataStore();
 const { censusData, availableRevisions } = storeToRefs(censusDataStore);
 
 const revision = ref('');
 const searchTerm = ref('');
+const paginatedEntries = ref<CensusEntry[]>([]);
 
 watchEffect(() => (revision.value = availableRevisions.value[0]?.toString()));
 
@@ -41,6 +44,8 @@ const currentRevisionCensusCount = computed(() => currentRevisionEntries.value.l
 
 // filter the entries that are renewed for the currently selected year, then reverse that array
 const filteredEntries = computed(() => currentRevisionEntries.value.filter(filterEntry).toReversed());
+
+const updateEntries = (newPaginatedArray: CensusEntry[]) => (paginatedEntries.value = newPaginatedArray);
 </script>
 
 <template>
@@ -52,11 +57,15 @@ const filteredEntries = computed(() => currentRevisionEntries.value.filter(filte
       <div>
         <input
           v-model.trim="searchTerm"
+          aria-label="Search Name"
           type="search"
         />
       </div>
       <div>
-        <select v-model.trim="revision">
+        <select
+          v-model.trim="revision"
+          aria-label="Select Revision"
+        >
           <option value="">All</option>
           <option
             v-for="revision in availableRevisions"
@@ -70,13 +79,19 @@ const filteredEntries = computed(() => currentRevisionEntries.value.filter(filte
 
     <hr />
 
+    <Pagination
+      :data="filteredEntries"
+      :page-size="tablePageSize"
+      @change="updateEntries"
+    />
+
     <Transition>
       <div
         class="census-items"
         v-if="censusData.length"
       >
         <CensusItem
-          v-for="entry in filteredEntries"
+          v-for="entry in paginatedEntries"
           :entry
           :key="entry.CensusPlayer"
         />
@@ -100,12 +115,12 @@ const filteredEntries = computed(() => currentRevisionEntries.value.filter(filte
       margin: 0;
     }
   }
-}
 
-.census-items {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
+  .census-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
 }
 
 .v-enter-active {

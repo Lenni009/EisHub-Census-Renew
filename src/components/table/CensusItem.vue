@@ -2,22 +2,24 @@
 import type { CensusEntry } from '@/types/censusQueryResponse';
 import { encodePlayerName } from '@/helpers/nameTranscode';
 import LinkItem from './LinkItem.vue';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import RenewButton from '../RenewButton.vue';
+import NewBaseButton from './NewBaseButton.vue';
+import ChangeCensusBase from './ChangeCensusBase.vue';
 import { currentYearString } from '@/variables/dateTime';
 import { useRenewDataStore } from '@/stores/renewDataStore';
 import { storeToRefs } from 'pinia';
+import { storeEntry } from '@/helpers/localStorage';
 
 const props = defineProps<{
   entry: CensusEntry;
 }>();
 
+const changeBaseModal = ref<HTMLDialogElement | null>(null);
+const modalShown = ref(false);
+
 const renewDataStore = useRenewDataStore();
 const { triesExceeded } = storeToRefs(renewDataStore);
-
-function storeData() {
-  sessionStorage.setItem('update', JSON.stringify(props.entry));
-}
 
 const tooltipText = computed(() => {
   if (props.entry.renewed) return 'Already renewed';
@@ -25,6 +27,20 @@ const tooltipText = computed(() => {
   if (triesExceeded.value) return 'Too Many Requests';
   return `Request Renewal for ${currentYearString}`;
 });
+
+const openModal = () => {
+  const activeElement = document.activeElement;
+  if (activeElement instanceof HTMLElement) activeElement.blur();
+  modalShown.value = true;
+  changeBaseModal.value?.showModal();
+};
+const closeModal = () => {
+  changeBaseModal.value?.close();
+  modalShown.value = false;
+};
+
+const playerBases = ref<string[]>();
+const setPlayerBases = (items: string[]) => (playerBases.value = items);
 </script>
 
 <template>
@@ -69,31 +85,51 @@ const tooltipText = computed(() => {
       </div>
     </div>
 
-    <div class="action-buttons">
-      <div :data-tooltip="tooltipText">
-        <RenewButton
-          :user-object="entry"
-          button-text="Renew"
-          button-text-failed="Failed!"
-          button-text-success="Renewed!"
+    <details>
+      <summary role="button">Actions</summary>
+      <article class="action-buttons">
+        <div :data-tooltip="tooltipText">
+          <RenewButton
+            :user-object="entry"
+            button-text="Renew"
+            button-text-failed="Failed!"
+            button-text-success="Renewed!"
+          />
+        </div>
+        <button
+          data-tooltip="Change Census Base"
+          type="button"
+          @click="openModal"
+        >
+          Change
+        </button>
+        <a
+          :href="`./form.html?update=${encodePlayerName(entry.CensusPlayer)}`"
+          data-tooltip="Update Census Base"
+          role="button"
+          @click="storeEntry(entry)"
+          >Update</a
+        >
+        <NewBaseButton
+          :entry
+          data-tooltip="New Census Base"
+          text="New"
         />
-      </div>
-      <a
-        :href="`./form.html?update=${encodePlayerName(entry.CensusPlayer)}`"
-        data-tooltip="Update Census Base"
-        role="button"
-        @click="storeData"
-        >Update</a
-      >
-      <a
-        :href="`./form.html?new=${encodePlayerName(entry.CensusPlayer)}`"
-        data-tooltip="New Census Base"
-        role="button"
-        @click="storeData"
-        >New</a
-      >
-    </div>
+      </article>
+    </details>
   </article>
+  <dialog
+    ref="changeBaseModal"
+    @click.self="closeModal"
+  >
+    <ChangeCensusBase
+      v-if="modalShown"
+      :entry
+      :items="playerBases"
+      @close="closeModal"
+      @ready="setPlayerBases"
+    />
+  </dialog>
 </template>
 
 <style scoped lang="scss">
@@ -109,6 +145,7 @@ const tooltipText = computed(() => {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem 1rem;
+    margin-block-end: auto;
 
     & > * {
       flex-grow: 1;
@@ -127,16 +164,34 @@ const tooltipText = computed(() => {
     }
   }
 
-  .action-buttons {
-    display: flex;
-    gap: 0.5rem;
-    justify-content: space-around;
+  details {
+    container-type: inline-size;
 
-    [data-tooltip] {
-      border: none;
+    &,
+    summary {
+      margin: 0;
+    }
 
-      &:has([disabled]) {
-        cursor: not-allowed;
+    .action-buttons {
+      position: absolute;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(max(45%, 100px), 1fr));
+      gap: 0.5rem;
+      margin-block-start: 0.6rem;
+      width: 100cqw;
+
+      > * {
+        margin: 0;
+        width: 100%;
+        flex-grow: 1;
+      }
+
+      [data-tooltip] {
+        border: none;
+
+        &:has([disabled]) {
+          cursor: not-allowed;
+        }
       }
     }
   }

@@ -22,6 +22,7 @@ const { triesExceeded } = storeToRefs(renewDataStore);
   </p>
   <input
     v-model.trim="filter"
+    aria-label="Search Name"
     id="searchBar"
     name="searchBar"
     placeholder="Search Name"

@@ -79,5 +79,6 @@ const openDialog = () => confirmDialog.value?.toggleModal();
 <style scoped lang="scss">
 .renew-button {
   margin: 0;
+  width: 100%;
 }
 </style>

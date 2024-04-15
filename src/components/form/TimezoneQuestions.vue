@@ -9,7 +9,12 @@ const { playerData } = storeToRefs(wikiPageData);
 
 <template>
   <article>
-    <p class="question">[OPTIONAL] Timezone</p>
+    <p
+      class="question"
+      id="timezone-input"
+    >
+      [OPTIONAL] Timezone
+    </p>
     <p class="subtitle">
       Detected timezone: <span class="text-bold">{{ timezoneOffset }}</span>
       <br />
@@ -20,17 +25,24 @@ const { playerData } = storeToRefs(wikiPageData);
       <span>Share timezone ({{ timezoneOffset }})</span>
       <input
         v-model.trim="playerData.shareTimezone"
+        aria-labelledby="timezone-input"
         type="checkbox"
       />
     </label>
   </article>
   <article>
-    <p class="question">[OPTIONAL] In this time zone, when do you play No Man's Sky the most?</p>
+    <p
+      class="question"
+      id="activity-input"
+    >
+      [OPTIONAL] In this time zone, when do you play No Man's Sky the most?
+    </p>
     <p class="subtitle">
       I. e. mornings, afternoon, evenings, late night, 9 AM to 12 PM, etc. This is used in order to better plan events.
     </p>
     <input
       v-model.trim="playerData.activeTime"
+      aria-labelledby="activity-input"
       type="text"
     />
   </article>
