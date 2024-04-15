@@ -9,6 +9,7 @@ import type { CensusEntry } from '@/types/censusQueryResponse';
 import { storeEntry } from '@/helpers/localStorage';
 import { encodePlayerName } from '@/helpers/nameTranscode';
 import { sendBaseChangeRequest } from '@/helpers/censusSubmission';
+import { buildWikiPageLink } from '@/helpers/wikiLinkConstructor';
 
 const props = defineProps<{
   entry: CensusEntry;
@@ -27,16 +28,20 @@ const emit = defineEmits<{
 }>();
 
 onMounted(async () => {
-  selectedBase.value = activeBase.value;
   if (items.value.length) return;
-  const apiResponse = await apiCall(getPlayerBasesQueryUrl(props.entry.CensusPlayer, civilized));
-  if (!isCargoResponse<CargoQueryBaseNameResponse>(apiResponse)) {
-    // TODO: '#' is a forbidden symbol in cargo queries. Some of our players have that in their name. Find a way to circumvent that!
+  try {
+    const apiResponse = await apiCall(getPlayerBasesQueryUrl(props.entry.CensusPlayer, civilized));
+    if (!isCargoResponse<CargoQueryBaseNameResponse>(apiResponse)) {
+      isError.value = true;
+      return;
+    }
+    items.value = apiResponse.cargoquery.map((item) => item.title.Name);
+    emit('ready', items.value);
+    isError.value = false;
+  } catch (e) {
     isError.value = true;
-    return;
+    console.error('Something went wrong:', e);
   }
-  items.value = apiResponse.cargoquery.map((item) => item.title.Name);
-  emit('ready', items.value);
 });
 
 function submit() {
@@ -60,20 +65,31 @@ function submit() {
         >Create New Base</a
       >
     </div>
-    <label
+    <div
       v-else-if="items.length"
       v-for="item in items"
-      :for="item"
+      class="base-item"
     >
-      <input
-        v-model="selectedBase"
-        :id="item"
-        :value="item"
-        name="bases"
-        type="radio"
-      />
-      <span>{{ item }}</span>
-    </label>
+      <label
+        :for="item"
+        class="base-selector"
+      >
+        <input
+          v-model="selectedBase"
+          :id="item"
+          :value="item"
+          name="bases"
+          type="radio"
+        />
+        <span>{{ item }}</span>
+      </label>
+      <a
+        :href="buildWikiPageLink(item)"
+        rel="noopener noreferrer"
+        target="_blank"
+        >View Wiki Page</a
+      >
+    </div>
     <LoadingSpinner v-else-if="!isError" />
     <p v-else>Something went wrong!</p>
     <footer v-if="items.length > 1">
@@ -95,5 +111,14 @@ footer button {
 
 .new-base-wrapper {
   text-align: center;
+}
+
+.base-item {
+  display: flex;
+  justify-content: space-between;
+
+  .base-selector {
+    flex-grow: 1;
+  }
 }
 </style>
