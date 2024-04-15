@@ -183,7 +183,7 @@ export const useWikiPageDataStore = defineStore('wikiPageData', {
       this.baseData.glyphs =
         infobox.portalglyphs.length === expectedGlyphLength
           ? infobox.portalglyphs
-          : parseWikiTemplate(infobox.portalglyphs.toLowerCase(), 'gl/small')[0]['0'].toUpperCase();
+          : parseWikiTemplate(infobox.portalglyphs.toLowerCase(), 'gl/small')[0]['1'].toUpperCase();
       await imageDataPromise;
     },
 
