@@ -22,7 +22,7 @@ const paginatedEntries = computed(() =>
 );
 
 watchEffect(() => {
-  if (currentPage.value > availablePages.value) currentPage.value = 1;
+  if (currentPage.value > availablePages.value || currentPage.value < 1) currentPage.value = 1;
 });
 
 watchEffect(() => emit('change', paginatedEntries.value));
@@ -30,19 +30,96 @@ watchEffect(() => emit('change', paginatedEntries.value));
 
 <template>
   <div
-    v-show="availablePages > 1"
+    v-if="availablePages > 1"
     class="page-select-wrapper"
   >
+    <div class="page-select-item">
+      <button
+        :disabled="currentPage === 1"
+        class="outline"
+        type="button"
+        @click="currentPage--"
+      >
+        &lt;
+      </button>
+    </div>
+
+    <template v-if="currentPage > 2">
+      <div class="page-select-item">
+        <button
+          class="outline"
+          type="button"
+          @click="currentPage = 1"
+        >
+          1
+        </button>
+      </div>
+
+      <div
+        v-if="currentPage - 2 !== 1"
+        class="placeholder"
+      >
+        ...
+      </div>
+    </template>
+
     <div
-      v-for="n in availablePages"
+      v-if="currentPage - 1 > 0"
       class="page-select-item"
     >
       <button
-        :class="{ outline: currentPage !== n }"
-        role="button"
-        @click="currentPage = n"
+        class="outline"
+        type="button"
+        @click="currentPage--"
       >
-        {{ n }}
+        {{ currentPage - 1 }}
+      </button>
+    </div>
+    <div class="page-select-item">
+      <button type="button">
+        {{ currentPage }}
+      </button>
+    </div>
+    <div
+      v-if="currentPage + 1 <= availablePages"
+      class="page-select-item"
+    >
+      <button
+        class="outline"
+        type="button"
+        @click="currentPage++"
+      >
+        {{ currentPage + 1 }}
+      </button>
+    </div>
+
+    <template v-if="currentPage < availablePages - 1">
+      <div
+        v-if="currentPage + 2 !== availablePages"
+        class="placeholder"
+      >
+        ...
+      </div>
+
+      <div class="page-select-item">
+        <button
+          class="outline"
+          type="button"
+          @click="currentPage = availablePages"
+        >
+          {{ availablePages }}
+        </button>
+      </div>
+    </template>
+
+    <div class="page-select-item">
+      <button
+        :disabled="currentPage === availablePages"
+        class="outline"
+        type="button"
+        @click="currentPage++"
+      >
+        &gt;
       </button>
     </div>
   </div>
@@ -54,6 +131,11 @@ watchEffect(() => emit('change', paginatedEntries.value));
   gap: 0.5rem;
   margin-block-end: 1rem;
 
+  .placeholder {
+    display: flex;
+    align-items: center;
+  }
+
   .page-select-item {
     aspect-ratio: 1;
     display: flex;
@@ -62,6 +144,14 @@ watchEffect(() => emit('change', paginatedEntries.value));
       display: flex;
       align-items: center;
       justify-content: center;
+      width: 100%;
+      margin: 0;
+
+      &.outline:hover {
+        background-color: var(--pico-primary-hover-background);
+        color: var(--pico-primary-inverse);
+        border: 1px solid transparent;
+      }
     }
   }
 }
