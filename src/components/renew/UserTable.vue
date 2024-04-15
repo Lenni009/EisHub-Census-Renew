@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import UserRow from './UserRow.vue';
+import Pagination from '../Pagination.vue';
 import { storeToRefs } from 'pinia';
 import { useCensusDataStore } from '@/stores/censusDataStore';
+import { renewPageSize } from '@/variables/paginationData';
+import type { CensusEntry } from '@/types/censusQueryResponse';
 
 const props = defineProps<{
   filter: string;
@@ -11,16 +14,26 @@ const props = defineProps<{
 const censusDataStore = useCensusDataStore();
 const { censusData } = storeToRefs(censusDataStore);
 
+const paginatedEntries = ref<CensusEntry[]>([]);
+
 const filteredCensusData = computed(() =>
   censusData.value.filter((item) => item.CensusPlayer.toLowerCase().includes(props.filter.toLowerCase()))
 );
+
+const updateEntries = (newPaginatedArray: CensusEntry[]) => (paginatedEntries.value = newPaginatedArray);
 </script>
 
 <template>
   <template v-if="censusData.length">
+    <Pagination
+      :data="filteredCensusData"
+      :page-size="renewPageSize"
+      @change="updateEntries"
+    />
+
     <div class="table">
       <UserRow
-        v-for="dataObj in filteredCensusData"
+        v-for="dataObj in paginatedEntries"
         :key="dataObj.CensusPlayer"
         :user-object="dataObj"
       />

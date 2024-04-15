@@ -4,13 +4,15 @@ import { storeToRefs } from 'pinia';
 import { computed, ref, watchEffect } from 'vue';
 import CensusItem from '@/components/table/CensusItem.vue';
 import type { CensusEntry } from '@/types/censusQueryResponse';
-import { pageSize } from '@/variables/paginationData';
+import { tablePageSize } from '@/variables/paginationData';
+import Pagination from '../components/Pagination.vue';
 
 const censusDataStore = useCensusDataStore();
 const { censusData, availableRevisions } = storeToRefs(censusDataStore);
 
 const revision = ref('');
 const searchTerm = ref('');
+const paginatedEntries = ref<CensusEntry[]>([]);
 
 watchEffect(() => (revision.value = availableRevisions.value[0]?.toString()));
 
@@ -43,19 +45,7 @@ const currentRevisionCensusCount = computed(() => currentRevisionEntries.value.l
 // filter the entries that are renewed for the currently selected year, then reverse that array
 const filteredEntries = computed(() => currentRevisionEntries.value.filter(filterEntry).toReversed());
 
-const currentPage = ref(1);
-const currentPageZeroIndexed = computed(() => currentPage.value - 1);
-const availablePages = computed(() => Math.ceil(filteredEntries.value.length / pageSize));
-const paginatedEntries = computed(() =>
-  filteredEntries.value.slice(
-    currentPageZeroIndexed.value * pageSize,
-    currentPageZeroIndexed.value * pageSize + pageSize
-  )
-);
-
-watchEffect(() => {
-  if (currentPage.value > availablePages.value) currentPage.value = 1;
-});
+const updateEntries = (newPaginatedArray: CensusEntry[]) => (paginatedEntries.value = newPaginatedArray);
 </script>
 
 <template>
@@ -89,16 +79,11 @@ watchEffect(() => {
 
     <hr />
 
-    <div class="page-select">
-      <button
-        v-for="n in availablePages"
-        :class="{ outline: currentPage !== n }"
-        role="button"
-        @click="currentPage = n"
-      >
-        {{ n }}
-      </button>
-    </div>
+    <Pagination
+      :data="filteredEntries"
+      :page-size="tablePageSize"
+      @change="updateEntries"
+    />
 
     <Transition>
       <div
@@ -128,19 +113,6 @@ watchEffect(() => {
 
     * {
       margin: 0;
-    }
-  }
-
-  .page-select {
-    display: flex;
-    gap: 0.5rem;
-    margin-block-end: 1rem;
-
-    button {
-      aspect-ratio: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
   }
 
