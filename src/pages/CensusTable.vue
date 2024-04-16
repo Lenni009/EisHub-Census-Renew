@@ -54,10 +54,11 @@ const updateEntries = (newPaginatedArray: CensusEntry[]) => (paginatedEntries.va
   <div class="layout-table">
     <div class="top-row">
       <p>Census count: {{ currentRevisionCensusCount }}</p>
-      <div>
+      <div class="search-wrapper">
         <input
           v-model.trim="searchTerm"
           aria-label="Search Name"
+          placeholder="Search Player"
           type="search"
         />
       </div>
@@ -104,6 +105,7 @@ const updateEntries = (newPaginatedArray: CensusEntry[]) => (paginatedEntries.va
 .layout-table {
   display: flex;
   flex-direction: column;
+  container-type: inline-size;
 
   .top-row {
     display: flex;
@@ -132,5 +134,16 @@ const updateEntries = (newPaginatedArray: CensusEntry[]) => (paginatedEntries.va
 .v-enter-from {
   opacity: 0;
   translate: 0 30px;
+}
+
+@container (width < 600px) {
+  .top-row {
+    flex-wrap: wrap;
+
+    .search-wrapper {
+      order: 3;
+      width: 100%;
+    }
+  }
 }
 </style>
