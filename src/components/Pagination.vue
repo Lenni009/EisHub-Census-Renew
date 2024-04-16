@@ -152,8 +152,7 @@ watchEffect(() => emit('change', paginatedEntries.value));
       width: 100%;
       margin: 0;
 
-      &.outline:hover,
-      &.outline:focus {
+      &.outline:hover {
         background-color: var(--pico-primary-hover-background);
         color: var(--pico-primary-inverse);
         border: 1px solid transparent;
