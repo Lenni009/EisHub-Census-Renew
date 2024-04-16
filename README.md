@@ -64,6 +64,10 @@ Use the search tab in the editor to search for `Eisvana`. Replace all ocurrences
 
 Use the search tab again to search for `Lenni`. **Don't** change the name in the `.yml` files, that will break the build process! Change the name in all other files to the one of your civ's census manager.
 
+Open the `.html` files at the root of the project. Search for `keywords`. Edit the individual keywords accordingly to fit your civ.
+
+Replace the favicon icons in the `public` directory. You can search online for "favicon generator" for tools for generating them.
+
 ### Deploying the Page
 
 Commit and push your changes to GitHub by clicking on the "Source Control" tab in the editor, specifying a commit message and then clicking "Commit and Push".

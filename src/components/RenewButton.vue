@@ -8,6 +8,7 @@ import { renewWebhook } from '@/variables/env';
 import { useRenewDataStore } from '@/stores/renewDataStore';
 import { storeToRefs } from 'pinia';
 import { delay } from '@/variables/delay';
+import { blurActiveElement } from '@/helpers/domHelpers';
 
 const props = defineProps<{
   userObject: CensusEntry;
@@ -20,6 +21,19 @@ const isSending = ref(false);
 const isFailed = ref(false);
 const isSuccess = ref(false);
 
+const dialogElement = ref<HTMLDialogElement | null>(null);
+
+function openModal() {
+  // yes, this double-blur is necessary. Yes, this is stupid. I don't like it. But it is necessary. Please don't question this, or else you'll break it.
+  // remove the focus on the button itself
+  blurActiveElement();
+  dialogElement.value?.showModal();
+  // remove the focus on the close button
+  blurActiveElement();
+};
+
+const closeModal = () => dialogElement.value?.close();
+
 const renewText = computed(() => {
   if (isSending.value) return '';
   if (isFailed.value) return props.buttonTextFailed;
@@ -29,8 +43,6 @@ const renewText = computed(() => {
 
 const renewDataStore = useRenewDataStore();
 const { tries, requested, triesExceeded } = storeToRefs(renewDataStore);
-
-const confirmDialog = ref<InstanceType<typeof ConfirmDialog> | null>(null);
 
 const isDisabled = computed(() => triesExceeded.value || props.userObject.renewRequested || props.userObject.renewed);
 
@@ -54,26 +66,34 @@ async function requestRenewal() {
     }, delay);
   }
 }
-
-const openDialog = () => confirmDialog.value?.toggleModal();
 </script>
 
 <template>
-  <button
-    :aria-busy="isSending"
-    :class="{ 'is-danger': isFailed }"
-    :disabled="isDisabled"
-    class="renew-button"
-    type="button"
-    @click="openDialog"
-  >
-    {{ renewText }}
-  </button>
-  <ConfirmDialog
-    :user-name="userObject.CensusPlayer"
-    ref="confirmDialog"
-    @confirm="requestRenewal"
-  />
+  <div>
+    <button
+      :aria-busy="isSending"
+      :class="{ 'is-danger': isFailed }"
+      :disabled="isDisabled"
+      class="renew-button"
+      type="button"
+      @click="openModal"
+    >
+      {{ renewText }}
+    </button>
+
+    <!--teleporting out of the div in order to remove any unwanted hover effects-->
+    <Teleport to="body">
+      <dialog
+        ref="dialogElement"
+        @click.self="closeModal"
+      >
+        <ConfirmDialog
+          :user-name="userObject.CensusPlayer"
+          @confirm="requestRenewal"
+        />
+      </dialog>
+    </Teleport>
+  </div>
 </template>
 
 <style scoped lang="scss">

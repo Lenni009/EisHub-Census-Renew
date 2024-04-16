@@ -68,6 +68,7 @@ watchEffect(() => emit('change', paginatedEntries.value));
       class="page-select-item"
     >
       <button
+        :key="currentPage - 1"
         class="outline"
         type="button"
         @click="currentPage--"
@@ -75,7 +76,10 @@ watchEffect(() => emit('change', paginatedEntries.value));
         {{ currentPage - 1 }}
       </button>
     </div>
-    <div class="page-select-item">
+    <div
+      :key="currentPage"
+      class="page-select-item"
+    >
       <button type="button">
         {{ currentPage }}
       </button>
@@ -85,6 +89,7 @@ watchEffect(() => emit('change', paginatedEntries.value));
       class="page-select-item"
     >
       <button
+        :key="currentPage + 1"
         class="outline"
         type="button"
         @click="currentPage++"

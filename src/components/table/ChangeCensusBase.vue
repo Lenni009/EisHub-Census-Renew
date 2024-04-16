@@ -13,9 +13,11 @@ import { buildWikiPageLink } from '@/helpers/wikiLinkConstructor';
 const props = defineProps<{
   entry: CensusEntry;
   items?: string[];
+  requested?: string;
 }>();
 
-const activeBase = computed(() => props.entry.Name);
+const requestedBase = computed(() => (props.requested === props.entry.Name ? '' : props.requested));
+const activeBase = computed(() => props.requested ?? props.entry.Name);
 
 const items = ref<string[]>(props.items ?? []);
 const isError = ref(false);
@@ -26,6 +28,7 @@ const reason = ref('');
 const emit = defineEmits<{
   close: [];
   ready: [items: string[]];
+  submit: [request: string];
 }>();
 
 onMounted(async () => {
@@ -47,13 +50,21 @@ onMounted(async () => {
 
 function submit() {
   if (selectedBase.value === activeBase.value) return;
+  emit('submit', selectedBase.value);
   sendBaseChangeRequest(props.entry, selectedBase.value, reason.value);
 }
 </script>
 
 <template>
   <article>
-    <header class="text-bold">Change Census Base for {{ entry.CensusPlayer }}</header>
+    <header class="text-bold">
+      <button
+        aria-label="Close"
+        class="close"
+        form="request-close-form"
+      ></button>
+      <p>Change Census Base for {{ entry.CensusPlayer }}</p>
+    </header>
     <div
       v-if="items.length === 1"
       class="text-center"
@@ -71,16 +82,21 @@ function submit() {
       >
         <label
           :for="item"
+          :aria-disabled="item === requestedBase || (item === activeBase && !requestedBase)"
           class="base-selector"
         >
           <input
             v-model="selectedBase"
+            :disabled="item === requestedBase || (item === activeBase && !requestedBase)"
             :id="item"
             :value="item"
             name="bases"
             type="radio"
           />
-          <span>{{ item }}</span>
+          <span
+            >{{ item }} {{ item === requestedBase ? '[Requested]' : '' }}
+            {{ item === activeBase && !requestedBase ? '[Active]' : '' }}</span
+          >
         </label>
         <a
           :href="buildWikiPageLink(item)"
@@ -99,8 +115,9 @@ function submit() {
     </template>
     <LoadingSpinner v-else-if="!isError" />
     <p v-else>Something went wrong!</p>
-    <footer v-if="items.length > 1">
+    <footer v-show="items.length > 1">
       <form
+        id="request-close-form"
         method="dialog"
         @submit="$emit('close')"
       >
