@@ -51,7 +51,6 @@ onMounted(async () => {
 function submit() {
   if (selectedBase.value === activeBase.value) return;
   emit('submit', selectedBase.value);
-  console.log(selectedBase.value);
   sendBaseChangeRequest(props.entry, selectedBase.value, reason.value);
 }
 </script>
