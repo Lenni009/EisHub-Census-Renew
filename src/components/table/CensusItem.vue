@@ -203,7 +203,7 @@ function requestBaseChange(requested: string) {
         flex-grow: 1;
       }
 
-      [data-tooltip]:not(button) {
+      [data-tooltip]:not(button, a) {
         border: none;
 
         &:has([disabled]) {
