@@ -125,17 +125,17 @@ wikiPageDataStore.$subscribe((_, state) => {
     </template>
 
     <article v-else-if="isNewCitizen">
-      <header>
+      <header class="thank-you-wrapper">
         <p class="text-bold thank-you">Thank you for registering!</p>
       </header>
       <p>
         We're excited to have you join us in Eisvana!<br />We'll let you know when your submission has been processed.
       </p>
-      <p>You can now close this window.</p>
+      <p>If you want to learn more about Eisvana, <a href="https://eisvana.com/">Visit our website</a>!</p>
     </article>
 
     <article v-else>
-      <header>
+      <header class="thank-you-wrapper">
         <p class="text-bold thank-you">Thank you for updating your census entry!</p>
       </header>
       <p>We'll let you know when your submission has been processed.</p>
@@ -199,7 +199,12 @@ button.submit-button[type='submit'] {
   margin-inline-start: 0.5rem;
 }
 
-.thank-you {
-  margin: 0;
+.thank-you-wrapper {
+  background-color: green;
+
+  .thank-you {
+    color: white;
+    margin: 0;
+  }
 }
 </style>
