@@ -131,7 +131,7 @@ wikiPageDataStore.$subscribe((_, state) => {
       <p>
         We're excited to have you join us in Eisvana!<br />We'll let you know when your submission has been processed.
       </p>
-      <p>If you want to learn more about Eisvana, <a href="https://eisvana.com/">Visit our website</a>!</p>
+      <p>If you want to learn more about Eisvana, <a href="https://eisvana.com/">visit our website</a>!</p>
     </article>
 
     <article v-else>
