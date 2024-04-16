@@ -1,49 +1,32 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-
 defineProps<{
   userName: string;
 }>();
 
-const dialogElement = ref<HTMLDialogElement | null>(null);
-const toggleModal = () => {
-  dialogElement.value?.showModal();
-  (document.activeElement as HTMLElement | null)?.blur();
-};
-
 const emit = defineEmits<{
   confirm: [];
 }>();
-
-defineExpose({
-  toggleModal,
-});
 </script>
 
 <template>
-  <dialog ref="dialogElement">
-    <article>
-      <header>
-        <form
-          method="dialog"
-          class="close-button-wrapper"
-        >
-          <button
-            aria-label="Close"
-            class="close"
-          ></button>
-        </form>
-        <p class="text-center">Confirm renewal of {{ userName }}?</p>
-      </header>
-      <form
-        method="dialog"
-        class="confirm-options"
-      >
-        <button @click.once="$emit('confirm')">Yes</button>
-        <button class="secondary">No</button>
-      </form>
-    </article>
-  </dialog>
+  <article>
+    <header>
+      <button
+        aria-label="Close"
+        class="close"
+        form="renew-close-form"
+      ></button>
+      <p class="text-center">Confirm renewal of {{ userName }}?</p>
+    </header>
+    <form
+      class="confirm-options"
+      id="renew-close-form"
+      method="dialog"
+    >
+      <button @click.once="$emit('confirm')">Renew</button>
+      <button class="secondary">Cancel</button>
+    </form>
+  </article>
 </template>
 
 <style lang="scss">

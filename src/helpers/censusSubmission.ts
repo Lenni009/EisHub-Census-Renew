@@ -11,6 +11,7 @@ import { buildWikiEditLink } from './wikiLinkConstructor';
 import type { DiscordWebhookPayload } from '@/types/discordWebhook';
 import { isNewCitizen } from '@/variables/formMode';
 import type { CensusEntry } from '@/types/censusQueryResponse';
+import { localStorageRequestKey } from '@/variables/localStorage';
 
 const getExplicitBoolean = (bool: boolean): ExplicitBoolean => (bool ? 'Yes' : 'No');
 
@@ -157,6 +158,11 @@ export async function submitCensus(description: string): Promise<void> {
 
   const promises = formDataArray.map(sendFormData);
   await Promise.all(promises);
+
+  const localStorageDataString = localStorage.getItem(localStorageRequestKey) ?? '{}';
+  const localStorageData: Record<string, string> = JSON.parse(localStorageDataString);
+  delete localStorageData[playerData.player];
+  localStorage.setItem(localStorageRequestKey, JSON.stringify(localStorageData));
 }
 
 function constructFileFormData(fileArray: File[]): FormData {

@@ -10,10 +10,21 @@ import { currentYearString } from '@/variables/dateTime';
 import { useRenewDataStore } from '@/stores/renewDataStore';
 import { storeToRefs } from 'pinia';
 import { storeEntry } from '@/helpers/localStorage';
+import { blurActiveElement } from '@/helpers/domHelpers';
+import { localStorageRequestKey } from '@/variables/localStorage';
 
 const props = defineProps<{
   entry: CensusEntry;
 }>();
+
+const localStorageString = localStorage.getItem(localStorageRequestKey) ?? '{}';
+const localStorageData: Record<string, string> = JSON.parse(localStorageString);
+
+const requestedBase = ref(localStorageData[props.entry.CensusPlayer]);
+if (requestedBase.value === props.entry.Name) {
+  delete localStorageData[props.entry.CensusPlayer];
+  localStorage.setItem(localStorageRequestKey, JSON.stringify(localStorageData));
+}
 
 const changeBaseModal = ref<HTMLDialogElement | null>(null);
 const modalShown = ref(false);
@@ -29,8 +40,7 @@ const tooltipText = computed(() => {
 });
 
 const openModal = () => {
-  const activeElement = document.activeElement;
-  if (activeElement instanceof HTMLElement) activeElement.blur();
+  blurActiveElement();
   modalShown.value = true;
   changeBaseModal.value?.showModal();
 };
@@ -41,6 +51,12 @@ const closeModal = () => {
 
 const playerBases = ref<string[]>();
 const setPlayerBases = (items: string[]) => (playerBases.value = items);
+
+function requestBaseChange(requested: string) {
+  requestedBase.value = requested;
+  localStorageData[props.entry.CensusPlayer] = requested;
+  localStorage.setItem(localStorageRequestKey, JSON.stringify(localStorageData));
+}
 </script>
 
 <template>
@@ -88,14 +104,13 @@ const setPlayerBases = (items: string[]) => (playerBases.value = items);
     <details>
       <summary role="button">Actions</summary>
       <article class="action-buttons">
-        <div :data-tooltip="tooltipText">
-          <RenewButton
-            :user-object="entry"
-            button-text="Renew"
-            button-text-failed="Failed!"
-            button-text-success="Renewed!"
-          />
-        </div>
+        <RenewButton
+          :user-object="entry"
+          :data-tooltip="tooltipText"
+          button-text="Renew"
+          button-text-failed="Failed!"
+          button-text-success="Renewed!"
+        />
         <button
           data-tooltip="Change Census Base"
           type="button"
@@ -126,8 +141,10 @@ const setPlayerBases = (items: string[]) => (playerBases.value = items);
       v-if="modalShown"
       :entry
       :items="playerBases"
+      :requested="requestedBase"
       @close="closeModal"
       @ready="setPlayerBases"
+      @submit="requestBaseChange"
     />
   </dialog>
 </template>
@@ -186,7 +203,7 @@ const setPlayerBases = (items: string[]) => (playerBases.value = items);
         flex-grow: 1;
       }
 
-      [data-tooltip] {
+      [data-tooltip]:not(button) {
         border: none;
 
         &:has([disabled]) {
