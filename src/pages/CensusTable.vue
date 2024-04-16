@@ -122,6 +122,7 @@ const updateEntries = (newPaginatedArray: CensusEntry[]) => (paginatedEntries.va
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
+    margin-block-end: 3rem;
   }
 }
 
