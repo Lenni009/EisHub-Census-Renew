@@ -1,6 +1,14 @@
 import { discordValidation } from '@/variables/formValidation';
 
-export const isValidHttpUrl = (string: string) => URL.canParse(string);
+export function isValidHttpUrl(string: string) {
+  if (!string) return false;
+  try {
+    const url = new URL(string);
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
 
 const discordValidationRegexp = new RegExp(discordValidation);
 
