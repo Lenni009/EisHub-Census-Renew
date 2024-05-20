@@ -1,6 +1,6 @@
 import type { Modes, Platforms } from '@/types/pageData';
 
-export const platforms: Record<string, Platforms> = {
+export const platforms: Record<Platforms, string> = {
   PC: 'PC',
   PS: 'PlayStation',
   XB: 'Xbox',
