@@ -33,7 +33,7 @@ const focusInput = () => otherInput.value?.focus();
         v-model.trim="model"
         :id="`${name}-${id}`"
         :name
-        :value="item"
+        :value="id"
         type="radio"
         @click="onDeselect"
       />
