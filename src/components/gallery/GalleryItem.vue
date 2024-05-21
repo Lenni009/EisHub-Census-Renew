@@ -41,8 +41,8 @@ function moveItem(fileItem: FileItem, direction: 'up' | 'down') {
       target="_blank"
     >
       <img
-        :src="fileItem.url"
         :alt="fileItem.file?.name ?? fileItem.desc"
+        :src="fileItem.url"
       />
     </a>
     <div class="gallery-meta">

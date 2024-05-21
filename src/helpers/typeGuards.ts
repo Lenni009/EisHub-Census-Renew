@@ -15,14 +15,14 @@ export function isFormProperty(str: string): str is OptionalProps {
   return str in playerData.value || str in baseData.value || str in imageData.value;
 }
 
-export function isValidPlatformValue(platform: string): platform is Platforms {
+export function isValidPlatformValue(platform: unknown): platform is Platforms {
   const platformArray = Object.keys(platforms);
-  return Boolean(platformArray.filter((item) => item === platform).length);
+  return platformArray.findIndex((item) => item === platform) !== -1;
 }
 
-export function isValidModeValue(mode: string): mode is Modes {
+export function isValidModeValue(mode: unknown): mode is Modes {
   const modeArray = Object.values(modes);
-  return Boolean(modeArray.filter((item) => item === mode).length);
+  return modeArray.findIndex((item) => item === mode) !== -1;
 }
 
 function isObject(obj: unknown): obj is object {

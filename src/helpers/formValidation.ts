@@ -13,7 +13,7 @@ export function isValidHttpUrl(string: string) {
 const discordValidationRegexp = new RegExp(discordValidation);
 
 export const validateDiscord = (name: string) => !name || discordValidationRegexp.test(name);
-export const validateReddit = (name: string) => !name || !name.toLowerCase().startsWith('u/');
+export const validateReddit = (name: string) => !name?.toLowerCase().startsWith('u/');
 
 export function validatePlayerName(name: string) {
   const platforms = ['pc', 'ps', 'xb', 'xbox', 'steam', 'steam deck', 'mac', 'switch'];

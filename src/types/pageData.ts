@@ -1,7 +1,7 @@
 import type { FileItem } from './file';
 
 export type Modes = 'Normal' | 'Relaxed' | 'Survival' | 'Permadeath' | 'Creative' | 'Custom';
-export type Platforms = 'PC' | 'PlayStation' | 'Xbox' | 'Switch';
+export type Platforms = 'PC' | 'PS' | 'XB' | 'NS';
 export type ExplicitBoolean = 'Yes' | 'No';
 
 export interface PlayerData {

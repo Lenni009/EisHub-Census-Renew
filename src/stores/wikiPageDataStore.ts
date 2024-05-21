@@ -10,7 +10,7 @@ import {
 } from '@/helpers/formValidation';
 import { isSectionQueryResponse, isValidModeValue, isValidPlatformValue } from '@/helpers/typeGuards';
 import { apiCall, downloadFile, fetchSectionWikiText, getPageSectionsApiUrl } from '@/helpers/wikiApi';
-import { parseWikiTemplate } from '@/helpers/wikiTemplateParser';
+import parseMediawikiTemplate from 'parse-mediawiki-template';
 import type { CensusEntry } from '@/types/censusQueryResponse';
 import type { FileItem } from '@/types/file';
 import type { BaseData, ImageData, PlayerData, SectionObject } from '@/types/pageData';
@@ -151,7 +151,7 @@ export const useWikiPageDataStore = defineStore('wikiPageData', {
   actions: {
     async fetchVersionTemplate() {
       const section = await fetchSectionWikiText('Template:Base preload', 0);
-      const version = parseWikiTemplate(section ?? '', 'Version')[0]['1'];  // unnamed parameters are 1-indexed
+      const version = parseMediawikiTemplate(section ?? '', 'Version')[0]['1']; // unnamed parameters are 1-indexed
       this.version = version;
     },
 
@@ -183,7 +183,7 @@ export const useWikiPageDataStore = defineStore('wikiPageData', {
       this.baseData.glyphs =
         infobox.portalglyphs.length === expectedGlyphLength
           ? infobox.portalglyphs
-          : parseWikiTemplate(infobox.portalglyphs.toLowerCase(), 'gl/small')[0]['1'].toUpperCase();
+          : parseMediawikiTemplate(infobox.portalglyphs.toLowerCase(), 'gl/small')[0]['1'].toUpperCase();
       await imageDataPromise;
     },
 
@@ -246,7 +246,7 @@ export const useWikiPageDataStore = defineStore('wikiPageData', {
 
     async fetchInfobox() {
       const sectionWikitext = await this.fetchBaseSectionWikiText(0);
-      const infoboxObject = parseWikiTemplate(sectionWikitext ?? '', 'Base infobox');
+      const infoboxObject = parseMediawikiTemplate(sectionWikitext ?? '', 'Base infobox');
       return infoboxObject;
     },
 
