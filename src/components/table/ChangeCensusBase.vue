@@ -107,9 +107,9 @@ function submit() {
       </div>
       <input
         v-model="reason"
-        aria-label="Reason"
+        aria-label="Reason (optional)"
         class="reason-input"
-        placeholder="Reason"
+        placeholder="Reason (optional)"
         type="text"
       />
     </template>
