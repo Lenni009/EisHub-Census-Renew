@@ -20,14 +20,16 @@ const { triesExceeded } = storeToRefs(renewDataStore);
   >
     No Webhook URL found, no message will be sent!
   </p>
-  <input
-    v-model.trim="filter"
-    aria-label="Search Name"
-    id="searchBar"
-    name="searchBar"
-    placeholder="Search Name"
-    type="search"
-  />
+  <search>
+    <input
+      v-model.trim="filter"
+      aria-label="Search Name"
+      id="searchBar"
+      name="searchBar"
+      placeholder="Search Name"
+      type="search"
+    />
+  </search>
   <p
     v-if="triesExceeded"
     class="warning"
