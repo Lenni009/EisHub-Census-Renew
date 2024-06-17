@@ -13,7 +13,7 @@
     "@picocss/pico": "^2.0.6",
     "parse-mediawiki-template": "^0.2.2",
     "pinia": "^2.1.7",
-    "sass": "^1.77.4",
+    "sass": "^1.77.5",
     "simple-image-compressor": "^1.8.2",
     "sortablejs": "^1.15.2",
     "vue": "^3.4.27"
