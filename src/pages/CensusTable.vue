@@ -54,14 +54,14 @@ const updateEntries = (newPaginatedArray: CensusEntry[]) => (paginatedEntries.va
   <div class="layout-table">
     <div class="top-row">
       <p>Census count: {{ currentRevisionCensusCount }}</p>
-      <div class="search-wrapper">
+      <search class="search-wrapper">
         <input
           v-model.trim="searchTerm"
           aria-label="Search Name"
           placeholder="Search Player"
           type="search"
         />
-      </div>
+      </search>
       <div>
         <select
           v-model.trim="revision"

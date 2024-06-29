@@ -13,18 +13,18 @@
     "@picocss/pico": "^2.0.6",
     "parse-mediawiki-template": "^0.2.2",
     "pinia": "^2.1.7",
-    "sass": "^1.77.2",
+    "sass": "^1.77.6",
     "simple-image-compressor": "^1.8.2",
     "sortablejs": "^1.15.2",
-    "vue": "^3.4.27"
+    "vue": "^3.4.30"
   },
   "devDependencies": {
-    "@types/node": "^20.12.12",
+    "@types/node": "^20.14.8",
     "@types/sortablejs": "^1.15.8",
-    "@vitejs/plugin-vue": "^5.0.4",
-    "prettier": "^3.2.5",
-    "typescript": "^5.4.5",
-    "vite": "^5.2.11",
-    "vue-tsc": "^2.0.19"
+    "@vitejs/plugin-vue": "^5.0.5",
+    "prettier": "^3.3.2",
+    "typescript": "^5.5.2",
+    "vite": "^5.3.1",
+    "vue-tsc": "^2.0.22"
   }
 }

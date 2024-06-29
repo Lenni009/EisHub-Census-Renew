@@ -75,6 +75,8 @@ const numberToGlyph = (n: number) => n.toString(16).toUpperCase(); // NoSonar th
 
 <style scoped lang="scss">
 .glyph-input {
+  container-type: inline-size;
+
   .glyphs {
     font-family: NMS-Glyphs-Mono;
     font-size: 3rem;
