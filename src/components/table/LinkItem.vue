@@ -12,15 +12,15 @@ const props = defineProps<{
 const linkObj = computed(() =>
   props.wikitext.startsWith('[')
     ? parseUserLink(props.wikitext)
-    : { text: decode(props.wikitext), link: `${wikiLink}${decode(props.wikitext)}` }
+    : { text: props.wikitext, link: `${wikiLink}${props.wikitext}` }
 );
 </script>
 
 <template>
   <a
-    :href="linkObj.link"
+    :href="decode(linkObj.link)"
     rel="noopener noreferrer"
     target="_blank"
-    >{{ text ?? linkObj.text }}</a
+    >{{ decode(text ?? linkObj.text) }}</a
   >
 </template>
