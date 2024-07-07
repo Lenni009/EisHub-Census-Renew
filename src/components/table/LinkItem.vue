@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 import { parseUserLink } from '@/helpers/wikitextParser';
 import { wikiLink } from '@/variables/wikiLink';
+import { decode } from 'html-entities';
 
 const props = defineProps<{
   wikitext: string;
@@ -11,7 +12,7 @@ const props = defineProps<{
 const linkObj = computed(() =>
   props.wikitext.startsWith('[')
     ? parseUserLink(props.wikitext)
-    : { text: props.wikitext, link: `${wikiLink}${props.wikitext}` }
+    : { text: decode(props.wikitext), link: `${wikiLink}${decode(props.wikitext)}` }
 );
 </script>
 
