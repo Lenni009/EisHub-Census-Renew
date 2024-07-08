@@ -16,6 +16,7 @@ import type {
 import { limit } from '@/variables/apiLimit';
 import { apiPath } from '@/variables/wikiLink';
 import { isParsedSummary, isQueryResponse, isWikitext } from './typeGuards';
+import { decode } from 'html-entities';
 
 // generic function to build a URL from an object
 const buildQueryUrl = (queryObject: QueryObjects) =>
@@ -139,7 +140,9 @@ export async function userExists(user: string) {
 
 export async function apiCall(url: string): Promise<unknown> {
   const data = await fetch(url);
-  const json = await data.json();
+  const textData = await data.text();
+  const unescapedTextData = decode(textData);
+  const json: unknown = JSON.parse(unescapedTextData);
   return json;
 }
 

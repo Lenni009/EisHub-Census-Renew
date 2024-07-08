@@ -2,7 +2,6 @@
 import { computed } from 'vue';
 import { parseUserLink } from '@/helpers/wikitextParser';
 import { wikiLink } from '@/variables/wikiLink';
-import { decode } from 'html-entities';
 
 const props = defineProps<{
   wikitext: string;
@@ -18,9 +17,9 @@ const linkObj = computed(() =>
 
 <template>
   <a
-    :href="decode(linkObj.link)"
+    :href="linkObj.link"
     rel="noopener noreferrer"
     target="_blank"
-    >{{ decode(text ?? linkObj.text) }}</a
+    >{{ text ?? linkObj.text }}</a
   >
 </template>
