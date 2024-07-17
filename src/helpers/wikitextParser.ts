@@ -6,7 +6,7 @@ export function parseExternalUserLink(link: string): LinkObj {
   const linkParts = syntaxRemoved.split(' ');
   return {
     link: linkParts[0],
-    text: linkParts[1],
+    text: linkParts.slice(1).join(' '),
   };
 }
 
