@@ -17,7 +17,7 @@
     "sass": "^1.77.8",
     "simple-image-compressor": "^1.8.2",
     "sortablejs": "^1.15.2",
-    "vue": "^3.4.37"
+    "vue": "^3.4.38"
   },
   "devDependencies": {
     "@types/node": "^22.2.0",
