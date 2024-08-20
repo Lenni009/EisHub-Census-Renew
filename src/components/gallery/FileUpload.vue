@@ -10,9 +10,7 @@ const wikiPageDataStore = useWikiPageDataStore();
 const { imageData } = storeToRefs(wikiPageDataStore);
 const { gallery, image } = toRefs(imageData.value);
 
-function addFiles(files: FileList) {
-  const fileArray = Array.from(files);
-
+function addFiles(fileArray: File[]) {
   infoboxImageInGallery.value = fileArray.map((file) => file.name).includes(image.value.file?.name ?? '');
 
   const validFiles = infoboxImageInGallery.value

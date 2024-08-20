@@ -8,7 +8,7 @@ const wikiPageDataStore = useWikiPageDataStore();
 const { imageData } = storeToRefs(wikiPageDataStore);
 const { image } = toRefs(imageData.value);
 
-function uploadFile(files: FileList) {
+function uploadFile(files: File[]) {
   const uploadedFile = files[0];
   useNewFile(uploadedFile);
 }
