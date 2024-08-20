@@ -12,7 +12,7 @@ defineProps<{
 }>();
 
 const emit = defineEmits<{
-  upload: [files: FileList];
+  upload: [files: File[]];
 }>();
 
 const dragActive = ref(false);
@@ -24,13 +24,22 @@ const { image } = toRefs(imageData.value);
 function onChange(e: Event) {
   const { target } = e;
   if (!(target instanceof HTMLInputElement) || !target.files) return;
-  emit('upload', target.files);
+  const pictureArray = filterForImages(target.files);
+  if (pictureArray.length) emit('upload', pictureArray);
 }
 
 function onDrop(e: DragEvent) {
   dragActive.value = false;
   const uploadedFiles = e.dataTransfer?.files;
-  if (uploadedFiles?.length) emit('upload', uploadedFiles);
+  if (!uploadedFiles?.length) return;
+  const pictureArray = filterForImages(uploadedFiles);
+  if (pictureArray.length) emit('upload', pictureArray);
+}
+
+function filterForImages(fileList: FileList) {
+  const fileArray = Array.from(fileList);
+  const pictureArray = fileArray.filter((file) => file.type.startsWith('image/'));
+  return pictureArray;
 }
 </script>
 
