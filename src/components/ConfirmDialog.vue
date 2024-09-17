@@ -23,7 +23,7 @@ const emit = defineEmits<{
       id="renew-close-form"
       method="dialog"
     >
-      <button @click.once="$emit('confirm')">Renew</button>
+      <button @click.once="emit('confirm')">Renew</button>
       <button class="secondary">Cancel</button>
     </form>
   </article>
