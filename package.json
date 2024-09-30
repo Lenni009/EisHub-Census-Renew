@@ -14,7 +14,7 @@
     "html-entities": "^2.5.2",
     "parse-mediawiki-template": "^0.2.2",
     "pinia": "^2.2.3",
-    "sass": "^1.79.3",
+    "sass": "^1.79.4",
     "simple-image-compressor": "^1.8.2",
     "sortablejs": "^1.15.3",
     "vue": "^3.5.10"
