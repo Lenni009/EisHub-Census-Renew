@@ -141,8 +141,7 @@ export async function userExists(user: string) {
 export async function apiCall(url: string): Promise<unknown> {
   const data = await fetch(url);
   const textData = await data.text();
-  const unescapedTextData = decode(textData);
-  const json: unknown = JSON.parse(unescapedTextData);
+  const json: unknown = JSON.parse(textData, (_key, value) => decode(value));
   return json;
 }
 
