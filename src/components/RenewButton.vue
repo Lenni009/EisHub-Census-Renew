@@ -96,7 +96,7 @@ async function requestRenewal() {
   </div>
 </template>
 
-<style scoped lang="css">
+<style scoped>
 .renew-button {
   margin: 0;
   width: 100%;
