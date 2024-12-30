@@ -144,7 +144,7 @@ wikiPageDataStore.$subscribe((_, state) => {
   </form>
 </template>
 
-<style lang="css">
+<style scoped>
 a:not([href]) {
   opacity: 0.5;
   pointer-events: none;
