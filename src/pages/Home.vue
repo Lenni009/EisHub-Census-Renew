@@ -43,7 +43,7 @@ const cards: {
   </div>
 </template>
 
-<style scoped lang="scss">
+<style scoped lang="css">
 .title-group {
   text-align: center;
   margin-block-end: 2rem;

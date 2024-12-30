@@ -73,7 +73,7 @@ const numberToGlyph = (n: number) => n.toString(16).toUpperCase(); // NoSonar th
   </div>
 </template>
 
-<style scoped lang="scss">
+<style scoped lang="css">
 .glyph-input {
   container-type: inline-size;
 

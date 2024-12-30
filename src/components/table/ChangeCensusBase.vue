@@ -128,7 +128,7 @@ function submit() {
   </article>
 </template>
 
-<style scoped lang="scss">
+<style scoped lang="css">
 footer button {
   margin: 0;
 }

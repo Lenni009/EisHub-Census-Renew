@@ -70,7 +70,7 @@ const focusInput = () => otherInput.value?.focus();
   </div>
 </template>
 
-<style scoped lang="scss">
+<style scoped lang="css">
 .radio-select {
   display: flex;
   flex-direction: column;

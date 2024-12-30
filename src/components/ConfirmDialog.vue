@@ -29,7 +29,7 @@ const emit = defineEmits<{
   </article>
 </template>
 
-<style lang="scss">
+<style lang="css">
 .confirm-options {
   display: flex;
   gap: 1rem;

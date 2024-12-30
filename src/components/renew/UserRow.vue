@@ -25,7 +25,7 @@ const buttonText = computed(() => {
   />
 </template>
 
-<style scoped lang="scss">
+<style scoped lang="css">
 .failed {
   background-color: indianred;
 }

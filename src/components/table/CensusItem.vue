@@ -149,7 +149,7 @@ function requestBaseChange(requested: string) {
   </dialog>
 </template>
 
-<style scoped lang="scss">
+<style scoped lang="css">
 .census-item {
   width: fit-content;
   display: flex;

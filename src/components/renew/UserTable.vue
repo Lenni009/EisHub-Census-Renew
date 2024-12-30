@@ -47,7 +47,7 @@ const updateEntries = (newPaginatedArray: CensusEntry[]) => (paginatedEntries.va
   </template>
 </template>
 
-<style lang="scss">
+<style lang="css">
 .table {
   display: grid;
   grid-template-columns: repeat(2, auto);
