@@ -156,6 +156,7 @@ a:not([href]) {
   max-width: 800px;
   margin-inline: auto;
 
+  /* this causes some specificity issues down the component tree */
   & :deep() {
     label {
       display: flex;
