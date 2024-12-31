@@ -74,7 +74,7 @@ function filterForImages(fileList: FileList) {
   gap: 0.5rem;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items: center !important;
   height: 200px;
   border-radius: var(--pico-border-radius);
   border: 2px dashed;
