@@ -128,9 +128,7 @@ const numberToGlyph = (n: number) => n.toString(16).toUpperCase(); // NoSonar th
   }
 
   .error {
-    margin-block: -1rem 0.5rem;
-    font-size: smaller;
-    color: crimson;
+    margin-block: -1rem 0.5rem !important;
   }
 }
 </style>
