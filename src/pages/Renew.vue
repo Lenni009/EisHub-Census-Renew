@@ -39,7 +39,7 @@ const { triesExceeded } = storeToRefs(renewDataStore);
   <UserTable :filter="filter" />
 </template>
 
-<style scoped lang="scss">
+<style scoped>
 .warning {
   background-color: red;
   color: white;

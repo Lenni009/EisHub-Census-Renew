@@ -130,7 +130,7 @@ watchEffect(() => emit('change', paginatedEntries.value));
   </div>
 </template>
 
-<style scoped lang="scss">
+<style scoped>
 .page-select-wrapper {
   display: flex;
   gap: 0.5rem;

@@ -104,7 +104,7 @@ function moveItem(fileItem: FileItem, direction: 'up' | 'down') {
   </article>
 </template>
 
-<style scoped lang="scss">
+<style scoped>
 .gallery-item {
   display: flex;
   width: 100%;

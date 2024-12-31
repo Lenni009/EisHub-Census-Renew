@@ -2,7 +2,7 @@
   <div class="error">Something went wrong :/</div>
 </template>
 
-<style scoped lang="scss">
+<style scoped>
 .error {
   text-align: center;
   font-size: larger;

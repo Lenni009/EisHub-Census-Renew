@@ -101,7 +101,7 @@ const updateEntries = (newPaginatedArray: CensusEntry[]) => (paginatedEntries.va
   </div>
 </template>
 
-<style scoped lang="scss">
+<style scoped>
 .layout-table {
   display: flex;
   flex-direction: column;

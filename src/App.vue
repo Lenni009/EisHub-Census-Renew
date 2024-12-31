@@ -61,7 +61,7 @@ const hasSearchParams = Boolean(window.location.search);
   </main>
 </template>
 
-<style scoped lang="scss">
+<style scoped>
 .navigation-items {
   display: flex;
   flex-direction: column;

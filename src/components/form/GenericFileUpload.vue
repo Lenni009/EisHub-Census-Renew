@@ -68,7 +68,7 @@ function filterForImages(fileList: FileList) {
   </div>
 </template>
 
-<style scoped lang="scss">
+<style scoped>
 .drop-container {
   display: flex;
   gap: 0.5rem;

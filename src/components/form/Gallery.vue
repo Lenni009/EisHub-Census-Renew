@@ -64,7 +64,7 @@ const togglePreview = () => (isPreviewHidden.value = !isPreviewHidden.value);
   </div>
 </template>
 
-<style scoped lang="scss">
+<style scoped>
 .gallery-preview-header {
   display: flex;
   justify-content: space-between;
