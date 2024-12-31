@@ -24,7 +24,7 @@ jobs:
         run: |
           if [ "${{github.event.schedule}}" == '20 0 1 1 *' ]
           then
-            message='<@&899025238564687884> The Census has reset! Renew your citizen status now: https://census.eisvana.com/renew.html'
+            message='<@&899025238564687884> the Census has reset! Renew your citizen status now: https://census.eisvana.com/renew.html'
           elif [ "${{github.event.schedule}}" == '20 0 29 1 *' ]
           then
             message='All <@&1178746333499240528> will lose the citizen role in 3 days. Renew your status now: https://census.eisvana.com/renew.html'
