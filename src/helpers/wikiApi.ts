@@ -78,7 +78,7 @@ const getCensusQueryObject = (civilized: string): RawCensusQueryWhereObject => (
 
 const getCensusQueryCountObject = (civilized: string): RawCensusQueryObject => ({
   ...getCensusQueryObject(civilized),
-  fields: ['Count(DISTINCT CensusPlayer)'],
+  fields: ['COUNT(DISTINCT CensusPlayer)'],
 });
 
 const getCensusQueryDataObject = (civilized: string, offset: number): CensusQueryObject => ({
@@ -107,6 +107,7 @@ const getBaseQueryObject = (baseName: string): RawCensusQueryObject => ({
   where: `Name="${baseName}"`,
 });
 
+// the replacement in the name is necessary. # crashes the MW API, and _ is a wildcard for a single character. See https://www.w3schools.com/sql/sql_wildcards.asp
 const getPlayerBasesQueryObject = (player: string, civilized: string): OrderedRawCensusQueryObject => ({
   ...getCargoQueryRawObject(),
   fields: ['Name'],
@@ -123,6 +124,7 @@ export const getPlayerBasesQueryUrl = (player: string, civilized: string) =>
   buildQueryUrl(getPlayerBasesQueryObject(player, civilized));
 
 // check whether user exists on the wiki
+// since idiot Lenni just patched this to death: the property name "ususers" is correct and not a typo. See https://www.mediawiki.org/wiki/API:Users
 const getUserQueryObj = (user: string): UserQueryObject => ({
   ...basicQueryData,
   action: 'query',
