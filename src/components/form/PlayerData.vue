@@ -143,7 +143,7 @@ watchEffect(() => (friend.value = friend.value.toUpperCase()));
       class="warning"
     >
       This user already has a census entry! You can update the entry or create a new base page for the existing entry on
-      the <a href="./table.html">census table</a>.
+      the <a :href="`./table.html?name=${playerData.player}`">census table</a>.
     </p>
   </article>
   <article>
