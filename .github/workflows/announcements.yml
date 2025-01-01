@@ -6,6 +6,7 @@ on:
   schedule:
     # the time here is kinda random to dodge high load time on GH that may block cron jobs
     # if cron jobs are delayed for too long, they might be dropped -> bad
+    # runs on 00:20am UTC on January 1st and on 00:20am UTC on January 29th
     - cron: '20 0 1 1 *'
     - cron: '20 0 29 1 *'
 
@@ -22,11 +23,15 @@ jobs:
 
       - name: 'Send Announcement'
         run: |
+          # 00:20am UTC January 1st
           if [ "${{github.event.schedule}}" == '20 0 1 1 *' ]
           then
-            message='<@&899025238564687884> the Census has reset! Renew your citizen status now: https://census.eisvana.com/renew.html'
+            # @citizen @legacycitizen
+            message='<@&899025238564687884> <@&1178746333499240528> the Census has reset! Renew your citizen status now: https://census.eisvana.com/renew.html'
+          # 00:20am UTC January 29th
           elif [ "${{github.event.schedule}}" == '20 0 29 1 *' ]
           then
+            # @legacy citizen
             message='All <@&1178746333499240528> will lose the citizen role in 3 days. Renew your status now: https://census.eisvana.com/renew.html'
           fi
 
