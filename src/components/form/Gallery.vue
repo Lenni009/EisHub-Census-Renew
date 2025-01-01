@@ -42,7 +42,7 @@ const togglePreview = () => (isPreviewHidden.value = !isPreviewHidden.value);
     v-if="gallery.length"
     class="gallery-preview-header"
   >
-    <p class="preview-caption has-text-weight-bold">Gallery Preview</p>
+    <p class="preview-caption text-bold">Gallery Preview</p>
     <button
       class="show-hide-button"
       type="button"

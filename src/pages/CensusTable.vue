@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useCensusDataStore } from '@/stores/censusDataStore';
 import { storeToRefs } from 'pinia';
-import { computed, ref, watchEffect } from 'vue';
+import { computed, onMounted, ref, watchEffect } from 'vue';
 import CensusItem from '@/components/table/CensusItem.vue';
 import type { CensusEntry } from '@/types/censusQueryResponse';
 import { tablePageSize } from '@/variables/paginationData';
@@ -13,6 +13,13 @@ const { censusData, availableRevisions } = storeToRefs(censusDataStore);
 const revision = ref('');
 const searchTerm = ref('');
 const paginatedEntries = ref<CensusEntry[]>([]);
+
+onMounted(() => {
+  const urlParams = new URLSearchParams(window.location.search);
+
+  const paramSearchTerm = urlParams.get('name') ?? '';
+  searchTerm.value ||= paramSearchTerm;
+});
 
 watchEffect(() => (revision.value = availableRevisions.value[0]?.toString()));
 

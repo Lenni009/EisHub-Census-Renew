@@ -156,40 +156,43 @@ a:not([href]) {
   max-width: 800px;
   margin-inline: auto;
 
-  label {
-    display: flex;
-    align-items: end;
-    gap: 0.5rem;
-  }
-
-  .question {
-    font-weight: bold;
-    margin-block-end: 0.5rem;
-
-    &.required::after {
-      content: '*';
-      color: red;
-      margin-inline-start: 0.25rem;
+  /* this causes some specificity issues down the component tree */
+  & :deep() {
+    label {
+      display: flex;
+      align-items: end;
+      gap: 0.5rem;
     }
 
-    &:only-child {
+    .question {
+      font-weight: bold;
+      margin-block-end: 0.5rem;
+
+      &.required::after {
+        content: '*';
+        color: red;
+        margin-inline-start: 0.25rem;
+      }
+
+      &:only-child {
+        margin: 0;
+      }
+    }
+
+    [type='checkbox'] {
+      margin: 0;
+      aspect-ratio: 1;
+    }
+
+    .subtitle {
+      font-size: large;
+    }
+
+    .error {
+      color: crimson;
+      font-size: smaller;
       margin: 0;
     }
-  }
-
-  [type='checkbox'] {
-    margin: 0;
-    aspect-ratio: 1;
-  }
-
-  .subtitle {
-    font-size: large;
-  }
-
-  .error {
-    color: crimson;
-    font-size: smaller;
-    margin: 0;
   }
 }
 
