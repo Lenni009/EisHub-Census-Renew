@@ -13,15 +13,18 @@ const { censusData, availableRevisions } = storeToRefs(censusDataStore);
 const revision = ref('');
 const searchTerm = ref('');
 const paginatedEntries = ref<CensusEntry[]>([]);
+const paramRevision = ref<string | null>(null);
 
 onMounted(() => {
   const urlParams = new URLSearchParams(window.location.search);
 
-  const paramSearchTerm = urlParams.get('name') ?? '';
-  searchTerm.value ||= paramSearchTerm;
+  const searchParam = urlParams.get('name') ?? '';
+  searchTerm.value = searchParam;
+  const revParam = urlParams.get('rev');
+  paramRevision.value = revParam;
 });
 
-watchEffect(() => (revision.value = availableRevisions.value[0]?.toString()));
+watchEffect(() => (revision.value = paramRevision.value ?? availableRevisions.value[0]?.toString()));
 
 function filterEntry({
   Name,
