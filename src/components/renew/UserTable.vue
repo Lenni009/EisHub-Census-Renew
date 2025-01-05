@@ -17,7 +17,12 @@ const { censusData } = storeToRefs(censusDataStore);
 const paginatedEntries = ref<CensusEntry[]>([]);
 
 const filteredCensusData = computed(() =>
-  censusData.value.filter((item) => item.CensusPlayer.toLowerCase().includes(props.filter.toLowerCase()))
+  censusData.value
+    .filter((item) => item.CensusPlayer.toLowerCase().includes(props.filter.toLowerCase()))
+    .toSorted((a, b) => {
+      if (a.renewed === b.renewed) return a.CensusPlayer.toLowerCase() > b.CensusPlayer.toLowerCase() ? 1 : -1;
+      return a.renewed > b.renewed ? 1 : -1;
+    })
 );
 
 const updateEntries = (newPaginatedArray: CensusEntry[]) => (paginatedEntries.value = newPaginatedArray);
